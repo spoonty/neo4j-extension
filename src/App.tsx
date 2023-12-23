@@ -1,22 +1,20 @@
 import Graph from './features/graph/Graph'
 
 function App() {
-  // Ваши данные для графа (узлы и связи)
-  const graphNodes = [
-    { id: '1' },
-    { id: '2' },
-    // Добавьте дополнительные узлы
+  const nodes = [
+    { id: 1, label: 'Node 1' },
+    { id: 2, label: 'Node 2' },
+    { id: 3, label: 'Node 3' },
   ]
 
-  const graphLinks = [
-    { source: '1', target: '2' },
-    // Добавьте дополнительные связи
+  const links = [
+    { source: 1, target: 2, type: 'Type 1' },
+    { source: 2, target: 3, type: 'Type 2' },
   ]
 
   return (
-    <div>
-      <h1>Graph with D3.js and React</h1>
-      <Graph nodes={graphNodes} links={graphLinks} />
+    <div className="h-full w-full">
+      <Graph nodes={nodes} links={links} />
     </div>
   )
 }

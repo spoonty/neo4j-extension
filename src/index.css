@@ -15,5 +15,6 @@ body {
 
 @layer {
   :root {
+    --background-dark: #15131d;
   }
 }
