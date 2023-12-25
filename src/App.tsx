@@ -50,7 +50,7 @@ function App() {
 
   return (
     <div className="h-full w-full">
-      <Graph nodes={nodes} links={links} />
+      <Graph nodes={nodes} relations={links} />
     </div>
   )
 }
