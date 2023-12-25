@@ -20,17 +20,14 @@ export interface Relation {
 export type NodeSimulation = d3.Simulation<Node, d3.SimulationLinkDatum<Node>>
 
 const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relation[]) => {
-    const width = 1550
-    const height = 700
-
     const init = () => {
         const color = d3.scaleOrdinal(d3.schemeCategory10)
 
         const container = d3
             .select(svg.current)
-            .attr('width', width)
-            .attr('height', height)
-            .attr('viewBox', [-width / 2, -height / 2, width, height])
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('viewBox', [-window.innerWidth / 2, -window.innerHeight / 2, window.innerWidth, window.innerHeight])
             .attr('style', 'max-width: 100%; height: auto;')
 
         container.selectAll('*').remove()
