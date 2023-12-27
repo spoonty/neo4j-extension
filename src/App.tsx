@@ -1,4 +1,8 @@
+import { useEffect } from 'react'
+import { DriverImpl } from './data/driver/Driver.impl'
 import Graph from './features/graph/Graph'
+
+const driver = new DriverImpl()
 
 function App() {
   const nodes = [
@@ -47,6 +51,15 @@ function App() {
     { source: 17, target: 18, type: 'link' },
     { source: 18, target: 19, type: 'link' },
   ]
+
+  const connect = async () => {
+    const result = await driver.execute('MATCH (n) RETURN n')
+    console.log(result)
+  }
+
+  useEffect(() => {
+    connect()
+  }, [])
 
   return (
     <div className="h-full w-full">
