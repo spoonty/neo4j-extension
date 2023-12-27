@@ -1,5 +1,5 @@
 export interface Driver {
     connect(): void
     disconnect(): void
-    execute(query: string): any
+    execute<T>(query: string): Promise<T>
 }

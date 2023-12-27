@@ -1,15 +1,34 @@
-import { FC, useRef } from 'react'
-import useGraph, { Node, Relation } from './hooks/useGraph'
+import { FC, useEffect, useRef, useState } from 'react'
+import { DriverImpl } from '../../data/driver/Driver.impl'
+import { Neo4jRepositoryImpl } from '../../data/neo4j/repository/Neo4jRepository.impl'
+import { Node } from '../../domain/neo4j/models/Node'
+import { Relation } from '../../domain/neo4j/models/Relation'
+import useGraph, { NodeD3, RelationD3 } from './hooks/useGraph'
 
-interface Props {
-  nodes: Node[]
-  relations: Relation[]
-}
+const driver = new DriverImpl()
+const repository = new Neo4jRepositoryImpl(driver)
 
-const Graph: FC<Props> = ({ nodes, relations }) => {
+const Graph: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
+  
+  const [nodes, setNodes] = useState<Array<NodeD3> | null>(null)
+  const [relations, setRelations] = useState<Array<RelationD3> | null>(null)
 
   useGraph(svgRef, nodes, relations)
+
+  const getNodes = async () => {
+    const { nodes, relations } = await repository.getGraph()
+    setNodes(
+      nodes.map((node: Node) => new NodeD3(node))
+    )
+    setRelations(
+      relations.map((relation: Relation) => new RelationD3(relation))
+    )
+  }
+
+  useEffect(() => {
+    getNodes()
+  }, [])
 
   return <svg ref={svgRef} className="border-2 border-black"></svg>
 }

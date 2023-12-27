@@ -12,8 +12,6 @@ export class DriverImpl implements Driver {
     constructor() {
         this.driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
         this.session = this.driver.session()
-
-        console.log(this.session)
     }
 
     connect(): void {
@@ -22,10 +20,9 @@ export class DriverImpl implements Driver {
     disconnect(): void {
         throw new Error("Method not implemented.");
     }
-    async execute(query: string): Promise<any> {
+    
+    async execute<T>(query: string): Promise<T> {
         const result = await this.session.run(query)
-        console.log(result)
-        // throw new Error("Method not implemented.");
+        return result.records.map((record: any) => record.toObject()) as T
     }
-
 }

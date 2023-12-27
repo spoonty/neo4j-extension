@@ -1,26 +1,35 @@
 import * as d3 from 'd3'
 import { RefObject, useEffect } from 'react'
+import { Node } from '../../../domain/neo4j/models/Node'
+import { Relation } from '../../../domain/neo4j/models/Relation'
 import drag from '../helpers/drag'
 
-export interface Node {
-    id: number
-    label: string
-    x?: number
-    y?: number
-    fx?: number | null
-    fy?: number | null
+export class NodeD3 extends Node {
+  constructor(node: Node, public x?: number, public y?: number, public fx?: number | null, public fy?: number | null) {
+    super(node.elementId, node.identity, node.labels, node.properties)
+  }
 }
   
-export interface Relation {
-    source: number
-    target: number
-    type: string
+export class RelationD3 extends Relation {
+  source: string
+  target: string
+
+  constructor(relation: Relation) {
+    super(relation.elementId, relation.end, relation.endNodeElementId, relation.start, relation.startNodeElementId, relation.properties, relation.type)
+    
+    this.source = relation.startNodeElementId
+    this.target = relation.endNodeElementId
+  }
 }
 
-export type NodeSimulation = d3.Simulation<Node, d3.SimulationLinkDatum<Node>>
+export type NodeSimulation = d3.Simulation<NodeD3, d3.SimulationLinkDatum<NodeD3>>
 
-const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relation[]) => {
+const useGraph = (svg: RefObject<SVGSVGElement>, nodes: NodeD3[] | null, relations: RelationD3[] | null) => {
     const init = () => {
+        if (!nodes || !relations) {
+          return
+        }
+
         const color = d3.scaleOrdinal(d3.schemeCategory10)
 
         const container = d3
@@ -38,7 +47,7 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relat
             'link',
             d3
               .forceLink(relations)
-              .id((d: any) => d.id)
+              .id((d: any) => d.elementId)
               .distance(300),
           )
           .force('charge', d3.forceManyBody().strength(0))
@@ -91,7 +100,7 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relat
           .attr('fill', (d: any) => color(d.group))
         
         node.append('text')
-          .text((d: any) => d.label)
+          .text((d: any) => d.properties[Object.keys(d.properties)[0]])
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
           .style('user-select', 'none')
@@ -118,11 +127,13 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relat
     }
 
     useEffect(() => {
-        const simulation = init()
+      const simulation = init()
 
-        return () => {
-            simulation.stop()
+      return () => {
+        if (simulation) {
+          simulation.stop()
         }
+      }
     }, [nodes, relations])
 }
 
