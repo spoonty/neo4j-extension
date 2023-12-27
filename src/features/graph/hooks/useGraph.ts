@@ -39,42 +39,79 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: Node[], relations: Relat
             d3
               .forceLink(relations)
               .id((d: any) => d.id)
-              .distance(200),
+              .distance(300),
           )
           .force('charge', d3.forceManyBody().strength(0))
+
+        const arrowMarker = container
+          .append('defs')
+          .append('marker')
+          .attr('id', 'arrow')
+          .attr('viewBox', '0 -5 10 10')
+          .attr('refX', 50)
+          .attr('markerWidth', 10)
+          .attr('markerHeight', 10)
+          .attr('orient', 'auto');
+      
+        arrowMarker
+          .append('path')
+          .attr('d', 'M0,-5L10,0L0,5')
+          .attr('class', 'arrow-head')
         
-        const relation = container
+          const relation = container
           .append('g')
           .attr('stroke', '#999')
           .attr('stroke-opacity', 0.6)
-          .selectAll('line')
+          .selectAll('g')
           .data(relations)
-          .join('line')
+          .join('g');
+  
+        relation
+          .append('line')
           .attr('stroke-width', (d: any) => Math.sqrt(d.value))
+          .attr('marker-end', 'url(#arrow)')
+        
+        relation
+          .append('text')
+          .text((d: any) => d.type)
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .style('user-select', 'none')
         
         const node = container
           .append('g')
           .attr('stroke', '#fff')
           .attr('stroke-width', 1.5)
-          .selectAll('circle')
+          .selectAll('g')
           .data(nodes)
-          .join('circle')
-          .attr('r', 20)
+          .join('g')
+        
+        node.append('circle')
+          .attr('r', 40)
           .attr('fill', (d: any) => color(d.group))
         
-        node.append('title').text((d) => d.id)
+        node.append('text')
+          .text((d: any) => d.label)
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .style('user-select', 'none')
+
         
         // @ts-ignore
         node.call(drag(simulation))
         
         simulation.on('tick', () => {
-          relation
-            .attr('x1', (d: any) => d.source.x)
-            .attr('y1', (d: any) => d.source.y)
-            .attr('x2', (d: any) => d.target.x)
-            .attr('y2', (d: any) => d.target.y)
+          relation.select('line')
+          .attr('x1', (d: any) => d.source.x)
+          .attr('y1', (d: any) => d.source.y)
+          .attr('x2', (d: any) => d.target.x)
+          .attr('y2', (d: any) => d.target.y);
+      
+        relation.select('text')
+          .attr('x', (d: any) => (d.source.x + d.target.x) / 2)
+          .attr('y', (d: any) => (d.source.y + d.target.y) / 2);
         
-          node.attr('cx', (d: any) => d.x).attr('cy', (d: any) => d.y)
+          node.attr('transform', (d: any) => 'translate(' + d.x + ',' + d.y + ')')
         })
         
         return simulation
