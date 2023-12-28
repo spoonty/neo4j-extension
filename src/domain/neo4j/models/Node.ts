@@ -6,3 +6,15 @@ export class Node {
         readonly properties: KeyValue
     ) {}
 }
+
+export class NodeD3 extends Node {
+    constructor(
+      node: Node,
+      public x?: number,
+      public y?: number,
+      public fx?: number | null,
+      public fy?: number | null
+    ) {
+        super(node.elementId, node.identity, node.labels, node.properties)
+    }
+}

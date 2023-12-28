@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import { Node } from '@/domain/neo4j/models/Node'
-import { Relation } from '@/domain/neo4j/models/Relation'
-import useGraph, { NodeD3, RelationD3 } from '@/features/graph/hooks/useGraph'
+import {Node, NodeD3} from '@/domain/neo4j/models/Node'
+import {Relation, RelationD3} from '@/domain/neo4j/models/Relation'
+import useGraph from '@/features/graph/hooks/useGraph'
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)

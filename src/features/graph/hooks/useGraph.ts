@@ -1,25 +1,21 @@
 import * as d3 from 'd3'
 import { RefObject, useEffect } from 'react'
-import { Node } from '@/domain/neo4j/models/Node'
-import { Relation } from '@/domain/neo4j/models/Relation'
+import {NodeD3} from '@/domain/neo4j/models/Node'
+import {RelationD3} from '@/domain/neo4j/models/Relation'
 import drag from '@/features/graph/helpers/drag'
 
-export class NodeD3 extends Node {
-  constructor(node: Node, public x?: number, public y?: number, public fx?: number | null, public fy?: number | null) {
-    super(node.elementId, node.identity, node.labels, node.properties)
-  }
-}
-  
-export class RelationD3 extends Relation {
-  source: string
-  target: string
+const getPropertyToDisplay = (node: any) => {
+  const keys = Object.keys(node.properties)
 
-  constructor(relation: Relation) {
-    super(relation.elementId, relation.end, relation.endNodeElementId, relation.start, relation.startNodeElementId, relation.properties, relation.type)
-    
-    this.source = relation.startNodeElementId
-    this.target = relation.endNodeElementId
+  if (keys.includes('name')) {
+    return node.properties['name']
   }
+
+  if (keys.includes('title')) {
+    return node.properties['title']
+  }
+
+  return node.properties[keys[0]]
 }
 
 export type NodeSimulation = d3.Simulation<NodeD3, d3.SimulationLinkDatum<NodeD3>>
@@ -67,7 +63,7 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: NodeD3[] | null, relatio
           .attr('d', 'M0,-5L10,0L0,5')
           .attr('class', 'arrow-head')
         
-          const relation = container
+        const relation = container
           .append('g')
           .attr('stroke', '#999')
           .attr('stroke-opacity', 0.6)
@@ -89,22 +85,24 @@ const useGraph = (svg: RefObject<SVGSVGElement>, nodes: NodeD3[] | null, relatio
         
         const node = container
           .append('g')
-          .attr('stroke', '#fff')
-          .attr('stroke-width', 1.5)
           .selectAll('g')
           .data(nodes)
           .join('g')
         
         node.append('circle')
+          .attr('stroke', '#fff')
+          .attr('stroke-width', 1.5)
           .attr('r', 40)
-          .attr('fill', (d: any) => color(d.group))
+          .attr('fill', (d: any) => color(d.labels[0]))
         
         node.append('text')
-          .text((d: any) => d.properties[Object.keys(d.properties)[0]])
+          .text((d: any) => getPropertyToDisplay(d))
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "10px")
+          .attr("fill", "white")
           .style('user-select', 'none')
-
         
         // @ts-ignore
         node.call(drag(simulation))

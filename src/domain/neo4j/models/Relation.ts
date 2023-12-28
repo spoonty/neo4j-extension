@@ -9,3 +9,22 @@ export class Relation {
         readonly type: ValueOrNull<string>,
     ) {}
 }
+
+export class RelationD3 extends Relation {
+    source: string
+    target: string
+
+    constructor(relation: Relation) {
+        super(
+          relation.elementId,
+          relation.end,
+          relation.endNodeElementId,
+          relation.start, relation.startNodeElementId,
+          relation.properties,
+          relation.type
+        )
+
+        this.source = relation.startNodeElementId
+        this.target = relation.endNodeElementId
+    }
+}
