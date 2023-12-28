@@ -1,8 +1,8 @@
 import * as d3 from 'd3'
 import { RefObject, useEffect } from 'react'
-import { Node } from '../../../domain/neo4j/models/Node'
-import { Relation } from '../../../domain/neo4j/models/Relation'
-import drag from '../helpers/drag'
+import { Node } from '@/domain/neo4j/models/Node'
+import { Relation } from '@/domain/neo4j/models/Relation'
+import drag from '@/features/graph/helpers/drag'
 
 export class NodeD3 extends Node {
   constructor(node: Node, public x?: number, public y?: number, public fx?: number | null, public fy?: number | null) {

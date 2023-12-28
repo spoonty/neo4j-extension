@@ -1,4 +1,4 @@
-import Graph from './features/graph/Graph'
+import Graph from '@/features/graph/Graph'
 
 function App() {
   return (

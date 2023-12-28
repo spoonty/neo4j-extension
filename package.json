@@ -13,7 +13,7 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "d3": "7.8.5",
-    "neo4j-driver": "^5.15.0",
+    "neo4j-driver": "5.15.0",
     "prettier-plugin-tailwindcss": "0.5.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -22,16 +22,27 @@
     "web-vitals": "2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "settings": {
+      "import/resolver": {
+        "alias": {
+          "map": [
+            [
+              "@",
+              "./src"
+            ]
+          ]
+        }
+      }
+    }
   },
   "browserslist": {
     "production": [
@@ -46,7 +57,8 @@
     ]
   },
   "devDependencies": {
-    "@types/d3": "^7.4.3",
+    "@craco/craco": "7.1.0",
+    "@types/d3": "7.4.3",
     "tailwindcss": "^3.4.0"
   }
 }

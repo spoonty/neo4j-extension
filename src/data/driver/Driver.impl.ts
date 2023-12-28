@@ -1,5 +1,5 @@
 import * as neo4j from 'neo4j-driver';
-import { Driver } from "./Driver.interface";
+import { Driver } from "@/data/driver/Driver.interface";
 
 const uri = 'bolt://localhost:7687';
 const user = 'neo4j';

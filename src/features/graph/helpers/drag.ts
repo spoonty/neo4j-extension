@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { NodeD3, NodeSimulation } from '../hooks/useGraph'
+import { NodeD3, NodeSimulation } from '@/features/graph/hooks/useGraph'
 
 const drag = (simulation: NodeSimulation): d3.DragBehavior<Element, unknown, unknown> => {
     const dragstarted = (event: d3.D3DragEvent<SVGSVGElement, NodeD3, NodeD3>) => {

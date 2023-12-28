@@ -1,7 +1,7 @@
-import { Node } from "../../../domain/neo4j/models/Node";
-import { Relation } from "../../../domain/neo4j/models/Relation";
-import { Neo4jCRUDService } from "../../../domain/neo4j/services/Neo4jCRUDService.interface";
-import { Driver } from "../../driver/Driver.interface";
+import { Node } from "@/domain/neo4j/models/Node";
+import { Relation } from "@/domain/neo4j/models/Relation";
+import { Neo4jCRUDService } from "@/domain/neo4j/services/Neo4jCRUDService.interface";
+import { Driver } from "@/data/driver/Driver.interface";
 
 type NodeRelation = {
     n: ValueOrNull<Node>
