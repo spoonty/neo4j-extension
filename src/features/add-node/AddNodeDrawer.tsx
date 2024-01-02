@@ -6,7 +6,9 @@ const AddNodeDrawer = () => {
     <Drawer open={true} modal={false}>
       <Content>
         <Header>CREATE NODE</Header>
-        <PopoverInput placeholder="Label" />
+        <div className="my-4 px-2">
+          <PopoverInput placeholder="Label" />
+        </div>
         <Footer></Footer>
       </Content>
     </Drawer>

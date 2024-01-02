@@ -26,7 +26,7 @@ export const Content: FC<
     <Overlay />
     <DialogPrimitive.Content
       className={cn(
-        'fixed z-[999] min-h-[512px] w-[512px] rounded-xl bg-white p-4 shadow-md',
+        'border-border-dark bg-main-dark-opacity fixed z-[999] min-h-[512px] w-[512px] rounded-xl border p-4 shadow-md backdrop-blur-md',
         'right-[20%] top-[50%] translate-x-[20%] translate-y-[-50%]',
         className,
       )}
@@ -40,7 +40,7 @@ export const Content: FC<
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header: FC<HeaderProps> = ({ children, className, ...props }) => (
-  <div className={cn('flex flex-col', className)}>
+  <div className={cn('text-text-gray flex flex-col', className)}>
     <div className="flex items-center justify-between">
       <div className="cursor-default text-2xl font-bold leading-6">
         {children}
@@ -49,10 +49,7 @@ export const Header: FC<HeaderProps> = ({ children, className, ...props }) => (
         <Close width="20" height="20" />
       </DialogPrimitive.DialogClose>
     </div>
-    <Separator
-      className="mb-3 mt-1 h-[1px] bg-black bg-opacity-30"
-      decorative
-    />
+    {/*<Separator className="bg-text-gray mb-3 mt-1 h-[1px]" decorative />*/}
   </div>
 )
 
