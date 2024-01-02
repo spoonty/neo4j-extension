@@ -1,8 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {Node, NodeD3} from '@/domain/neo4j/models/Node'
-import {Relation, RelationD3} from '@/domain/neo4j/models/Relation'
+import { Node, NodeD3 } from '@/domain/neo4j/models/Node'
+import { Relation, RelationD3 } from '@/domain/neo4j/models/Relation'
 import useGraph from '@/features/graph/hooks/useGraph'
 
 const driver = new DriverImpl()
@@ -10,7 +10,7 @@ const repository = new Neo4jRepositoryImpl(driver)
 
 const Graph: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
-  
+
   const [nodes, setNodes] = useState<Array<NodeD3> | null>(null)
   const [relations, setRelations] = useState<Array<RelationD3> | null>(null)
 
@@ -18,11 +18,9 @@ const Graph: FC = () => {
 
   const getNodes = async () => {
     const { nodes, relations } = await repository.getGraph()
-    setNodes(
-      nodes.map((node: Node) => new NodeD3(node))
-    )
+    setNodes(nodes.map((node: Node) => new NodeD3(node)))
     setRelations(
-      relations.map((relation: Relation) => new RelationD3(relation))
+      relations.map((relation: Relation) => new RelationD3(relation)),
     )
   }
 
@@ -30,7 +28,7 @@ const Graph: FC = () => {
     getNodes()
   }, [])
 
-  return <svg ref={svgRef} className="border-2 border-black"></svg>
+  return <svg ref={svgRef} />
 }
 
 export default Graph

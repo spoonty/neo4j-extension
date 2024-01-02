@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { RefObject, useEffect } from 'react'
-import {NodeD3} from '@/domain/neo4j/models/Node'
-import {RelationD3} from '@/domain/neo4j/models/Relation'
+import { NodeD3 } from '@/domain/neo4j/models/Node'
+import { RelationD3 } from '@/domain/neo4j/models/Relation'
 import drag from '@/features/graph/helpers/drag'
 
 const getPropertyToDisplay = (node: any) => {
