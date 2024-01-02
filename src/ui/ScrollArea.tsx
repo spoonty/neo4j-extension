@@ -15,15 +15,16 @@ const Scrollbar: FC<Props> = ({
   ...props
 }) => (
   <ScrollPrimitive.Scrollbar
+    {...props}
     orientation={orientation}
     className={cn(
-      'relative flex w-2 justify-center bg-transparent before:absolute before:left-0 before:block before:h-full before:w-2 before:rounded-[20px] before:content-[""]',
+      'flex w-1 justify-center bg-transparent before:absolute before:left-0 before:block before:h-full before:w-[4px] before:rounded-[20px] before:bg-gray-500 before:content-[""]',
       className,
     )}
   >
     <ScrollPrimitive.Thumb
       className={cn(
-        'w-2 rounded-[20px] bg-black p-0.5 opacity-40',
+        'w-1 rounded-[20px] bg-black p-0.5 opacity-40',
         scrollClassName,
       )}
     />
