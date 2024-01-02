@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import Close from '@/assets/icons/CloseIcon'
-import Separator from '@/ui/Separator'
 import { cn } from '@/utils/dom'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 
@@ -28,6 +27,7 @@ export const Content: FC<
       className={cn(
         'border-border-dark bg-main-dark-opacity fixed z-[999] min-h-[512px] w-[512px] rounded-xl border p-4 shadow-md backdrop-blur-md',
         'right-[20%] top-[50%] translate-x-[20%] translate-y-[-50%]',
+        'data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
         className,
       )}
       onOpenAutoFocus={(e) => e.preventDefault()}
@@ -37,19 +37,25 @@ export const Content: FC<
   </Portal>
 )
 
-interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  onClose: () => void
+}
 
-export const Header: FC<HeaderProps> = ({ children, className, ...props }) => (
+export const Header: FC<HeaderProps> = ({
+  children,
+  className,
+  onClose,
+  ...props
+}) => (
   <div className={cn('text-text-gray flex flex-col', className)}>
     <div className="flex items-center justify-between">
       <div className="cursor-default text-2xl font-bold leading-6">
         {children}
       </div>
       <DialogPrimitive.DialogClose>
-        <Close width="20" height="20" />
+        <Close width="20" height="20" onClick={onClose} />
       </DialogPrimitive.DialogClose>
     </div>
-    {/*<Separator className="bg-text-gray mb-3 mt-1 h-[1px]" decorative />*/}
   </div>
 )
 

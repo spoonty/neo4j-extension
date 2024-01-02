@@ -3,6 +3,7 @@ import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
 import { Node, NodeD3 } from '@/domain/neo4j/models/Node'
 import { Relation, RelationD3 } from '@/domain/neo4j/models/Relation'
+import AddNodeDrawer from '@/features/add-node/AddNodeDrawer'
 import useGraph from '@/features/graph/hooks/useGraph'
 
 const driver = new DriverImpl()
@@ -13,6 +14,8 @@ const Graph: FC = () => {
 
   const [nodes, setNodes] = useState<Array<NodeD3> | null>(null)
   const [relations, setRelations] = useState<Array<RelationD3> | null>(null)
+
+  const [addNode, setAddNode] = useState(false)
 
   useGraph(svgRef, nodes, relations)
 
@@ -28,7 +31,16 @@ const Graph: FC = () => {
     getNodes()
   }, [])
 
-  return <svg ref={svgRef} />
+  const clickHandler = (event: React.MouseEvent<SVGSVGElement>) => {
+    setAddNode(true)
+  }
+
+  return (
+    <div>
+      <svg ref={svgRef} onClick={clickHandler} />
+      <AddNodeDrawer open={addNode} onClose={() => setAddNode(false)} />
+    </div>
+  )
 }
 
 export default Graph
