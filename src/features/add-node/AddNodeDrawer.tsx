@@ -1,8 +1,10 @@
 import { FC, useState } from 'react'
-import SetLabels from '@/features/add-node/steps/SetLabels'
+import LabelsStep from '@/features/add-node/steps/LabelsStep'
+import PropertiesStep from '@/features/add-node/steps/PropertiesStep'
 import Button from '@/ui/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
+import { cn } from '@/utils/dom'
 
 interface Props {
   open: boolean
@@ -23,6 +25,10 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
     setLabels([...labels.slice(0, i), ...labels.slice(i + 1)])
   }
 
+  const onPrevStep = () => {
+    setStep(step - 1)
+  }
+
   const onNextStep = () => {
     setStep(step + 1)
   }
@@ -39,12 +45,14 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
     switch (step) {
       case 0:
         return (
-          <SetLabels
+          <LabelsStep
             labels={labels}
             onAddLabel={addLabel}
             onRemoveLabel={removeLabel}
           />
         )
+      case 1:
+        return <PropertiesStep />
     }
   }
 
@@ -57,10 +65,10 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
           {renderStep()}
         </div>
         <Footer>
-          <Button variant="cancel" onClick={closeHandler}>
-            Cancel
+          <div>{step > 0 && <Button onClick={onPrevStep}>Back</Button>}</div>
+          <Button variant="confirm" onClick={onNextStep}>
+            {step === steps.length - 1 ? 'Create' : 'Next'}
           </Button>
-          <Button onClick={onNextStep}>Next</Button>
         </Footer>
       </Content>
     </Drawer>

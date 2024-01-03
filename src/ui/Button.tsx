@@ -4,13 +4,14 @@ import { cn } from '@/utils/dom'
 interface Props
   extends PropsWithChildren,
     React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'cancel'
+  variant?: 'default' | 'confirm' | 'cancel'
   disabled?: boolean
   className?: string
 }
 
 const classesByVariant = {
-  default: 'bg-light-blue',
+  default: 'bg-light-gray text-main-dark',
+  confirm: 'bg-light-blue',
   cancel: 'bg-red-alert',
 }
 

@@ -10,7 +10,7 @@ interface Props {
   onRemoveLabel: (i: number) => void
 }
 
-const SetLabels: FC<Props> = ({ labels, onAddLabel, onRemoveLabel }) => (
+const LabelsStep: FC<Props> = ({ labels, onAddLabel, onRemoveLabel }) => (
   <div className="flex flex-col gap-2 px-2">
     <PopoverInput onConfirm={onAddLabel} placeholder="Label" />
     <Clue>
@@ -34,4 +34,4 @@ const SetLabels: FC<Props> = ({ labels, onAddLabel, onRemoveLabel }) => (
   </div>
 )
 
-export default SetLabels
+export default LabelsStep
