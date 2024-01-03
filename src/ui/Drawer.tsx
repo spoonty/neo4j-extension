@@ -25,9 +25,9 @@ export const Content: FC<
     <Overlay />
     <DialogPrimitive.Content
       className={cn(
-        'border-border-dark bg-main-dark-opacity fixed z-[999] min-h-[512px] w-[512px] rounded-xl border p-4 shadow-md backdrop-blur-md',
+        'fixed z-[999] h-[512px] w-[512px] rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md',
         'right-[20%] top-[50%] translate-x-[20%] translate-y-[-50%]',
-        'data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
+        'data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in',
         className,
       )}
       onOpenAutoFocus={(e) => e.preventDefault()}
@@ -47,7 +47,7 @@ export const Header: FC<HeaderProps> = ({
   onClose,
   ...props
 }) => (
-  <div className={cn('text-text-gray flex flex-col', className)}>
+  <div className={cn('text-main-gray flex flex-col', className)} {...props}>
     <div className="flex items-center justify-between">
       <div className="cursor-default text-2xl font-bold leading-6">
         {children}
@@ -62,5 +62,5 @@ export const Header: FC<HeaderProps> = ({
 interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Footer: FC<FooterProps> = ({ children, className, ...props }) => (
-  <div className={className}>{children}</div>
+  <div className={cn('flex justify-between', className)}>{children}</div>
 )

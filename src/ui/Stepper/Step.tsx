@@ -13,13 +13,13 @@ const Step: FC<Props> = ({ index, label, completed, className }) => (
   <li
     className={cn(
       'flex items-center',
-      completed ? 'text-light-blue' : 'text-text-gray',
+      completed ? 'text-light-blue' : 'text-main-gray',
     )}
   >
     <span
       className={cn(
         'me-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs',
-        completed ? 'border-light-blue' : 'border-text-gray',
+        completed ? 'border-light-blue' : 'border-main-gray',
       )}
     >
       {index + 1}

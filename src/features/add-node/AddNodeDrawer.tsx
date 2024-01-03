@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import Button from '@/ui/Button'
 import Clue from '@/ui/Clue'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import PopoverInput from '@/ui/Input/PopoverInput'
@@ -16,9 +17,9 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
 
   return (
     <Drawer open={open} modal={false}>
-      <Content>
+      <Content className="">
         <Header onClose={onClose}>CREATE NODE</Header>
-        <div className="my-4 flex flex-col gap-5">
+        <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">
           <Stepper steps={steps} current={step} />
           <div className="flex flex-col gap-2 px-2">
             <PopoverInput placeholder="Label" />
@@ -28,7 +29,10 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
             </Clue>
           </div>
         </div>
-        <Footer></Footer>
+        <Footer>
+          <Button type="cancel">Cancel</Button>
+          <Button>Next</Button>
+        </Footer>
       </Content>
     </Drawer>
   )

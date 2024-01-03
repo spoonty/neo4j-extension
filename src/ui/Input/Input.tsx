@@ -22,7 +22,7 @@ const Input: FC<InputProps> = ({
     <input
       type={type}
       className={cn(
-        'focus:border-light-blue text-text-gray h-9 border-b-[1px] bg-transparent outline-none',
+        'text-main-gray h-9 border-b-[1px] bg-transparent outline-none focus:border-light-blue',
         className,
       )}
       placeholder={placeholder}

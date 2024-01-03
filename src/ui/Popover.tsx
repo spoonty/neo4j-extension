@@ -39,7 +39,7 @@ const Popover: FC<Props> = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           className={cn(
-            'bg-light-dark relative z-[1000] mt-[1px] min-w-[462px]',
+            'relative z-[1000] mt-[1px] min-w-[462px] bg-light-dark',
             className,
           )}
           onOpenAutoFocus={(e) => e.preventDefault()}
@@ -50,7 +50,7 @@ const Popover: FC<Props> = ({
                 <div
                   onClick={() => onValueChange?.(item.label)}
                   className={cn(
-                    'text-text-gray flex h-9 w-full cursor-pointer items-center justify-center bg-black bg-opacity-5 hover:bg-opacity-10',
+                    'text-main-gray flex h-9 w-full cursor-pointer items-center justify-center bg-black bg-opacity-5 hover:bg-opacity-10',
                     item.label === value?.label && 'bg-opacity-20',
                   )}
                 >
