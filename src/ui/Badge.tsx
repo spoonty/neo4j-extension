@@ -15,7 +15,14 @@ const Badge: FC<Props> = ({ children, onRemove, className }) => (
     )}
   >
     {children}
-    {onRemove && <Close width="12" height="12" className="cursor-pointer" />}
+    {onRemove && (
+      <Close
+        width="12"
+        height="12"
+        className="cursor-pointer"
+        onClick={onRemove}
+      />
+    )}
   </span>
 )
 

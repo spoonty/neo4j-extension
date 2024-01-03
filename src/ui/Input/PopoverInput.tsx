@@ -45,9 +45,11 @@ const mockItems = [
   },
 ]
 
-interface Props extends InputProps {}
+interface Props extends InputProps {
+  onConfirm: (value: string) => void
+}
 
-const PopoverInput: FC<Props> = ({ placeholder }) => {
+const PopoverInput: FC<Props> = ({ onConfirm, placeholder }) => {
   const [value, setValue] = useState('')
   const [focus, setFocus] = useState(false)
 
@@ -60,6 +62,15 @@ const PopoverInput: FC<Props> = ({ placeholder }) => {
 
   const closeHandler = () => {
     setTimeout(() => setFocus(false), 200)
+  }
+
+  const updateValue = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (e.key) {
+      case 'Enter':
+        onConfirm(value)
+        closeHandler()
+        setValue('')
+    }
   }
 
   return (
@@ -75,6 +86,7 @@ const PopoverInput: FC<Props> = ({ placeholder }) => {
         value={value}
         onFocus={() => setFocus(true)}
         onBlur={closeHandler}
+        onKeyDown={(e) => updateValue(e)}
       />
     </Popover>
   )
