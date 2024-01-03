@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import Badge from '@/ui/Badge'
 import Button from '@/ui/Button'
 import Clue from '@/ui/Clue'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
@@ -15,6 +16,8 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
 
   const steps = ['Set Labels', 'Set Properties']
 
+  const handler = () => {}
+
   return (
     <Drawer open={open} modal={false}>
       <Content className="">
@@ -27,6 +30,16 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
               Node labels represent tags assigned to graph nodes for
               categorizing them by meaning or functionality.
             </Clue>
+            <div className="mt-3 flex flex-wrap gap-x-3.5 gap-y-3">
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+              <Badge onRemove={handler}>Book</Badge>
+            </div>
           </div>
         </div>
         <Footer>
