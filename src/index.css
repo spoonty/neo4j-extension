@@ -28,3 +28,11 @@ body {
     --red-alert: #F44336;
   }
 }
+
+.scroll-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

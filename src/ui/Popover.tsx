@@ -44,25 +44,19 @@ const Popover: FC<Props> = ({
           )}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          <ScrollArea.Root type="auto" className="flex h-[200px]">
-            <ScrollArea.Viewport className="h-full w-full">
-              {items.map((item) => (
-                <div
-                  onClick={() => onValueChange?.(item.label)}
-                  className={cn(
-                    'text-main-gray flex h-9 w-full cursor-pointer items-center justify-center bg-black bg-opacity-5 hover:bg-opacity-10',
-                    item.label === value?.label && 'bg-opacity-20',
-                  )}
-                >
-                  {item.label}
-                </div>
-              ))}
-            </ScrollArea.Viewport>
-            <ScrollArea.Scrollbar
-              orientation="vertical"
-              className="mb-[6px] mr-[5px] mt-[6px]"
-            />
-          </ScrollArea.Root>
+          <div className="scroll-none max-h-[200px] overflow-y-scroll">
+            {items.map((item) => (
+              <div
+                onClick={() => onValueChange?.(item.label)}
+                className={cn(
+                  'text-main-gray flex h-9 w-full cursor-pointer items-center justify-center bg-black bg-opacity-5 hover:bg-opacity-10',
+                  item.label === value?.label && 'bg-opacity-20',
+                )}
+              >
+                {item.label}
+              </div>
+            ))}
+          </div>
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>

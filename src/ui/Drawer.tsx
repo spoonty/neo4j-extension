@@ -25,7 +25,7 @@ export const Content: FC<
     <Overlay />
     <DialogPrimitive.Content
       className={cn(
-        'fixed z-[999] h-[512px] w-[512px] rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md',
+        'fixed z-[999] h-[368px] w-[512px] rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md',
         'right-[20%] top-[50%] translate-x-[20%] translate-y-[-50%]',
         'data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in',
         className,

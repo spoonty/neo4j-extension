@@ -10,7 +10,7 @@ interface Props extends PropsWithChildren {
 const Badge: FC<Props> = ({ children, onRemove, className }) => (
   <span
     className={cn(
-      'flex w-fit items-center justify-between gap-2 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium leading-3 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+      'flex cursor-default items-center justify-between gap-2 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium leading-3 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
       className,
     )}
   >
