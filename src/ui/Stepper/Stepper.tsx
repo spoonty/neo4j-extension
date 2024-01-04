@@ -5,11 +5,11 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   steps: string[]
-  current: number
+  current: number | string
 }
 
 const Stepper: FC<Props> = ({ steps, current }) => (
-  <ol className="text-main-gray dark:main-gray-400 flex w-full cursor-default items-center space-x-4 rounded-lg text-center text-sm font-medium shadow-sm sm:text-base rtl:space-x-reverse">
+  <ol className="dark:main-gray-400 flex w-full cursor-default items-center space-x-4 rounded-lg text-center text-sm font-medium text-main-gray shadow-sm sm:text-base rtl:space-x-reverse">
     {steps.map((step, i) => (
       <>
         <Step index={i} label={step} completed={i < current} />

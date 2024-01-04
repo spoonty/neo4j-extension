@@ -8,43 +8,43 @@ import ScrollArea from '@/ui/ScrollArea'
 
 const mockItems = [
   {
-    label: 'Book 1',
+    label: 'Book1',
     value: 'book_1',
   },
   {
-    label: 'Book 2',
+    label: 'Book2',
     value: 'book_2',
   },
   {
-    label: 'Book 3',
+    label: 'Book3',
     value: 'book_3',
   },
   {
-    label: 'Book 4',
+    label: 'Book4',
     value: 'book_4',
   },
   {
-    label: 'Book 5',
+    label: 'Book5',
     value: 'book_5',
   },
   {
-    label: 'Book 6',
+    label: 'Book6',
     value: 'book_6',
   },
   {
-    label: 'Book 7',
+    label: 'Book7',
     value: 'book_7',
   },
   {
-    label: 'Book 8',
+    label: 'Book8',
     value: 'book_8',
   },
   {
-    label: 'Book 9',
+    label: 'Book9',
     value: 'book_9',
   },
   {
-    label: 'Book 10',
+    label: 'Book10',
     value: 'book_10',
   },
 ]

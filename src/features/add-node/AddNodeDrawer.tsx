@@ -1,4 +1,6 @@
-import { FC, Key, useState } from 'react'
+import { FC, useState } from 'react'
+import { Steps } from '@/features/add-node/constants'
+import { useAddNode } from '@/features/add-node/hooks/useAddNode'
 import LabelsStep from '@/features/add-node/steps/LabelsStep'
 import PropertiesStep from '@/features/add-node/steps/PropertiesStep'
 import Button from '@/ui/Button/Button'
@@ -11,50 +13,32 @@ interface Props {
   onClose: () => void
 }
 
-const DEFAULT_PROPERTIES = { key: [], value: [] }
-
 const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
-  const [step, setStep] = useState(0)
-  const [labels, setLabels] = useState<string[]>([])
-  const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
+  const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
+    useAddNode()
 
-  const steps = ['Set Labels', 'Set Properties']
+  const [step, setStep] = useState(Steps.SET_LABELS)
+  const steps = [Steps.SET_LABELS, Steps.SET_LABELS]
 
-  const addLabel = (label: string) => {
-    setLabels([...labels, label])
-  }
-
-  const removeLabel = (i: number) => {
-    setLabels([...labels.slice(0, i), ...labels.slice(i + 1)])
-  }
-
-  const addProperty = (property: KeyValue) => {
-    setProperties({
-      key: [...properties['key'], property['key']],
-      value: [...properties['value'], property['value']],
-    })
+  const onNextStep = () => {
+    setStep(Steps.SET_PROPERTIES)
   }
 
   const onPrevStep = () => {
-    setStep(step - 1)
-  }
-
-  const onNextStep = () => {
-    setStep(step + 1)
+    setStep(Steps.SET_LABELS)
   }
 
   const closeHandler = () => {
     onClose()
     setTimeout(() => {
-      setStep(0)
-      setLabels([])
-      setProperties(DEFAULT_PROPERTIES)
+      setStep(Steps.SET_LABELS)
+      clearData()
     }, 100)
   }
 
   const renderStep = () => {
     switch (step) {
-      case 0:
+      case Steps.SET_LABELS:
         return (
           <LabelsStep
             labels={labels}
@@ -62,7 +46,7 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
             onRemoveLabel={removeLabel}
           />
         )
-      case 1:
+      case Steps.SET_PROPERTIES:
         return (
           <PropertiesStep properties={properties} addProperty={addProperty} />
         )
@@ -73,7 +57,9 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
     <Drawer open={open} modal={false}>
       <Content
         className={cn(
-          step === 1 && properties['key'].length > 2 && 'h-[482px]',
+          step === Steps.SET_PROPERTIES &&
+            properties['key'].length > 2 &&
+            'h-[482px]',
         )}
       >
         <Header onClose={closeHandler}>CREATE NODE</Header>
@@ -82,9 +68,13 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
           {renderStep()}
         </div>
         <Footer>
-          <div>{step > 0 && <Button onClick={onPrevStep}>Back</Button>}</div>
+          <div>
+            {step === Steps.SET_PROPERTIES && (
+              <Button onClick={onPrevStep}>Back</Button>
+            )}
+          </div>
           <Button variant="confirm" onClick={onNextStep}>
-            {step === steps.length - 1 ? 'Create' : 'Next'}
+            {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
           </Button>
         </Footer>
       </Content>
