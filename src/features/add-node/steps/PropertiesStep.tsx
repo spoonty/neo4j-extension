@@ -5,6 +5,7 @@ import Clue from '@/ui/Clue'
 import Input from '@/ui/Input/Input'
 import ScrollArea from '@/ui/ScrollArea'
 import Table from '@/ui/Table/Table'
+import { cn } from '@/utils/dom'
 
 interface Props {
   properties: KeyValue
@@ -39,7 +40,12 @@ const PropertiesStep: FC<Props> = ({ properties, addProperty }) => {
       </Clue>
 
       {!!properties['key'].length && (
-        <ScrollArea.Root className="mt-3 h-[192px] pe-3">
+        <ScrollArea.Root
+          className={cn(
+            'mt-3 pe-3',
+            properties['key'].length < 3 ? 'h-[94px]' : 'h-[192px]',
+          )}
+        >
           <ScrollArea.Viewport className="h-full w-full">
             <Table data={properties} />
           </ScrollArea.Viewport>

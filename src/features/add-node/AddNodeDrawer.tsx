@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import { NodeCreateDTO } from '@/domain/neo4j/models/Node'
 import { Steps } from '@/features/add-node/constants'
 import { useAddNode } from '@/features/add-node/hooks/useAddNode'
 import LabelsStep from '@/features/add-node/steps/LabelsStep'
@@ -10,10 +11,11 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   open: boolean
+  createNode: (node: NodeCreateDTO) => Promise<void>
   onClose: () => void
 }
 
-const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
+const AddNodeDrawer: FC<Props> = ({ open, createNode, onClose }) => {
   const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
     useAddNode()
 
@@ -34,6 +36,19 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
       setStep(Steps.SET_LABELS)
       clearData()
     }, 100)
+  }
+
+  const createHandler = async () => {
+    const convertedProperties = {}
+
+    // @ts-ignore
+    properties['key'].forEach((key, i) => {
+      convertedProperties[key] = properties['value'][i]
+    })
+
+    const node = new NodeCreateDTO(labels, convertedProperties)
+    await createNode(node)
+    closeHandler()
   }
 
   const renderStep = () => {
@@ -73,7 +88,10 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
               <Button onClick={onPrevStep}>Back</Button>
             )}
           </div>
-          <Button variant="confirm" onClick={onNextStep}>
+          <Button
+            variant="confirm"
+            onClick={step === Steps.SET_PROPERTIES ? createHandler : onNextStep}
+          >
             {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
           </Button>
         </Footer>
