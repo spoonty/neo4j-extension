@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react'
+import ScrollArea from '@/ui/ScrollArea'
 import { cn } from '@/utils/dom'
 
 interface Props {
@@ -6,19 +7,10 @@ interface Props {
 }
 
 const Body: FC<Props> = ({ data }) => {
-  const rows = useMemo(() => {
-    let res: string[][] = []
-
-    for (let i = 0; i < data.length; i++) {
-      res.push([])
-
-      for (let j = 0; j < data[i].length; j++) {
-        res[i].push(data[j][i])
-      }
-    }
-
-    return res
-  }, [data])
+  const rows = useMemo(
+    () => data[0].map((_, index) => data.map((row) => row[index])),
+    [data],
+  )
 
   return (
     <tbody>

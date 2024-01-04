@@ -14,7 +14,9 @@ const Badge: FC<Props> = ({ children, onRemove, className }) => (
       className,
     )}
   >
-    {children}
+    <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+      {children}
+    </span>
     {onRemove && (
       <Close
         width="12"
