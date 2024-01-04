@@ -77,7 +77,7 @@ const AddNodeDrawer: FC<Props> = ({
   }
 
   return (
-    <Drawer open={open} modal={false}>
+    <Drawer open={open} modal={true}>
       <Content
         className={cn(
           step === Steps.SET_PROPERTIES &&

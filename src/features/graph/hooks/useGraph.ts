@@ -42,9 +42,6 @@ const useGraph = (
 
     const color = d3.scaleOrdinal(d3.schemeCategory10)
 
-    const xExtent = d3.extent(nodes, (d: any) => d.x)
-    const yExtent = d3.extent(nodes, (d: any) => d.y)
-
     const container = d3
       .select(svg.current)
       .attr('width', '100%')
@@ -166,8 +163,6 @@ const useGraph = (
 
       const deltaX = -window.innerWidth / (4 * scaleFactor) - clicked.x
       const deltaY = -clicked.y
-
-      console.log(clicked.x, position.current.x)
 
       container
         .transition()

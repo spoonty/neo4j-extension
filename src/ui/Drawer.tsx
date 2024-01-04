@@ -22,6 +22,7 @@ export const Content: FC<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 > = ({ children, className, ...props }) => (
   <Portal>
+    <Overlay />
     <DialogPrimitive.Content
       className={cn(
         'fixed z-[999] h-[368px] w-[512px] rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md transition-all',

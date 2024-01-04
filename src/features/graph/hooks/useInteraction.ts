@@ -26,13 +26,11 @@ export const useInteraction = () => {
     const nodeD3 = new NodeD3(result, addNodePosition.x, addNodePosition.y)
 
     if (nodes) {
-      if (nodes[nodes.length - 1].elementId === '-1') {
-        removeNodeTemplate()
-      }
-
-      setNodes([...nodes, nodeD3])
+      setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
     }
   }
+
+  const getTemplateNode = () => nodes?.find((node) => node.elementId === '-1')
 
   const createNodeTemplate = (labels: string[], properties: KeyValue) => {
     const node = new NodeD3(
@@ -42,7 +40,7 @@ export const useInteraction = () => {
     )
 
     if (nodes) {
-      if (nodes[nodes.length - 1].elementId === '-1') {
+      if (!!getTemplateNode()) {
         setNodes([...nodes.slice(0, nodes.length - 1), node])
       } else {
         setNodes([...nodes, node])
@@ -51,7 +49,7 @@ export const useInteraction = () => {
   }
 
   const removeNodeTemplate = () => {
-    if (nodes && nodes[nodes.length - 1].elementId === '-1') {
+    if (nodes && !!getTemplateNode()) {
       setNodes([...nodes.slice(0, nodes.length - 1)])
     }
   }
