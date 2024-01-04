@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DEFAULT_PROPERTIES } from '@/features/add-node/constants'
 
-export const useAddNode = () => {
+export const useAddNode = (
+  open: boolean,
+  createNodeTemplate: (labels: string[], properties: KeyValue) => void,
+  removeNodeTemplate: () => void,
+) => {
   const [labels, setLabels] = useState<string[]>([])
   const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
 
@@ -24,6 +28,14 @@ export const useAddNode = () => {
     setLabels([])
     setProperties(DEFAULT_PROPERTIES)
   }
+
+  useEffect(() => {
+    if (open) {
+      createNodeTemplate(labels, properties)
+    } else {
+      removeNodeTemplate()
+    }
+  }, [open, labels.length, Object.keys(properties).length])
 
   return {
     labels,

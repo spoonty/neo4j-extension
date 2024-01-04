@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import Close from '@/assets/icons/CloseIcon'
 import { cn } from '@/utils/dom'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
@@ -22,7 +22,6 @@ export const Content: FC<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 > = ({ children, className, ...props }) => (
   <Portal>
-    <Overlay />
     <DialogPrimitive.Content
       className={cn(
         'fixed z-[999] h-[368px] w-[512px] rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md transition-all',

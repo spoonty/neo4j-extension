@@ -1,49 +1,39 @@
-import { FC, useEffect, useRef, useState } from 'react'
-import { DriverImpl } from '@/data/driver/Driver.impl'
-import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
-import { Relation, RelationD3 } from '@/domain/neo4j/models/Relation'
+import { FC, useRef, useState } from 'react'
 import AddNodeDrawer from '@/features/add-node/AddNodeDrawer'
 import useGraph from '@/features/graph/hooks/useGraph'
-
-const driver = new DriverImpl()
-const repository = new Neo4jRepositoryImpl(driver)
+import { useInteraction } from '@/features/graph/hooks/useInteraction'
 
 const Graph: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
 
-  const [nodes, setNodes] = useState<Array<NodeD3> | null>(null)
-  const [relations, setRelations] = useState<Array<RelationD3> | null>(null)
-
   const [addNode, setAddNode] = useState(false)
 
-  useGraph(svgRef, nodes, relations)
+  const {
+    nodes,
+    relations,
+    createNode,
+    clickHandler,
+    createNodeTemplate,
+    removeNodeTemplate,
+  } = useInteraction()
 
-  const getNodes = async () => {
-    const { nodes, relations } = await repository.getGraph()
-    setNodes(nodes.map((node: Node) => new NodeD3(node)))
-    setRelations(
-      relations.map((relation: Relation) => new RelationD3(relation)),
-    )
-  }
+  useGraph(svgRef, nodes, relations, clickHandler)
 
-  useEffect(() => {
-    getNodes()
-  }, [])
-
-  const clickHandler = (event: React.MouseEvent<SVGSVGElement>) => {
+  const handler = () => {
     setAddNode(true)
-  }
 
-  const createNode = async (node: NodeCreateDTO) => {
-    await repository.addNode(node)
+    setTimeout(() => {
+      svgRef.current?.dispatchEvent(new MouseEvent('click', { bubbles: false }))
+    }, 0)
   }
 
   return (
     <div>
-      <svg ref={svgRef} onClick={clickHandler} />
+      <svg ref={svgRef} onClick={handler} />
       <AddNodeDrawer
         open={addNode}
+        removeNodeTemplate={removeNodeTemplate}
+        createNodeTemplate={createNodeTemplate}
         createNode={createNode}
         onClose={() => setAddNode(false)}
       />

@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { RelationD3 } from '@/domain/neo4j/models/Relation'
 import { drag } from '@/features/graph/helpers/drag'
@@ -28,13 +28,22 @@ const useGraph = (
   svg: RefObject<SVGSVGElement>,
   nodes: NodeD3[] | null,
   relations: RelationD3[] | null,
+  clickHandler?: (x: number, y: number) => void,
 ) => {
+  const scale = useRef(1)
+  const position = useRef({ x: 0, y: 0 })
+  const [clicked, setClicked] = useState({ x: 0, y: 0 })
+  const [animation, setAnimation] = useState(false)
+
   const init = () => {
     if (!nodes || !relations) {
       return
     }
 
     const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+    const xExtent = d3.extent(nodes, (d: any) => d.x)
+    const yExtent = d3.extent(nodes, (d: any) => d.y)
 
     const container = d3
       .select(svg.current)
@@ -121,7 +130,58 @@ const useGraph = (
     node.call(drag(simulation))
 
     // @ts-ignore
-    container.call(zoom(group))
+    const zoomHandler = zoom(group).on('zoom', (event) => {
+      scale.current = event.transform.k
+      position.current = { x: event.transform.x, y: event.transform.y }
+      group.attr('transform', event.transform)
+    })
+
+    // @ts-ignore
+    container
+      // @ts-ignore
+      .call(zoomHandler)
+      .call(
+        // @ts-ignore
+        zoomHandler.transform,
+        d3.zoomIdentity
+          .translate(position.current.x, position.current.y)
+          .scale(scale.current),
+      )
+
+    container.on('click', (event) => {
+      if (!animation) {
+        const [x, y] = d3.pointer(event)
+
+        const distanceX = (x - position.current.x) / scale.current
+        const distanceY = (y - position.current.y) / scale.current
+
+        clickHandler?.(distanceX, distanceY)
+        setClicked({ x: distanceX, y: distanceY })
+
+        setAnimation(true)
+        return
+      }
+
+      const scaleFactor = 3
+
+      const deltaX = -window.innerWidth / (4 * scaleFactor) - clicked.x
+      const deltaY = -clicked.y
+
+      console.log(clicked.x, position.current.x)
+
+      container
+        .transition()
+        .duration(300)
+        .call(
+          //@ts-ignore
+          zoomHandler.transform,
+          d3.zoomIdentity
+            .translate(deltaX * scaleFactor, deltaY * scaleFactor)
+            .scale(scaleFactor),
+        )
+
+      setAnimation(false)
+    })
 
     simulation.on('tick', () => {
       relation

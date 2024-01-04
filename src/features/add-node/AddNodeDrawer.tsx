@@ -11,13 +11,21 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   open: boolean
+  createNodeTemplate: (labels: string[], properties: KeyValue) => void
+  removeNodeTemplate: () => void
   createNode: (node: NodeCreateDTO) => Promise<void>
   onClose: () => void
 }
 
-const AddNodeDrawer: FC<Props> = ({ open, createNode, onClose }) => {
+const AddNodeDrawer: FC<Props> = ({
+  open,
+  createNodeTemplate,
+  removeNodeTemplate,
+  createNode,
+  onClose,
+}) => {
   const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
-    useAddNode()
+    useAddNode(open, createNodeTemplate, removeNodeTemplate)
 
   const [step, setStep] = useState(Steps.SET_LABELS)
   const steps = [Steps.SET_LABELS, Steps.SET_LABELS]
