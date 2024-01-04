@@ -2,7 +2,7 @@ import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { NodeSimulation } from '@/features/graph/hooks/useGraph'
 import * as d3 from 'd3'
 
-const drag = (
+export const drag = (
   simulation: NodeSimulation,
 ): d3.DragBehavior<Element, unknown, unknown> => {
   const dragstarted = (
@@ -30,5 +30,3 @@ const drag = (
     .on('drag', dragged)
     .on('end', dragended)
 }
-
-export default drag
