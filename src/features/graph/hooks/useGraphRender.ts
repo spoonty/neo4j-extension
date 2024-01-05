@@ -1,24 +1,13 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { useGraphContext } from '@/features/graph/context'
-import { defineLabelColor } from '@/features/graph/helpers/colors'
 import { drag } from '@/features/graph/helpers/drag'
+import {
+  defineLabelColor,
+  getPropertyToDisplay,
+} from '@/features/graph/helpers/labels'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import * as d3 from 'd3'
-
-const getPropertyToDisplay = (node: any) => {
-  const keys = Object.keys(node.properties)
-
-  if (keys.includes('name')) {
-    return node.properties['name']
-  }
-
-  if (keys.includes('title')) {
-    return node.properties['title']
-  }
-
-  return node.properties[keys[0]]
-}
 
 export type NodeSimulation = d3.Simulation<
   NodeD3,
@@ -119,6 +108,10 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     // @ts-ignore
     node.call(drag(simulation))
+
+    node.on('mouseover', function () {
+      d3.select(this).attr('cursor', 'pointer')
+    })
 
     // @ts-ignore
     const zoomHandler = zoom(group).on('zoom', (event) => {

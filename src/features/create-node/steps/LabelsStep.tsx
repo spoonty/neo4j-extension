@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
 import { useGraphContext } from '@/features/graph/context'
-import { defineLabelColor } from '@/features/graph/helpers/colors'
+import { defineLabelColor } from '@/features/graph/helpers/labels'
 import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
 import Clue from '@/ui/Clue'
