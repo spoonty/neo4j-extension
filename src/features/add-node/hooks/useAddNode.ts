@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { DEFAULT_PROPERTIES } from '@/features/add-node/constants'
+import { useGraphContext } from '@/features/graph/context'
 
-export const useAddNode = (
-  open: boolean,
-  createNodeTemplate: (labels: string[], properties: KeyValue) => void,
-  removeNodeTemplate: () => void,
-) => {
+export const useAddNode = (open: boolean) => {
+  const { updateNodeTemplate, removeNodeTemplate } = useGraphContext()
+
   const [labels, setLabels] = useState<string[]>([])
   const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
 
@@ -31,7 +30,7 @@ export const useAddNode = (
 
   useEffect(() => {
     if (open) {
-      createNodeTemplate(labels, properties)
+      updateNodeTemplate(labels, properties)
     } else {
       removeNodeTemplate()
     }

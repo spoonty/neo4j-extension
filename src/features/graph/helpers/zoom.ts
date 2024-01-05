@@ -8,5 +8,5 @@ export const zoom = (
     selection.attr('transform', event.transform)
   }
 
-  return d3.zoom().scaleExtent([0.1, 10]).on('zoom', zoomed)
+  return d3.zoom().scaleExtent([0.5, 5]).on('zoom', zoomed)
 }

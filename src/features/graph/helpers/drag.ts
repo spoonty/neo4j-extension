@@ -1,5 +1,5 @@
 import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { NodeSimulation } from '@/features/graph/hooks/useGraph'
+import { NodeSimulation } from '@/features/graph/hooks/useGraphRender'
 import * as d3 from 'd3'
 
 export const drag = (

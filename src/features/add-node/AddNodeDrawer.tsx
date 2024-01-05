@@ -4,6 +4,7 @@ import { Steps } from '@/features/add-node/constants'
 import { useAddNode } from '@/features/add-node/hooks/useAddNode'
 import LabelsStep from '@/features/add-node/steps/LabelsStep'
 import PropertiesStep from '@/features/add-node/steps/PropertiesStep'
+import { useGraphContext } from '@/features/graph/context'
 import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
@@ -11,21 +12,14 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   open: boolean
-  createNodeTemplate: (labels: string[], properties: KeyValue) => void
-  removeNodeTemplate: () => void
-  createNode: (node: NodeCreateDTO) => Promise<void>
   onClose: () => void
 }
 
-const AddNodeDrawer: FC<Props> = ({
-  open,
-  createNodeTemplate,
-  removeNodeTemplate,
-  createNode,
-  onClose,
-}) => {
+const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
+  const { createNode } = useGraphContext()
+
   const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
-    useAddNode(open, createNodeTemplate, removeNodeTemplate)
+    useAddNode(open)
 
   const [step, setStep] = useState(Steps.SET_LABELS)
   const steps = [Steps.SET_LABELS, Steps.SET_LABELS]
