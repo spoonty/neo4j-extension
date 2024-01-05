@@ -89,6 +89,24 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     const node = group.append('g').selectAll('g').data(nodes).join('g')
 
+    const deleteButton = node
+      .append('circle')
+      .attr('class', 'delete-button')
+      .attr('r', 10)
+      .attr('fill', 'red')
+      .attr('cy', 0)
+      .attr('cx', 0)
+      .attr('opacity', 0)
+
+    const editButton = node
+      .append('circle')
+      .attr('class', 'edit-button')
+      .attr('r', 10)
+      .attr('fill', 'blue')
+      .attr('cy', 0)
+      .attr('cx', 0)
+      .attr('opacity', 0)
+
     node
       .append('circle')
       .attr('stroke', '#edeef0')
@@ -108,6 +126,64 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     // @ts-ignore
     node.call(drag(simulation))
+
+    node.on('click', function (event, d) {
+      const currentNode = d3.select(this)
+
+      const deleteButton = currentNode.select('.delete-button')
+      const isDeleteButtonVisible = parseFloat(deleteButton.style('opacity'))
+      deleteButton
+        .transition()
+        .duration(500)
+        .attr('cx', isDeleteButtonVisible ? 0 : -49)
+        .attr('cy', isDeleteButtonVisible ? 0 : -25)
+        .style('opacity', isDeleteButtonVisible ? 0 : 1)
+
+      const editButton = currentNode.select('.edit-button')
+      const isEditButtonVisible = parseFloat(editButton.style('opacity'))
+      editButton
+        .transition()
+        .duration(500)
+        .attr('cx', isEditButtonVisible ? 0 : -30)
+        .attr('cy', isEditButtonVisible ? 0 : -45)
+        .style('opacity', isEditButtonVisible ? 0 : 1)
+    })
+
+    deleteButton.on('click', function (event) {
+      event.stopPropagation()
+      console.log('Delete')
+
+      deleteButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+      editButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+    })
+
+    editButton.on('click', function (event) {
+      event.stopPropagation()
+      console.log('Edit')
+
+      deleteButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+      editButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+    })
 
     node.on('mouseover', function () {
       d3.select(this).attr('cursor', 'pointer')
