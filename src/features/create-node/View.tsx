@@ -26,7 +26,7 @@ const View: FC<Props> = ({ open, onClose }) => {
   } = useAddNode(open)
 
   const [step, setStep] = useState(Steps.SET_LABELS)
-  const steps = [Steps.SET_LABELS, Steps.SET_LABELS]
+  const steps = [Steps.SET_LABELS, Steps.SET_PROPERTIES]
 
   const onNextStep = () => {
     setStep(Steps.SET_PROPERTIES)
