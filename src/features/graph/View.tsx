@@ -1,18 +1,18 @@
 import { FC, useRef, useState } from 'react'
-import AddNodeDrawer from '@/features/add-node/AddNodeDrawer'
-import { useGraphContext } from '@/features/graph/context'
+import CreateNodeDrawer from '@/features/create-node/View'
 import { useGraphRender } from '@/features/graph/hooks/useGraphRender'
 
 const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
-
-  const [addNode, setAddNode] = useState(false)
-
   useGraphRender(svgRef)
 
-  const handler = () => {
-    setAddNode(true)
+  const [createNodeOpened, setCreateNodeOpened] = useState(false)
 
+  const createNodeHandler = () => {
+    setCreateNodeOpened(true)
+
+    // after adding of template node, svg rerenders,
+    // so we need to click again to start zoom animation
     setTimeout(() => {
       svgRef.current?.dispatchEvent(new MouseEvent('click', { bubbles: false }))
     }, 0)
@@ -20,8 +20,12 @@ const View: FC = () => {
 
   return (
     <div>
-      <svg ref={svgRef} onClick={handler} />
-      <AddNodeDrawer open={addNode} onClose={() => setAddNode(false)} />
+      <svg ref={svgRef} onClick={createNodeHandler} />
+
+      <CreateNodeDrawer
+        open={createNodeOpened}
+        onClose={() => setCreateNodeOpened(false)}
+      />
     </div>
   )
 }

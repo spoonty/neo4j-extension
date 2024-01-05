@@ -1,9 +1,8 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { RelationD3 } from '@/domain/neo4j/models/Relation'
 import { useGraphContext } from '@/features/graph/context'
 import { drag } from '@/features/graph/helpers/drag'
-import { zoom } from '@/features/graph/helpers/zoom'
+import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import * as d3 from 'd3'
 
 const getPropertyToDisplay = (node: any) => {
@@ -30,10 +29,10 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
-  const [clicked, setClicked] = useState({ x: 0, y: 0 })
-  const [animation, setAnimation] = useState(false)
+  const [clickedPosition, setClickedPosition] = useState({ x: 0, y: 0 })
+  const [isAnimation, setIsAnimation] = useState(false)
 
-  const init = () => {
+  const render = () => {
     if (!nodes || !relations) {
       return
     }
@@ -131,7 +130,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       group.attr('transform', event.transform)
     })
 
-    // @ts-ignore
     container
       // @ts-ignore
       .call(zoomHandler)
@@ -143,38 +141,22 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           .scale(scale.current),
       )
 
-    container.on('click', (event) => {
-      if (!animation) {
-        const [x, y] = d3.pointer(event)
-
-        const distanceX = (x - position.current.x) / scale.current
-        const distanceY = (y - position.current.y) / scale.current
-
-        clickHandler?.(distanceX, distanceY)
-        setClicked({ x: distanceX, y: distanceY })
-
-        setAnimation(true)
-        return
-      }
-
-      const scaleFactor = 3
-
-      const deltaX = -window.innerWidth / (4 * scaleFactor) - clicked.x
-      const deltaY = -clicked.y
-
-      container
-        .transition()
-        .duration(300)
-        .call(
-          //@ts-ignore
-          zoomHandler.transform,
-          d3.zoomIdentity
-            .translate(deltaX * scaleFactor, deltaY * scaleFactor)
-            .scale(scaleFactor),
-        )
-
-      setAnimation(false)
-    })
+    container.on('click', (event) =>
+      clickZoom(
+        event,
+        container,
+        isAnimation,
+        setIsAnimation,
+        position.current.x,
+        position.current.y,
+        scale.current,
+        clickedPosition.x,
+        clickedPosition.y,
+        clickHandler,
+        setClickedPosition,
+        zoomHandler,
+      ),
+    )
 
     simulation.on('tick', () => {
       relation
@@ -196,12 +178,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
   }
 
   useEffect(() => {
-    const simulation = init()
-
-    return () => {
-      if (simulation) {
-        simulation.stop()
-      }
-    }
+    render()
   }, [nodes, relations])
 }

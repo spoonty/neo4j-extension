@@ -1,9 +1,9 @@
 import { FC, useState } from 'react'
 import { NodeCreateDTO } from '@/domain/neo4j/models/Node'
-import { Steps } from '@/features/add-node/constants'
-import { useAddNode } from '@/features/add-node/hooks/useAddNode'
-import LabelsStep from '@/features/add-node/steps/LabelsStep'
-import PropertiesStep from '@/features/add-node/steps/PropertiesStep'
+import { Steps } from '@/features/create-node/constants'
+import { useAddNode } from '@/features/create-node/hooks/useAddNode'
+import LabelsStep from '@/features/create-node/steps/LabelsStep'
+import PropertiesStep from '@/features/create-node/steps/PropertiesStep'
 import { useGraphContext } from '@/features/graph/context'
 import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
@@ -15,7 +15,7 @@ interface Props {
   onClose: () => void
 }
 
-const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
+const View: FC<Props> = ({ open, onClose }) => {
   const { createNode } = useGraphContext()
 
   const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
@@ -102,4 +102,4 @@ const AddNodeDrawer: FC<Props> = ({ open, onClose }) => {
   )
 }
 
-export default AddNodeDrawer
+export default View

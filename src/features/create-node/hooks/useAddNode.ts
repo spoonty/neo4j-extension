@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DEFAULT_PROPERTIES } from '@/features/add-node/constants'
+import { DEFAULT_PROPERTIES } from '@/features/create-node/constants'
 import { useGraphContext } from '@/features/graph/context'
 
 export const useAddNode = (open: boolean) => {
