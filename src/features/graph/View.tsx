@@ -8,14 +8,22 @@ const View: FC = () => {
 
   const [createNodeOpened, setCreateNodeOpened] = useState(false)
 
-  const createNodeHandler = () => {
-    setCreateNodeOpened(true)
+  const createNodeHandler = (event: React.MouseEvent<SVGSVGElement>) => {
+    const target = event.target as HTMLElement
 
-    // after adding of template node, svg rerenders,
-    // so we need to click again to start zoom animation
-    setTimeout(() => {
-      svgRef.current?.dispatchEvent(new MouseEvent('click', { bubbles: false }))
-    }, 0)
+    switch (target.tagName.toLowerCase()) {
+      case 'svg':
+        setCreateNodeOpened(true)
+
+        // after adding of template node, svg rerenders,
+        // so we need to click again to start zoom animation
+        setTimeout(() => {
+          svgRef.current?.dispatchEvent(
+            new MouseEvent('click', { bubbles: false }),
+          )
+        }, 0)
+        break
+    }
   }
 
   return (

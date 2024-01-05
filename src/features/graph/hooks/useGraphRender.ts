@@ -138,22 +138,34 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           .scale(scale.current),
       )
 
-    container.on('click', (event) =>
-      clickZoom(
-        event,
-        container,
-        isAnimation,
-        setIsAnimation,
-        position.current.x,
-        position.current.y,
-        scale.current,
-        clickedPosition.x,
-        clickedPosition.y,
-        clickHandler,
-        setClickedPosition,
-        zoomHandler,
-      ),
-    )
+    container.on('click', (event) => {
+      let handler: () => void
+      const target = event.target as HTMLElement
+
+      switch (target.tagName.toLowerCase()) {
+        case 'svg':
+          handler = () =>
+            clickZoom(
+              event,
+              container,
+              isAnimation,
+              setIsAnimation,
+              position.current.x,
+              position.current.y,
+              scale.current,
+              clickedPosition.x,
+              clickedPosition.y,
+              clickHandler,
+              setClickedPosition,
+              zoomHandler,
+            )
+          break
+        default:
+          handler = () => {}
+      }
+
+      return handler()
+    })
 
     simulation.on('tick', () => {
       relation
