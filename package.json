@@ -8,6 +8,7 @@
     "@radix-ui/react-popover": "1.0.7",
     "@radix-ui/react-scroll-area": "1.0.5",
     "@radix-ui/react-separator": "1.0.3",
+    "@radix-ui/react-toast": "^1.1.5",
     "@reactuses/core": "4.0.10",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "13.4.0",

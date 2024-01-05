@@ -38,10 +38,24 @@ module.exports = {
             opacity: '0',
           },
         },
+        'toast-in': {
+          from: {
+            transform: 'translateX(calc(100% + 10px))',
+          },
+          to: { transform: 'translateX(0)' },
+        },
+        'toast-out': {
+          from: { transform: 'translateX(0)' },
+          to: {
+            transform: 'translateX(calc(100% + 10px))',
+          },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.1s ease',
         'fade-out': 'fade-out 0.1s ease',
+        'toast-in': 'toast-in 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
+        'toast-out': 'toast-out 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
       },
     },
   },

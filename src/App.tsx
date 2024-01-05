@@ -1,9 +1,12 @@
-import Provider from '@/features/graph/Provider'
+import GraphProvider from '@/features/graph/Provider'
+import ToastProvider from '@/ui/Toast/Provider'
 
 function App() {
   return (
     <div className="h-full w-full bg-background-dark">
-      <Provider />
+      <ToastProvider>
+        <GraphProvider />
+      </ToastProvider>
     </div>
   )
 }

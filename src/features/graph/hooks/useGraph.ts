@@ -4,11 +4,14 @@ import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.imp
 import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
 import { Relation, RelationD3 } from '@/domain/neo4j/models/Relation'
 import { IGraphContext } from '@/features/graph/context'
+import { useToast } from '@/ui/Toast/hooks/useToast'
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
 
 export const useGraph = (): IGraphContext => {
+  const { add } = useToast()
+
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relations, setRelations] = useState<RelationD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
@@ -39,8 +42,6 @@ export const useGraph = (): IGraphContext => {
     setRelations(relationsParsed)
   }
 
-  console.log('labels', labels)
-
   const createNode = async (node: NodeCreateDTO) => {
     const result = await repository.addNode(node)
     const nodeD3 = new NodeD3(result, addNodePosition.x, addNodePosition.y)
@@ -54,6 +55,8 @@ export const useGraph = (): IGraphContext => {
 
     setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
     setLabels([...labels, ...nodeLabels])
+
+    add('success', 'Node successfully created.')
   }
 
   const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
