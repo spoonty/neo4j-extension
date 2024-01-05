@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
 import { useGraphContext } from '@/features/graph/context'
+import { defineLabelColor } from '@/features/graph/helpers/colors'
 import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
 import Clue from '@/ui/Clue'
@@ -52,7 +53,12 @@ const LabelsStep: FC<Props> = ({ nodeLabels, onAddLabel, onRemoveLabel }) => {
         <ScrollArea.Viewport className="h-full w-full">
           <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
             {nodeLabels.map((label, index) => (
-              <Badge onRemove={() => onRemoveLabel(index)}>{label}</Badge>
+              <Badge
+                onRemove={() => onRemoveLabel(index)}
+                style={{ backgroundColor: defineLabelColor(labels, label) }}
+              >
+                {label}
+              </Badge>
             ))}
           </div>
         </ScrollArea.Viewport>

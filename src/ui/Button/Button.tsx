@@ -32,7 +32,7 @@ const Button: FC<ButtonProps> = ({
   return (
     <button
       className={cn(
-        'rounded-lg px-5 py-2.5 font-semibold text-main-gray',
+        'h-[42px] rounded-lg px-5 py-2.5 font-semibold text-main-gray',
         classesByVariant[variant],
         disabled && 'cursor-default opacity-40',
         className,

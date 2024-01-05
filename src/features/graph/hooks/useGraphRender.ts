@@ -1,6 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { useGraphContext } from '@/features/graph/context'
+import { defineLabelColor } from '@/features/graph/helpers/colors'
 import { drag } from '@/features/graph/helpers/drag'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import * as d3 from 'd3'
@@ -25,7 +26,7 @@ export type NodeSimulation = d3.Simulation<
 >
 
 export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
-  const { nodes, relations, clickHandler } = useGraphContext()
+  const { nodes, relations, labels, clickHandler } = useGraphContext()
 
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
@@ -36,8 +37,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     if (!nodes || !relations) {
       return
     }
-
-    const color = d3.scaleOrdinal(d3.schemeCategory10)
 
     const container = d3
       .select(svg.current)
@@ -80,17 +79,14 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .append('path')
       .attr('d', 'M0,-5L10,0L0,5')
       .attr('class', 'arrow-head')
+      .attr('fill', '#edeef0')
 
-    const relation = group
-      .append('g')
-      .attr('stroke', '#999')
-      .attr('stroke-opacity', 0.6)
-      .selectAll('g')
-      .data(relations)
-      .join('g')
+    const relation = group.append('g').selectAll('g').data(relations).join('g')
 
     relation
       .append('line')
+      .attr('stroke', '#edeef0')
+      .attr('stroke-opacity', 0.5)
       .attr('stroke-width', (d: any) => Math.sqrt(d.value))
       .attr('marker-end', 'url(#arrow)')
 
@@ -100,15 +96,16 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
       .style('user-select', 'none')
+      .attr('fill', '#edeef0')
 
     const node = group.append('g').selectAll('g').data(nodes).join('g')
 
     node
       .append('circle')
-      .attr('stroke', '#fff')
+      .attr('stroke', '#edeef0')
       .attr('stroke-width', 1.5)
       .attr('r', 40)
-      .attr('fill', (d: any) => color(d.labels[0]))
+      .attr('fill', (d: any) => defineLabelColor(labels, d.labels[0]))
 
     node
       .append('text')
@@ -117,7 +114,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('dominant-baseline', 'middle')
       .attr('font-family', 'sans-serif')
       .attr('font-size', '10px')
-      .attr('fill', 'white')
+      .attr('fill', '#17191b')
       .style('user-select', 'none')
 
     // @ts-ignore

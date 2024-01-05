@@ -11,7 +11,7 @@ interface Props extends ToastPrimitive.ToastProps {
 const Toast: FC<Props> = ({ toast, ...props }) => (
   <ToastPrimitive.Root
     className={cn(
-      'mb-4 flex w-full max-w-xs items-center rounded-lg bg-gray-800 p-4 text-gray-400',
+      'mb-4 flex w-full max-w-xs items-center rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md',
       'data-[state=open]:animate-toast-in data-[state=closed]:animate-toast-out',
     )}
     {...props}
@@ -24,12 +24,12 @@ const Toast: FC<Props> = ({ toast, ...props }) => (
     >
       {createElement(typeIcon[toast.type])}
     </div>
-    <ToastPrimitive.Description className="ms-3 text-sm font-normal">
+    <ToastPrimitive.Description className="ms-3 text-sm font-normal text-main-gray">
       {toast.message}
     </ToastPrimitive.Description>
     <ToastPrimitive.Action
-      className="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 p-1.5 text-gray-500 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-gray-300"
-      altText={'close'}
+      className="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent p-1.5 text-main-gray"
+      altText="close"
     >
       <Close width="14" height="14" />
     </ToastPrimitive.Action>

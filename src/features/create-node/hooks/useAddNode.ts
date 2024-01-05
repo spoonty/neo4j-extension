@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react'
+import { NodeCreateDTO } from '@/domain/neo4j/models/Node'
 import { DEFAULT_PROPERTIES } from '@/features/create-node/constants'
 import { useGraphContext } from '@/features/graph/context'
 
 export const useAddNode = (open: boolean) => {
-  const { updateNodeTemplate, removeNodeTemplate } = useGraphContext()
+  const { updateNodeTemplate, removeNodeTemplate, createNode } =
+    useGraphContext()
 
   const [labels, setLabels] = useState<string[]>([])
   const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
+
+  const createNodeHandler = async () => {
+    const node = new NodeCreateDTO(labels, convertProperties())
+    await createNode(node)
+  }
 
   const addLabel = (label: string) => {
     setLabels([...labels, label])
@@ -23,6 +30,17 @@ export const useAddNode = (open: boolean) => {
     })
   }
 
+  const convertProperties = () => {
+    const convertedProperties = {}
+
+    // @ts-ignore
+    properties['key'].forEach((key, i) => {
+      convertedProperties[key] = properties['value'][i]
+    })
+
+    return convertedProperties
+  }
+
   const clearData = () => {
     setLabels([])
     setProperties(DEFAULT_PROPERTIES)
@@ -30,15 +48,16 @@ export const useAddNode = (open: boolean) => {
 
   useEffect(() => {
     if (open) {
-      updateNodeTemplate(labels, properties)
+      updateNodeTemplate(labels, convertProperties())
     } else {
       removeNodeTemplate()
     }
-  }, [open, labels.length, Object.keys(properties).length])
+  }, [open, labels.length, properties])
 
   return {
     labels,
     properties,
+    createNodeHandler,
     addLabel,
     removeLabel,
     addProperty,

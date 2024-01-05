@@ -4,7 +4,6 @@ import { Steps } from '@/features/create-node/constants'
 import { useAddNode } from '@/features/create-node/hooks/useAddNode'
 import LabelsStep from '@/features/create-node/steps/LabelsStep'
 import PropertiesStep from '@/features/create-node/steps/PropertiesStep'
-import { useGraphContext } from '@/features/graph/context'
 import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
@@ -16,10 +15,15 @@ interface Props {
 }
 
 const View: FC<Props> = ({ open, onClose }) => {
-  const { createNode } = useGraphContext()
-
-  const { labels, properties, addLabel, removeLabel, addProperty, clearData } =
-    useAddNode(open)
+  const {
+    labels,
+    properties,
+    createNodeHandler,
+    addLabel,
+    removeLabel,
+    addProperty,
+    clearData,
+  } = useAddNode(open)
 
   const [step, setStep] = useState(Steps.SET_LABELS)
   const steps = [Steps.SET_LABELS, Steps.SET_LABELS]
@@ -41,15 +45,7 @@ const View: FC<Props> = ({ open, onClose }) => {
   }
 
   const createHandler = async () => {
-    const convertedProperties = {}
-
-    // @ts-ignore
-    properties['key'].forEach((key, i) => {
-      convertedProperties[key] = properties['value'][i]
-    })
-
-    const node = new NodeCreateDTO(labels, convertedProperties)
-    await createNode(node)
+    await createNodeHandler()
     closeHandler()
   }
 
