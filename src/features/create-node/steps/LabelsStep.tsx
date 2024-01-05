@@ -1,68 +1,28 @@
 import { FC, useMemo, useState } from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
+import { useGraphContext } from '@/features/graph/context'
 import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
 import Clue from '@/ui/Clue'
 import PopoverInput from '@/ui/Input/PopoverInput'
 import ScrollArea from '@/ui/ScrollArea'
 
-const mockItems = [
-  {
-    label: 'Book1',
-    value: 'book_1',
-  },
-  {
-    label: 'Book2',
-    value: 'book_2',
-  },
-  {
-    label: 'Book3',
-    value: 'book_3',
-  },
-  {
-    label: 'Book4',
-    value: 'book_4',
-  },
-  {
-    label: 'Book5',
-    value: 'book_5',
-  },
-  {
-    label: 'Book6',
-    value: 'book_6',
-  },
-  {
-    label: 'Book7',
-    value: 'book_7',
-  },
-  {
-    label: 'Book8',
-    value: 'book_8',
-  },
-  {
-    label: 'Book9',
-    value: 'book_9',
-  },
-  {
-    label: 'Book10',
-    value: 'book_10',
-  },
-]
-
 interface Props {
-  labels: string[]
+  nodeLabels: string[]
   onAddLabel: (label: string) => void
   onRemoveLabel: (i: number) => void
 }
 
-const LabelsStep: FC<Props> = ({ labels, onAddLabel, onRemoveLabel }) => {
+const LabelsStep: FC<Props> = ({ nodeLabels, onAddLabel, onRemoveLabel }) => {
+  const { labels } = useGraphContext()
+
   const [label, setLabel] = useState('')
 
   const search = useMemo(() => {
     if (!label.length) return []
 
     const regex = new RegExp(`^${label}`, 'i')
-    return mockItems.filter((item) => regex.test(item.label))
+    return labels.filter((label) => regex.test(label))
   }, [label])
 
   const addHandler = () => {
@@ -91,7 +51,7 @@ const LabelsStep: FC<Props> = ({ labels, onAddLabel, onRemoveLabel }) => {
       <ScrollArea.Root className="mt-3 h-[90px]">
         <ScrollArea.Viewport className="h-full w-full">
           <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
-            {labels.map((label, index) => (
+            {nodeLabels.map((label, index) => (
               <Badge onRemove={() => onRemoveLabel(index)}>{label}</Badge>
             ))}
           </div>

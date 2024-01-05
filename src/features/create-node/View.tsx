@@ -58,7 +58,7 @@ const View: FC<Props> = ({ open, onClose }) => {
       case Steps.SET_LABELS:
         return (
           <LabelsStep
-            labels={labels}
+            nodeLabels={labels}
             onAddLabel={addLabel}
             onRemoveLabel={removeLabel}
           />

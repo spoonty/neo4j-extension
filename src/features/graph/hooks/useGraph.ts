@@ -11,26 +11,49 @@ const repository = new Neo4jRepositoryImpl(driver)
 export const useGraph = (): IGraphContext => {
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relations, setRelations] = useState<RelationD3[]>([])
-  const [labels, setLabels] = useState([])
+  const [labels, setLabels] = useState<string[]>([])
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
 
   const getNodes = async () => {
     const { nodes, relations } = await repository.getGraph()
 
-    const nodesParsed = nodes.map((node: Node) => new NodeD3(node))
+    const nodesParsed: NodeD3[] = []
+    const nodeLabels: string[] = []
+
+    nodes.forEach((node: Node) => {
+      nodesParsed.push(new NodeD3(node))
+
+      node.labels.forEach((label) => {
+        if (!nodeLabels.includes(label)) {
+          nodeLabels.push(label)
+        }
+      })
+    })
+
     const relationsParsed = relations.map(
       (relation: Relation) => new RelationD3(relation),
     )
 
     setNodes(nodesParsed)
+    setLabels(nodeLabels)
     setRelations(relationsParsed)
   }
+
+  console.log('labels', labels)
 
   const createNode = async (node: NodeCreateDTO) => {
     const result = await repository.addNode(node)
     const nodeD3 = new NodeD3(result, addNodePosition.x, addNodePosition.y)
 
+    const nodeLabels: string[] = []
+    result.labels.forEach((label) => {
+      if (!labels.includes(label)) {
+        nodeLabels.push(label)
+      }
+    })
+
     setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
+    setLabels([...labels, ...nodeLabels])
   }
 
   const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
