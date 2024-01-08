@@ -20,7 +20,18 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
 
     const result = await this.driver.execute<Array<NodeRelation>>(query)
 
-    const nodes = result.map((record) => record.n)
+    const uniqueNodes = new Set()
+
+    const nodes = result
+      .map((record) => record.n)
+      .filter((record) => {
+        if (!uniqueNodes.has(record?.elementId)) {
+          uniqueNodes.add(record?.elementId)
+          return true
+        }
+        return false
+      })
+
     const relations = result
       .map((record) => record.r)
       .filter((record) => !!record)

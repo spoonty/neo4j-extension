@@ -87,6 +87,11 @@ export const useGraph = (): IGraphContext => {
 
     setRelations([...relations, relationD3])
     add('success', 'Relation successfully created.')
+
+    createRelationTargets.current = {
+      source: null,
+      target: null,
+    }
   }
 
   const setSource = (sourceId: string) => {
