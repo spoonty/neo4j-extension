@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { useGraphContext } from '@/features/graph/context'
 import { drag } from '@/features/graph/helpers/drag'
@@ -7,6 +7,7 @@ import {
   getPropertyToDisplay,
 } from '@/features/graph/helpers/labels'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
+import { InteractionState } from '@/features/graph/hooks/useGraph'
 import * as d3 from 'd3'
 
 export type NodeSimulation = d3.Simulation<
@@ -15,14 +16,22 @@ export type NodeSimulation = d3.Simulation<
 >
 
 export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
-  const { nodes, relations, labels, clickHandler } = useGraphContext()
+  const {
+    nodes,
+    relations,
+    labels,
+    clickHandler,
+    setSource,
+    setTarget,
+    state,
+  } = useGraphContext()
 
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
   const [clickedPosition, setClickedPosition] = useState({ x: 0, y: 0 })
   const [isAnimation, setIsAnimation] = useState(false)
 
-  const render = () => {
+  const render = useCallback(() => {
     if (!nodes || !relations) {
       return
     }
@@ -98,7 +107,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('cx', 0)
       .attr('opacity', 0)
 
-    const editButton = node
+    const relationButton = node
       .append('circle')
       .attr('class', 'edit-button')
       .attr('r', 10)
@@ -106,6 +115,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('cy', 0)
       .attr('cx', 0)
       .attr('opacity', 0)
+      .attr('data-element-id', (d: any) => d.elementId)
 
     node
       .append('circle')
@@ -113,6 +123,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('stroke-width', 1.5)
       .attr('r', 40)
       .attr('fill', (d: any) => defineLabelColor(labels, d.labels[0]))
+      .attr('data-element-id', (d: any) => d.elementId)
 
     node
       .append('text')
@@ -128,6 +139,12 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     node.call(drag(simulation))
 
     node.on('click', function (event, d) {
+      if (state.current === InteractionState.CREATE_RELATION) {
+        const nodeId = d3.select(this).attr('data-element-id')
+        setTarget(nodeId)
+        return
+      }
+
       const currentNode = d3.select(this)
 
       const deleteButton = currentNode.select('.delete-button')
@@ -139,14 +156,16 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cy', isDeleteButtonVisible ? 0 : -25)
         .style('opacity', isDeleteButtonVisible ? 0 : 1)
 
-      const editButton = currentNode.select('.edit-button')
-      const isEditButtonVisible = parseFloat(editButton.style('opacity'))
-      editButton
+      const relationButton = currentNode.select('.edit-button')
+      const isrelationButtonVisible = parseFloat(
+        relationButton.style('opacity'),
+      )
+      relationButton
         .transition()
         .duration(500)
-        .attr('cx', isEditButtonVisible ? 0 : -30)
-        .attr('cy', isEditButtonVisible ? 0 : -45)
-        .style('opacity', isEditButtonVisible ? 0 : 1)
+        .attr('cx', isrelationButtonVisible ? 0 : -30)
+        .attr('cy', isrelationButtonVisible ? 0 : -45)
+        .style('opacity', isrelationButtonVisible ? 0 : 1)
     })
 
     deleteButton.on('click', function (event) {
@@ -159,7 +178,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
-      editButton
+      relationButton
         .transition()
         .duration(500)
         .attr('cx', 0)
@@ -167,9 +186,11 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .style('opacity', 0)
     })
 
-    editButton.on('click', function (event) {
+    relationButton.on('click', function (event) {
       event.stopPropagation()
-      console.log('Edit')
+
+      const nodeId = d3.select(this).attr('data-element-id')
+      setSource(nodeId)
 
       deleteButton
         .transition()
@@ -177,7 +198,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
-      editButton
+      relationButton
         .transition()
         .duration(500)
         .attr('cx', 0)
@@ -253,7 +274,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     })
 
     return simulation
-  }
+  }, [nodes, relations])
 
   useEffect(() => {
     render()

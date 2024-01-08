@@ -1,10 +1,14 @@
 import { FC, useRef, useState } from 'react'
 import CreateNodeDrawer from '@/features/create-node/View'
+import CreateRelationDrawer from '@/features/create-relation/View'
+import { useGraphContext } from '@/features/graph/context'
 import { useGraphRender } from '@/features/graph/hooks/useGraphRender'
 
 const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   useGraphRender(svgRef)
+
+  const { createRelationDialog } = useGraphContext()
 
   const [createNodeOpened, setCreateNodeOpened] = useState(false)
 
@@ -34,6 +38,7 @@ const View: FC = () => {
         open={createNodeOpened}
         onClose={() => setCreateNodeOpened(false)}
       />
+      <CreateRelationDrawer open={createRelationDialog} onClose={() => {}} />
     </div>
   )
 }

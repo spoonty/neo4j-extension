@@ -1,8 +1,7 @@
 import { FC, useState } from 'react'
-import { Steps } from '@/features/create-node/constants'
-import { useAddNode } from '@/features/create-node/hooks/useAddNode'
-import LabelsStep from '@/features/create-node/steps/LabelsStep'
-import PropertiesStep from '@/features/create-node/steps/PropertiesStep'
+import { Steps } from '@/features/create-relation/constants'
+import { useCreateRelation } from '@/features/create-relation/hooks/useCreateRelation'
+import TypeStep from '@/features/create-relation/steps/TypeStep'
 import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
@@ -14,53 +13,36 @@ interface Props {
 }
 
 const View: FC<Props> = ({ open, onClose }) => {
-  const {
-    labels,
-    properties,
-    createNodeHandler,
-    addLabel,
-    removeLabel,
-    addProperty,
-    clearData,
-  } = useAddNode(open)
+  const { type, setType, properties, clearData } = useCreateRelation()
 
-  const [step, setStep] = useState(Steps.SET_LABELS)
-  const steps = [Steps.SET_LABELS, Steps.SET_PROPERTIES]
+  const [step, setStep] = useState(Steps.SET_TYPE)
+  const steps = [Steps.SET_TYPE, Steps.SET_PROPERTIES]
 
   const onNextStep = () => {
     setStep(Steps.SET_PROPERTIES)
   }
 
   const onPrevStep = () => {
-    setStep(Steps.SET_LABELS)
+    setStep(Steps.SET_TYPE)
   }
 
   const closeHandler = () => {
     onClose()
     setTimeout(() => {
-      setStep(Steps.SET_LABELS)
+      setStep(Steps.SET_TYPE)
       clearData()
     }, 100)
   }
 
-  const createHandler = async () => {
-    await createNodeHandler()
-    closeHandler()
-  }
-
   const renderStep = () => {
     switch (step) {
-      case Steps.SET_LABELS:
+      case Steps.SET_TYPE:
         return (
-          <LabelsStep
-            nodeLabels={labels}
-            onAddLabel={addLabel}
-            onRemoveLabel={removeLabel}
+          <TypeStep
+            currentType={type}
+            onSetType={(type: string) => setType(type)}
+            onClearType={() => setType('')}
           />
-        )
-      case Steps.SET_PROPERTIES:
-        return (
-          <PropertiesStep properties={properties} addProperty={addProperty} />
         )
     }
   }
@@ -74,7 +56,7 @@ const View: FC<Props> = ({ open, onClose }) => {
             'h-[482px]',
         )}
       >
-        <Header onClose={closeHandler}>CREATE NODE</Header>
+        <Header onClose={closeHandler}>CREATE RELATION</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">
           <Stepper steps={steps} current={step} />
           {renderStep()}
@@ -85,10 +67,7 @@ const View: FC<Props> = ({ open, onClose }) => {
               <Button onClick={onPrevStep}>Back</Button>
             )}
           </div>
-          <Button
-            variant="confirm"
-            onClick={step === Steps.SET_PROPERTIES ? createHandler : onNextStep}
-          >
+          <Button variant="confirm" onClick={onNextStep}>
             {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
           </Button>
         </Footer>

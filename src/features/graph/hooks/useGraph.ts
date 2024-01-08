@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
 import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
@@ -9,13 +9,31 @@ import { useToast } from '@/ui/Toast/hooks/useToast'
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
 
+export enum InteractionState {
+  DEFAULT,
+  CREATE_NODE,
+  CREATE_RELATION,
+}
+
 export const useGraph = (): IGraphContext => {
   const { add } = useToast()
+
+  const state = useRef<InteractionState>(InteractionState.DEFAULT)
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relations, setRelations] = useState<RelationD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
+
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
+  const [createRelationTargets, setCreateRelationTargets] = useState<{
+    source: string | null
+    target: string | null
+  }>({
+    source: null,
+    target: null,
+  })
+
+  const [createRelationDialog, setCreateRelationDialog] = useState(false)
 
   const getNodes = async () => {
     const { nodes, relations } = await repository.getGraph()
@@ -59,6 +77,20 @@ export const useGraph = (): IGraphContext => {
     add('success', 'Node successfully created.')
   }
 
+  const setSource = (sourceId: string) => {
+    setCreateRelationTargets({ source: sourceId, target: null })
+    state.current = InteractionState.CREATE_RELATION
+  }
+
+  const setTarget = (targetId: string) => {
+    setCreateRelationTargets({
+      source: createRelationTargets.source,
+      target: targetId,
+    })
+
+    setCreateRelationDialog(true)
+  }
+
   const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
     const node = new NodeD3(
       new Node('-1', { low: -1, high: -1 }, labels, properties),
@@ -90,10 +122,14 @@ export const useGraph = (): IGraphContext => {
   }, [])
 
   return {
+    state,
     nodes,
     relations,
     labels,
+    createRelationDialog,
     createNode,
+    setSource,
+    setTarget,
     updateNodeTemplate,
     removeNodeTemplate,
     clickHandler,
