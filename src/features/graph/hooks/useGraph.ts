@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
 import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
-import { Relation, RelationD3 } from '@/domain/neo4j/models/Relation'
+import {
+  Relation,
+  RelationCreateDTO,
+  RelationD3,
+} from '@/domain/neo4j/models/Relation'
 import { IGraphContext } from '@/features/graph/context'
 import { useToast } from '@/ui/Toast/hooks/useToast'
 
@@ -25,7 +29,7 @@ export const useGraph = (): IGraphContext => {
   const [labels, setLabels] = useState<string[]>([])
 
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
-  const [createRelationTargets, setCreateRelationTargets] = useState<{
+  const createRelationTargets = useRef<{
     source: string | null
     target: string | null
   }>({
@@ -77,16 +81,27 @@ export const useGraph = (): IGraphContext => {
     add('success', 'Node successfully created.')
   }
 
+  const createRelation = async (relation: RelationCreateDTO) => {
+    const result = await repository.createRelation(relation)
+    const relationD3 = new RelationD3(result)
+
+    setRelations([...relations, relationD3])
+    add('success', 'Relation successfully created.')
+  }
+
   const setSource = (sourceId: string) => {
-    setCreateRelationTargets({ source: sourceId, target: null })
+    createRelationTargets.current = {
+      source: sourceId,
+      target: null,
+    }
     state.current = InteractionState.CREATE_RELATION
   }
 
   const setTarget = (targetId: string) => {
-    setCreateRelationTargets({
-      source: createRelationTargets.source,
+    createRelationTargets.current = {
+      ...createRelationTargets.current,
       target: targetId,
-    })
+    }
 
     setCreateRelationDialog(true)
   }
@@ -126,12 +141,15 @@ export const useGraph = (): IGraphContext => {
     nodes,
     relations,
     labels,
+    createRelationTargets: createRelationTargets.current,
     createRelationDialog,
     createNode,
+    createRelation,
     setSource,
     setTarget,
     updateNodeTemplate,
     removeNodeTemplate,
     clickHandler,
+    closeCreateRelationDialog: () => setCreateRelationDialog(false),
   }
 }

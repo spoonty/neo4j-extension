@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import { Steps } from '@/features/create-relation/constants'
 import { useCreateRelation } from '@/features/create-relation/hooks/useCreateRelation'
+import PropertiesStep from '@/features/create-relation/steps/PropertiesStep'
 import TypeStep from '@/features/create-relation/steps/TypeStep'
 import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
@@ -13,7 +14,14 @@ interface Props {
 }
 
 const View: FC<Props> = ({ open, onClose }) => {
-  const { type, setType, properties, clearData } = useCreateRelation()
+  const {
+    type,
+    setType,
+    properties,
+    addProperty,
+    clearData,
+    createRelationHandler,
+  } = useCreateRelation()
 
   const [step, setStep] = useState(Steps.SET_TYPE)
   const steps = [Steps.SET_TYPE, Steps.SET_PROPERTIES]
@@ -34,6 +42,11 @@ const View: FC<Props> = ({ open, onClose }) => {
     }, 100)
   }
 
+  const handler = async () => {
+    await createRelationHandler()
+    closeHandler()
+  }
+
   const renderStep = () => {
     switch (step) {
       case Steps.SET_TYPE:
@@ -43,6 +56,10 @@ const View: FC<Props> = ({ open, onClose }) => {
             onSetType={(type: string) => setType(type)}
             onClearType={() => setType('')}
           />
+        )
+      case Steps.SET_PROPERTIES:
+        return (
+          <PropertiesStep properties={properties} addProperty={addProperty} />
         )
     }
   }
@@ -67,7 +84,10 @@ const View: FC<Props> = ({ open, onClose }) => {
               <Button onClick={onPrevStep}>Back</Button>
             )}
           </div>
-          <Button variant="confirm" onClick={onNextStep}>
+          <Button
+            variant="confirm"
+            onClick={step === Steps.SET_PROPERTIES ? handler : onNextStep}
+          >
             {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
           </Button>
         </Footer>

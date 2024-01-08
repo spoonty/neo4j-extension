@@ -1,7 +1,11 @@
 import { useState } from 'react'
+import { RelationCreateDTO } from '@/domain/neo4j/models/Relation'
 import { DEFAULT_PROPERTIES } from '@/features/create-relation/constants'
+import { useGraphContext } from '@/features/graph/context'
 
 export const useCreateRelation = () => {
+  const { createRelationTargets, createRelation } = useGraphContext()
+
   const [type, setType] = useState<string>('')
   const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
 
@@ -28,9 +32,20 @@ export const useCreateRelation = () => {
     setProperties(DEFAULT_PROPERTIES)
   }
 
+  const createRelationHandler = async () => {
+    const relation = new RelationCreateDTO(
+      createRelationTargets.source || '',
+      createRelationTargets.target || '',
+      type,
+      convertProperties(),
+    )
+    await createRelation(relation)
+  }
+
   return {
     type,
     properties,
+    createRelationHandler,
     setType,
     addProperty,
     clearData,

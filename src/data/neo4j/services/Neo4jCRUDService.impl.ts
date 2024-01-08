@@ -1,6 +1,6 @@
 import { Driver } from '@/data/driver/Driver.interface'
 import { Node, NodeCreateDTO } from '@/domain/neo4j/models/Node'
-import { Relation } from '@/domain/neo4j/models/Relation'
+import { Relation, RelationCreateDTO } from '@/domain/neo4j/models/Relation'
 import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
 
 type NodeRelation = {
@@ -42,5 +42,23 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     })
 
     return result[0].n
+  }
+
+  createRelation = async (relation: RelationCreateDTO): Promise<any> => {
+    const query = `
+      MATCH (node1), (node2)
+      WHERE id(node1) = ${
+        relation.startNodeElementId.split(':').reverse()[0]
+      } AND id(node2) = ${relation.endNodeElementId.split(':').reverse()[0]}
+      CREATE (node1)-[r:${relation.type}]->(node2)
+      SET r += $properties
+      RETURN r
+    `
+
+    const result = await this.driver.execute<Array<{ r: Relation }>>(query, {
+      properties: relation.properties,
+    })
+
+    return result[0].r
   }
 }

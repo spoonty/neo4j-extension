@@ -96,7 +96,12 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .style('user-select', 'none')
       .attr('fill', '#edeef0')
 
-    const node = group.append('g').selectAll('g').data(nodes).join('g')
+    const node = group
+      .append('g')
+      .selectAll('g')
+      .data(nodes)
+      .join('g')
+      .attr('data-element-id', (d: any) => d.elementId)
 
     const deleteButton = node
       .append('circle')
@@ -123,7 +128,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('stroke-width', 1.5)
       .attr('r', 40)
       .attr('fill', (d: any) => defineLabelColor(labels, d.labels[0]))
-      .attr('data-element-id', (d: any) => d.elementId)
 
     node
       .append('text')

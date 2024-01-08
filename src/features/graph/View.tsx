@@ -8,7 +8,7 @@ const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   useGraphRender(svgRef)
 
-  const { createRelationDialog } = useGraphContext()
+  const { createRelationDialog, closeCreateRelationDialog } = useGraphContext()
 
   const [createNodeOpened, setCreateNodeOpened] = useState(false)
 
@@ -38,7 +38,10 @@ const View: FC = () => {
         open={createNodeOpened}
         onClose={() => setCreateNodeOpened(false)}
       />
-      <CreateRelationDrawer open={createRelationDialog} onClose={() => {}} />
+      <CreateRelationDrawer
+        open={createRelationDialog}
+        onClose={closeCreateRelationDialog}
+      />
     </div>
   )
 }
