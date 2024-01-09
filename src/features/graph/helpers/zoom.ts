@@ -14,22 +14,25 @@ export const zoom = (
 export const clickZoom = (
   event: any,
   selection: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
-  isAnimation: boolean,
-  setIsAnimation: (value: boolean) => void,
+  zoomHandler: d3.ZoomBehavior<Element, unknown>,
   xCurrent: number,
   yCurrent: number,
   scaleCurrent: number,
-  xClicked: number,
-  yClicked: number,
-  clickHandler: (x: number, y: number) => void,
-  setClickedPosition: ({ x, y }: { x: number; y: number }) => void,
-  zoomHandler: d3.ZoomBehavior<Element, unknown>,
+  xClicked?: number,
+  yClicked?: number,
+  isAnimation?: boolean,
+  setIsAnimation?: (value: boolean) => void,
+  clickHandler?: (x: number, y: number) => void,
+  setClickedPosition?: ({ x, y }: { x: number; y: number }) => void,
 ) => {
-  if (!isAnimation) {
-    const [x, y] = d3.pointer(event)
+  const scaleFactor = 3
+  let x, y, distanceX, distanceY, deltaX = 0, deltaY = 0
 
-    const distanceX = (x - xCurrent) / scaleCurrent
-    const distanceY = (y - yCurrent) / scaleCurrent
+  if (clickHandler && setClickedPosition && setIsAnimation && !isAnimation) {
+    [x, y] = d3.pointer(event)
+
+    distanceX = (x - xCurrent) / scaleCurrent
+    distanceY = (y - yCurrent) / scaleCurrent
 
     clickHandler?.(distanceX, distanceY)
 
@@ -38,10 +41,18 @@ export const clickZoom = (
     return
   }
 
-  const scaleFactor = 3
+  if (!clickHandler && !!xClicked && !!yClicked) {
+    distanceX = (xClicked - xCurrent) / scaleCurrent
+    distanceY = (yClicked - yCurrent) / scaleCurrent
 
-  const deltaX = -window.innerWidth / (4 * scaleFactor) - xClicked
-  const deltaY = -yClicked
+    deltaX = -window.innerWidth / (4 * scaleFactor) - distanceX
+    deltaY = -distanceY
+  }
+
+  if (clickHandler && !!xClicked && !!yClicked) {
+    deltaX = -window.innerWidth / (4 * scaleFactor) - xClicked
+    deltaY = -yClicked
+  }
 
   selection
     .transition()
@@ -54,5 +65,7 @@ export const clickZoom = (
         .scale(scaleFactor),
     )
 
-  setIsAnimation(false)
+  if (setIsAnimation) {
+    setIsAnimation(false)
+  }
 }

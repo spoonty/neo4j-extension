@@ -169,6 +169,19 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
           optionsOpened.current = !optionsOpened.current
           event.stopPropagation()
+
+          return clickZoom(
+            event,
+            container,
+            zoomHandler,
+            position.current.x,
+            position.current.y,
+            scale.current,
+            // @ts-ignore
+            currentNode.data()[0].x,
+            // @ts-ignore
+            currentNode.data()[0].y
+          )
       }
     })
 
@@ -246,16 +259,16 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
             clickZoom(
               event,
               container,
-              isAnimation,
-              setIsAnimation,
+              zoomHandler,
               position.current.x,
               position.current.y,
               scale.current,
               clickedPosition.x,
               clickedPosition.y,
+              isAnimation,
+              setIsAnimation,
               clickHandler,
               setClickedPosition,
-              zoomHandler,
             )
           break
         default:
