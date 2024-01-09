@@ -4,6 +4,7 @@ import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
 import Clue from '@/ui/Clue'
 import PopoverInput from '@/ui/Input/PopoverInput'
+import {useGraphContext} from "@/features/graph/context";
 
 interface Props {
   currentType: string
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
+  const { types } = useGraphContext()
+
   const [type, setType] = useState('')
 
   const addHandler = () => {
@@ -23,8 +26,8 @@ const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
     <div className="flex flex-col gap-2 px-2">
       <div className="grid grid-cols-[11fr_1fr] items-center gap-2.5">
         <PopoverInput
-          placeholder="Label"
-          popoverItems={[]}
+          placeholder="Type"
+          popoverItems={types}
           value={type}
           onValueChange={setType}
         />
@@ -42,7 +45,7 @@ const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
 
       <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
         {currentType && (
-          <Badge onRemove={() => onClearType()}>{currentType}</Badge>
+          <Badge onRemove={() => onClearType()} style={{backgroundColor: '#bdbdbd'}}>{currentType}</Badge>
         )}
       </div>
     </div>

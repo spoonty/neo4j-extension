@@ -27,6 +27,7 @@ export const useGraph = (): IGraphContext => {
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relations, setRelations] = useState<RelationD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
+  const [types, setTypes] = useState<string[]>([])
 
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
   const createRelationTargets = useRef<{
@@ -55,13 +56,22 @@ export const useGraph = (): IGraphContext => {
       })
     })
 
-    const relationsParsed = relations.map(
-      (relation: Relation) => new RelationD3(relation),
-    )
+    const relationsParsed: RelationD3[] = []
+    const relationTypes: string[] = []
+
+    relations.forEach((relation: Relation) => {
+      relationsParsed.push(new RelationD3(relation))
+
+      if (relation.type && !relationTypes.includes(relation.type)) {
+        relationTypes.push(relation.type)
+      }
+    })
 
     setNodes(nodesParsed)
     setLabels(nodeLabels)
+
     setRelations(relationsParsed)
+    setTypes(relationTypes)
   }
 
   const createNode = async (node: NodeCreateDTO) => {
@@ -146,6 +156,7 @@ export const useGraph = (): IGraphContext => {
     nodes,
     relations,
     labels,
+    types,
     createRelationTargets: createRelationTargets.current,
     createRelationDialog,
     createNode,

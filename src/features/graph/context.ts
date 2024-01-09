@@ -8,6 +8,7 @@ export interface IGraphContext {
   nodes: NodeD3[]
   relations: RelationD3[]
   labels: string[]
+  types: string[]
   createRelationTargets: { source: string | null; target: string | null }
   createRelationDialog: boolean
   createNode: (node: NodeCreateDTO) => Promise<void>
@@ -25,6 +26,7 @@ export const GraphContext = createContext<IGraphContext>({
   nodes: [],
   relations: [],
   labels: [],
+  types: [],
   createRelationTargets: { source: null, target: null },
   createRelationDialog: false,
   createNode: async () => {},
