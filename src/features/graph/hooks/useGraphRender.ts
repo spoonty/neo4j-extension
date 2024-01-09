@@ -171,16 +171,11 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           event.stopPropagation()
 
           return clickZoom(
-            event,
             container,
             zoomHandler,
-            position.current.x,
-            position.current.y,
-            scale.current,
+            { x: position.current.x, y: position.current.y, scale: scale.current },
             // @ts-ignore
-            currentNode.data()[0].x,
-            // @ts-ignore
-            currentNode.data()[0].y
+            { x: currentNode.data()[0].x, y: currentNode.data()[0].y }
           )
       }
     })
@@ -250,29 +245,29 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       )
 
     container.on('click', (event) => {
-      let handler: () => void
+      // let handler: () => void
       const target = event.target as HTMLElement
 
       switch (target.tagName.toLowerCase()) {
         case 'svg':
-          handler = () =>
-            clickZoom(
-              event,
-              container,
-              zoomHandler,
-              position.current.x,
-              position.current.y,
-              scale.current,
-              clickedPosition.x,
-              clickedPosition.y,
-              isAnimation,
-              setIsAnimation,
-              clickHandler,
-              setClickedPosition,
-            )
-          break
-        default:
-          handler = () => {}
+          const handler = (x: number, y: number) => {
+            clickHandler(x, y)
+            setClickedPosition({ x, y })
+            setIsAnimation(true)
+          }
+
+          let x = clickedPosition.x
+          let y = clickedPosition.y
+
+          return clickZoom(
+            container,
+            zoomHandler,
+            { x: position.current.x, y: position.current.y, scale: scale.current },
+            // @ts-ignore
+            { x: x || d3.pointer(event)[0], y: y || d3.pointer(event)[1] },
+            handler,
+            { animation: isAnimation, finishAnimation: () => setIsAnimation(false) }
+          )
       }
 
       if (optionsOpened.current) {
@@ -291,8 +286,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
         optionsOpened.current = false
       }
-
-      return handler()
     })
 
     simulation.on('tick', () => {

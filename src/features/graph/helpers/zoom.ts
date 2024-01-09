@@ -12,47 +12,24 @@ export const zoom = (
 }
 
 export const clickZoom = (
-  event: any,
   selection: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
   zoomHandler: d3.ZoomBehavior<Element, unknown>,
-  xCurrent: number,
-  yCurrent: number,
-  scaleCurrent: number,
-  xClicked?: number,
-  yClicked?: number,
-  isAnimation?: boolean,
-  setIsAnimation?: (value: boolean) => void,
-  clickHandler?: (x: number, y: number) => void,
-  setClickedPosition?: ({ x, y }: { x: number; y: number }) => void,
+  posCurrent: { x: number, y: number, scale: number },
+  posClicked: { x: number, y: number },
+  handler?: (x: number, y:number) => void,
+  animation?: { animation: boolean, finishAnimation: () => void }
 ) => {
-  const scaleFactor = 3
-  let x, y, distanceX, distanceY, deltaX = 0, deltaY = 0
+  const distanceX = (posClicked.x - posCurrent.x) / posCurrent.scale
+  const distanceY = (posClicked.y - posCurrent.y) / posCurrent.scale
 
-  if (clickHandler && setClickedPosition && setIsAnimation && !isAnimation) {
-    [x, y] = d3.pointer(event)
-
-    distanceX = (x - xCurrent) / scaleCurrent
-    distanceY = (y - yCurrent) / scaleCurrent
-
-    clickHandler?.(distanceX, distanceY)
-
-    setClickedPosition({ x: distanceX, y: distanceY })
-    setIsAnimation(true)
+  if (animation && !animation?.animation) {
+    handler?.(distanceX, distanceY)
     return
   }
 
-  if (!clickHandler && !!xClicked && !!yClicked) {
-    distanceX = (xClicked - xCurrent) / scaleCurrent
-    distanceY = (yClicked - yCurrent) / scaleCurrent
-
-    deltaX = -window.innerWidth / (4 * scaleFactor) - distanceX
-    deltaY = -distanceY
-  }
-
-  if (clickHandler && !!xClicked && !!yClicked) {
-    deltaX = -window.innerWidth / (4 * scaleFactor) - xClicked
-    deltaY = -yClicked
-  }
+  const scaleFactor = 3
+  const deltaX = -window.innerWidth / (4 * scaleFactor) - posClicked.x
+  const deltaY = -posClicked.y
 
   selection
     .transition()
@@ -65,7 +42,6 @@ export const clickZoom = (
         .scale(scaleFactor),
     )
 
-  if (setIsAnimation) {
-    setIsAnimation(false)
-  }
+  animation?.finishAnimation()
 }
+
