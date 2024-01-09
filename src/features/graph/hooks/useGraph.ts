@@ -40,6 +40,7 @@ export const useGraph = (): IGraphContext => {
   })
 
   const [createRelationDialog, setCreateRelationDialog] = useState(false)
+  const [removeNodeDialog, setRemoveNodeDialog] = useState<{ open: boolean, nodeId: string | null }>({ open: false, nodeId: null })
 
   const getNodes = async () => {
     const { nodes, relations } = await repository.getGraph()
@@ -96,6 +97,9 @@ export const useGraph = (): IGraphContext => {
     await repository.deleteNode(nodeId)
 
     setNodes(nodes.filter((node) => node.elementId !== nodeId))
+    setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeId && relation.startNodeElementId !== nodeId))
+
+    setRemoveNodeDialog({ open: false, nodeId: null })
     add('success', 'Node successfully deleted.')
   }
 
@@ -153,7 +157,7 @@ export const useGraph = (): IGraphContext => {
     switch (state.current) {
       case InteractionState.DELETE_NODE:
         // @ts-ignore
-        deleteNode(payload.nodeId)
+        setRemoveNodeDialog({ open: true, nodeId: payload.nodeId })
         break
       default:
         // @ts-ignore
@@ -184,7 +188,9 @@ export const useGraph = (): IGraphContext => {
     types,
     createRelationTargets: createRelationTargets.current,
     createRelationDialog,
+    removeNodeDialog,
     createNode,
+    deleteNode,
     createRelation,
     setSource,
     setTarget,
@@ -192,5 +198,6 @@ export const useGraph = (): IGraphContext => {
     removeNodeTemplate,
     clickHandler,
     closeCreateRelationDialog,
+    closeRemoveNodeDialog: () => setRemoveNodeDialog({ open: false, nodeId: null })
   }
 }

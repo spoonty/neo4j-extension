@@ -11,7 +11,9 @@ export interface IGraphContext {
   types: string[]
   createRelationTargets: { source: string | null; target: string | null }
   createRelationDialog: boolean
+  removeNodeDialog: { open: boolean, nodeId: string | null }
   createNode: (node: NodeCreateDTO) => Promise<void>
+  deleteNode: (nodeId: string) => Promise<void>
   createRelation: (relation: RelationCreateDTO) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void
@@ -19,6 +21,7 @@ export interface IGraphContext {
   removeNodeTemplate: () => void
   clickHandler: <T>(payload: T) => void
   closeCreateRelationDialog: () => void
+  closeRemoveNodeDialog: () => void
 }
 
 export const GraphContext = createContext<IGraphContext>({
@@ -29,7 +32,9 @@ export const GraphContext = createContext<IGraphContext>({
   types: [],
   createRelationTargets: { source: null, target: null },
   createRelationDialog: false,
+  removeNodeDialog: { open: false, nodeId: '' },
   createNode: async () => {},
+  deleteNode: async () => {},
   createRelation: async () => {},
   setSource: () => {},
   setTarget: () => {},
@@ -37,6 +42,7 @@ export const GraphContext = createContext<IGraphContext>({
   removeNodeTemplate: () => {},
   clickHandler: () => {},
   closeCreateRelationDialog: () => {},
+  closeRemoveNodeDialog: () => {}
 })
 
 export const useGraphContext = () => useContext(GraphContext)

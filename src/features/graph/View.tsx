@@ -9,7 +9,7 @@ const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   useGraphRender(svgRef)
 
-  const { createRelationDialog, closeCreateRelationDialog } = useGraphContext()
+  const { createRelationDialog, closeCreateRelationDialog, removeNodeDialog } = useGraphContext()
 
   const [createNodeOpened, setCreateNodeOpened] = useState(false)
 
@@ -43,7 +43,7 @@ const View: FC = () => {
         open={createRelationDialog}
         onClose={closeCreateRelationDialog}
       />
-      <DeleteAlert open={true} />
+      <DeleteAlert />
     </div>
   )
 }
