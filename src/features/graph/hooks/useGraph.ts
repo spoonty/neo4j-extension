@@ -145,6 +145,15 @@ export const useGraph = (): IGraphContext => {
     setAddNodePosition({ x, y })
   }
 
+  const closeCreateRelationDialog = () => {
+    setCreateRelationDialog(false)
+    createRelationTargets.current = {
+      source: null,
+      target: null
+    }
+    state.current = InteractionState.DEFAULT
+  }
+
   const getTemplateNode = () => nodes?.find((node) => node.elementId === '-1')
 
   useEffect(() => {
@@ -166,6 +175,6 @@ export const useGraph = (): IGraphContext => {
     updateNodeTemplate,
     removeNodeTemplate,
     clickHandler,
-    closeCreateRelationDialog: () => setCreateRelationDialog(false),
+    closeCreateRelationDialog,
   }
 }

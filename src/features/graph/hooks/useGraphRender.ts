@@ -1,13 +1,10 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
-import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { useGraphContext } from '@/features/graph/context'
-import { drag } from '@/features/graph/helpers/drag'
-import {
-  defineLabelColor,
-  getPropertyToDisplay,
-} from '@/features/graph/helpers/labels'
-import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
-import { InteractionState } from '@/features/graph/hooks/useGraph'
+import {RefObject, useCallback, useEffect, useRef, useState} from 'react'
+import {NodeD3} from '@/domain/neo4j/models/Node'
+import {useGraphContext} from '@/features/graph/context'
+import {drag} from '@/features/graph/helpers/drag'
+import {defineLabelColor, getPropertyToDisplay,} from '@/features/graph/helpers/labels'
+import {clickZoom, zoom} from '@/features/graph/helpers/zoom'
+import {InteractionState} from '@/features/graph/hooks/useGraph'
 import * as d3 from 'd3'
 
 export type NodeSimulation = d3.Simulation<
@@ -30,6 +27,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
   const position = useRef({ x: 0, y: 0 })
   const [clickedPosition, setClickedPosition] = useState({ x: 0, y: 0 })
   const [isAnimation, setIsAnimation] = useState(false)
+  const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
     if (!nodes || !relations) {
@@ -116,7 +114,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .append('circle')
       .attr('class', 'edit-button')
       .attr('r', 10)
-      .attr('fill', 'blue')
+      .attr('fill', '#bdbdbd')
       .attr('cy', 0)
       .attr('cx', 0)
       .attr('opacity', 0)
@@ -142,34 +140,36 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     // @ts-ignore
     node.call(drag(simulation))
 
-    node.on('click', function (event, d) {
-      if (state.current === InteractionState.CREATE_RELATION) {
-        const nodeId = d3.select(this).attr('data-element-id')
-        setTarget(nodeId)
-        return
+    node.on('click', function (event) {
+      switch (state.current) {
+        case InteractionState.CREATE_RELATION:
+          const nodeId = d3.select(this).attr('data-element-id')
+          setTarget(nodeId)
+          break
+        default:
+          if (optionsOpened.current) return
+
+          const currentNode = d3.select(this)
+
+          const deleteButton = currentNode.select('.delete-button')
+          deleteButton
+            .transition()
+            .duration(500)
+            .attr('cx', optionsOpened.current ? 0 : -49)
+            .attr('cy', optionsOpened.current ? 0 : -25)
+            .style('opacity', optionsOpened.current ? 0 : 1)
+
+          const relationButton = currentNode.select('.edit-button')
+          relationButton
+            .transition()
+            .duration(500)
+            .attr('cx', optionsOpened.current ? 0 : -30)
+            .attr('cy', optionsOpened.current ? 0 : -45)
+            .style('opacity', optionsOpened.current ? 0 : 1)
+
+          optionsOpened.current = !optionsOpened.current
+          event.stopPropagation()
       }
-
-      const currentNode = d3.select(this)
-
-      const deleteButton = currentNode.select('.delete-button')
-      const isDeleteButtonVisible = parseFloat(deleteButton.style('opacity'))
-      deleteButton
-        .transition()
-        .duration(500)
-        .attr('cx', isDeleteButtonVisible ? 0 : -49)
-        .attr('cy', isDeleteButtonVisible ? 0 : -25)
-        .style('opacity', isDeleteButtonVisible ? 0 : 1)
-
-      const relationButton = currentNode.select('.edit-button')
-      const isrelationButtonVisible = parseFloat(
-        relationButton.style('opacity'),
-      )
-      relationButton
-        .transition()
-        .duration(500)
-        .attr('cx', isrelationButtonVisible ? 0 : -30)
-        .attr('cy', isrelationButtonVisible ? 0 : -45)
-        .style('opacity', isrelationButtonVisible ? 0 : 1)
     })
 
     deleteButton.on('click', function (event) {
@@ -188,6 +188,8 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
+
+      optionsOpened.current = false
     })
 
     relationButton.on('click', function (event) {
@@ -208,6 +210,8 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
+
+      optionsOpened.current = false
     })
 
     node.on('mouseover', function () {
@@ -256,6 +260,23 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           break
         default:
           handler = () => {}
+      }
+
+      if (optionsOpened.current) {
+        deleteButton
+          .transition()
+          .duration(500)
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .style('opacity', 0)
+        relationButton
+          .transition()
+          .duration(500)
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .style('opacity', 0)
+
+        optionsOpened.current = false
       }
 
       return handler()
