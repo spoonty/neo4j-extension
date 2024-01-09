@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import {FC, useMemo, useState} from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
 import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
@@ -17,6 +17,18 @@ const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
 
   const [type, setType] = useState('')
 
+  const search = useMemo(() => {
+    if (!type.length) return []
+
+    const regex = new RegExp(`^${type}`, 'i')
+    return types.filter((type) => regex.test(type))
+  }, [type])
+
+  const selectHandler = (value: string) => {
+    onSetType(value)
+    setType('')
+  }
+
   const addHandler = () => {
     onSetType(type)
     setType('')
@@ -27,9 +39,10 @@ const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
       <div className="grid grid-cols-[11fr_1fr] items-center gap-2.5">
         <PopoverInput
           placeholder="Type"
-          popoverItems={types}
+          popoverItems={search}
           value={type}
           onValueChange={setType}
+          onValueSelected={selectHandler}
         />
         <IconButton
           disabled={!type.length || !!currentType.length}

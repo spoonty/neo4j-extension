@@ -26,6 +26,11 @@ const LabelsStep: FC<Props> = ({ nodeLabels, onAddLabel, onRemoveLabel }) => {
     return labels.filter((label) => regex.test(label))
   }, [label])
 
+  const selectHandler = (value: string) => {
+    onAddLabel(value)
+    setLabel('')
+  }
+
   const addHandler = () => {
     onAddLabel(label)
     setLabel('')
@@ -39,6 +44,7 @@ const LabelsStep: FC<Props> = ({ nodeLabels, onAddLabel, onRemoveLabel }) => {
           popoverItems={search}
           value={label}
           onValueChange={setLabel}
+          onValueSelected={selectHandler}
         />
         <IconButton disabled={!label.length} onClick={addHandler}>
           <PlusIcon />
