@@ -109,6 +109,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('cy', 0)
       .attr('cx', 0)
       .attr('opacity', 0)
+      .attr('data-element-id', (d: any) => d.elementId)
 
     const relationButton = node
       .append('circle')
@@ -182,7 +183,9 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     deleteButton.on('click', function (event) {
       event.stopPropagation()
-      console.log('Delete')
+      const nodeId = d3.select(this).attr('data-element-id')
+      state.current = InteractionState.DELETE_NODE
+      clickHandler<{ nodeId: string }>({ nodeId })
 
       deleteButton
         .transition()
@@ -251,7 +254,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       switch (target.tagName.toLowerCase()) {
         case 'svg':
           const handler = (x: number, y: number) => {
-            clickHandler(x, y)
+            clickHandler<{ x: number, y: number }>({x, y})
             setClickedPosition({ x, y })
             setIsAnimation(true)
           }

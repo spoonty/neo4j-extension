@@ -17,7 +17,7 @@ export interface IGraphContext {
   setTarget: (targetId: string) => void
   updateNodeTemplate: (labels: string[], properties: KeyValue) => void
   removeNodeTemplate: () => void
-  clickHandler: (x: number, y: number) => void
+  clickHandler: <T>(payload: T) => void
   closeCreateRelationDialog: () => void
 }
 

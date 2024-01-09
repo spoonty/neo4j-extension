@@ -16,6 +16,7 @@ const repository = new Neo4jRepositoryImpl(driver)
 export enum InteractionState {
   DEFAULT,
   CREATE_NODE,
+  DELETE_NODE,
   CREATE_RELATION,
 }
 
@@ -91,6 +92,13 @@ export const useGraph = (): IGraphContext => {
     add('success', 'Node successfully created.')
   }
 
+  const deleteNode = async (nodeId: string) => {
+    await repository.deleteNode(nodeId)
+
+    setNodes(nodes.filter((node) => node.elementId !== nodeId))
+    add('success', 'Node successfully deleted.')
+  }
+
   const createRelation = async (relation: RelationCreateDTO) => {
     const result = await repository.createRelation(relation)
     const relationD3 = new RelationD3(result)
@@ -141,8 +149,16 @@ export const useGraph = (): IGraphContext => {
     }
   }
 
-  const clickHandler = (x: number, y: number) => {
-    setAddNodePosition({ x, y })
+  const clickHandler = <T>(payload: T) => {
+    switch (state.current) {
+      case InteractionState.DELETE_NODE:
+        // @ts-ignore
+        deleteNode(payload.nodeId)
+        break
+      default:
+        // @ts-ignore
+        setAddNodePosition({ x: payload.x, y: payload.y })
+    }
   }
 
   const closeCreateRelationDialog = () => {

@@ -55,6 +55,15 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     return result[0].n
   }
 
+  deleteNode = async (nodeId: string): Promise<void> => {
+    const query = `
+      MATCH (n) where ID(n)=${nodeId.split(':').reverse()[0]}
+      DETACH DELETE n
+    `
+
+    return await this.driver.execute(query)
+  }
+
   createRelation = async (relation: RelationCreateDTO): Promise<any> => {
     const query = `
       MATCH (node1), (node2)
