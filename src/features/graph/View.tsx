@@ -1,6 +1,7 @@
 import { FC, useRef, useState } from 'react'
 import CreateNodeDrawer from '@/features/create-node/View'
 import CreateRelationDrawer from '@/features/create-relation/View'
+import DeleteAlert from '@/features/delete-alert/View'
 import { useGraphContext } from '@/features/graph/context'
 import { useGraphRender } from '@/features/graph/hooks/useGraphRender'
 
@@ -42,6 +43,7 @@ const View: FC = () => {
         open={createRelationDialog}
         onClose={closeCreateRelationDialog}
       />
+      <DeleteAlert open={true} />
     </div>
   )
 }
