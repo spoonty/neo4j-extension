@@ -1,7 +1,4 @@
-import { FC, useRef, useState } from 'react'
-import CreateNodeDrawer from '@/features/create-node/View'
-import CreateRelationDrawer from '@/features/create-relation/View'
-import DeleteAlert from '@/features/delete-alert/View'
+import {createElement, FC, useRef} from 'react'
 import { useGraphContext } from '@/features/graph/context'
 import { useGraphRender } from '@/features/graph/hooks/useGraphRender'
 
@@ -9,24 +6,20 @@ const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   useGraphRender(svgRef)
 
-  const { createRelationDialog, closeCreateRelationDialog, removeNodeDialog } = useGraphContext()
-
-  const [createNodeOpened, setCreateNodeOpened] = useState(false)
+  const { dialog } = useGraphContext()
 
   const createNodeHandler = (event: React.MouseEvent<SVGSVGElement>) => {
     const target = event.target as HTMLElement
 
     switch (target.tagName.toLowerCase()) {
       case 'svg':
-        setCreateNodeOpened(true)
-
         // after adding of template node, svg rerenders,
         // so we need to click again to start zoom animation
         setTimeout(() => {
           svgRef.current?.dispatchEvent(
             new MouseEvent('click', { bubbles: false }),
           )
-        }, 0)
+        }, 100)
         break
     }
   }
@@ -35,15 +28,9 @@ const View: FC = () => {
     <div>
       <svg ref={svgRef} onClick={createNodeHandler} />
 
-      <CreateNodeDrawer
-        open={createNodeOpened}
-        onClose={() => setCreateNodeOpened(false)}
-      />
-      <CreateRelationDrawer
-        open={createRelationDialog}
-        onClose={closeCreateRelationDialog}
-      />
-      <DeleteAlert />
+      {
+        dialog?.component && createElement(dialog.component, dialog.props)
+      }
     </div>
   )
 }

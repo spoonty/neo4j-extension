@@ -3,7 +3,7 @@ import { NodeCreateDTO } from '@/domain/neo4j/models/Node'
 import { DEFAULT_PROPERTIES } from '@/features/create-node/constants'
 import { useGraphContext } from '@/features/graph/context'
 
-export const useAddNode = (open: boolean) => {
+export const useAddNode = () => {
   const { updateNodeTemplate, removeNodeTemplate, createNode } =
     useGraphContext()
 
@@ -47,12 +47,16 @@ export const useAddNode = (open: boolean) => {
   }
 
   useEffect(() => {
-    if (open) {
-      updateNodeTemplate(labels, convertProperties())
-    } else {
+    updateNodeTemplate(labels, convertProperties())
+  }, [labels.length, properties])
+
+  useEffect(() => {
+    updateNodeTemplate(labels, convertProperties())
+
+    return () => {
       removeNodeTemplate()
     }
-  }, [open, labels.length, properties])
+  }, []);
 
   return {
     labels,

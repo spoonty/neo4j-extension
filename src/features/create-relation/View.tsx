@@ -9,11 +9,10 @@ import Stepper from '@/ui/Stepper/Stepper'
 import { cn } from '@/utils/dom'
 
 interface Props {
-  open: boolean
   onClose: () => void
 }
 
-const View: FC<Props> = ({ open, onClose }) => {
+const View: FC<Props> = ({ onClose }) => {
   const {
     type,
     setType,
@@ -65,7 +64,7 @@ const View: FC<Props> = ({ open, onClose }) => {
   }
 
   return (
-    <Drawer open={open} modal={true}>
+    <Drawer open modal={true}>
       <Content
         className={cn(
           step === Steps.SET_PROPERTIES &&

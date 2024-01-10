@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
-import { DriverImpl } from '@/data/driver/Driver.impl'
-import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
-import {
-  RelationshipCreateDTO,
-  RelationshipD3,
-} from '@/domain/neo4j/models/Relationship'
-import { IGraphContext } from '@/features/graph/context'
-import { useToast } from '@/ui/Toast/hooks/useToast'
+import {useEffect, useRef, useState} from 'react'
+import {DriverImpl} from '@/data/driver/Driver.impl'
+import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {Node, NodeCreateDTO, NodeD3} from '@/domain/neo4j/models/Node'
+import {RelationshipCreateDTO, RelationshipD3,} from '@/domain/neo4j/models/Relationship'
+import {IGraphContext} from '@/features/graph/context'
+import {useToast} from '@/ui/Toast/hooks/useToast'
 import {GetGraphCaseImpl} from "@/domain/neo4j/usecases/GetGraphCase";
 import {CreateNodeCaseImpl} from "@/domain/neo4j/usecases/CreateNodeCase";
 import {DeleteNodeCaseImpl} from "@/domain/neo4j/usecases/DeleteNodeCase";
 import {CreateRelationshipCaseImpl} from "@/domain/neo4j/usecases/CreateRelationshipCase";
+import {DialogType, useDialog} from "@/features/graph/hooks/useDialog";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -31,6 +29,8 @@ export enum InteractionState {
 export const useGraph = (): IGraphContext => {
   const { add } = useToast()
 
+  const { dialog, setType } = useDialog()
+
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
@@ -46,9 +46,6 @@ export const useGraph = (): IGraphContext => {
     source: null,
     target: null,
   })
-
-  const [createRelationDialog, setCreateRelationDialog] = useState(false)
-  const [removeNodeDialog, setRemoveNodeDialog] = useState<{ open: boolean, nodeId: string | null }>({ open: false, nodeId: null })
 
   const getNodes = async () => {
     try {
@@ -82,6 +79,8 @@ export const useGraph = (): IGraphContext => {
       add('success', 'Node successfully created.')
     } catch (error: any) {
       add('error', error.message)
+    } finally {
+      setType(DialogType.NONE)
     }
   }
 
@@ -92,10 +91,11 @@ export const useGraph = (): IGraphContext => {
       setNodes(nodes.filter((node) => node.elementId !== nodeId))
       setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeId && relation.startNodeElementId !== nodeId))
 
-      setRemoveNodeDialog({ open: false, nodeId: null })
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
       add('error', error.message)
+    } finally {
+      setType(DialogType.NONE)
     }
   }
 
@@ -112,6 +112,8 @@ export const useGraph = (): IGraphContext => {
       }
     } catch (error: any) {
       add('error', error.message)
+    } finally {
+      setType(DialogType.NONE)
     }
   }
 
@@ -129,7 +131,7 @@ export const useGraph = (): IGraphContext => {
       target: targetId,
     }
 
-    setCreateRelationDialog(true)
+    setType(DialogType.CREATE_RELATIONSHIP)
   }
 
   const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
@@ -147,25 +149,22 @@ export const useGraph = (): IGraphContext => {
   }
 
   const removeNodeTemplate = () => {
-    if (!!getTemplateNode()) {
-      setNodes([...nodes.slice(0, nodes.length - 1)])
-    }
+    setNodes(nodes)
   }
 
-  const clickHandler = <T>(payload: T) => {
+  const clickHandler = <T>(payload?: T) => {
     switch (state.current) {
       case InteractionState.DELETE_NODE:
-        // @ts-ignore
-        setRemoveNodeDialog({ open: true, nodeId: payload.nodeId })
+        setType(DialogType.DELETE_NODE)
         break
       default:
+        setType(DialogType.CREATE_NODE)
         // @ts-ignore
         setAddNodePosition({ x: payload.x, y: payload.y })
     }
   }
 
   const closeCreateRelationDialog = () => {
-    setCreateRelationDialog(false)
     createRelationTargets.current = {
       source: null,
       target: null
@@ -180,14 +179,13 @@ export const useGraph = (): IGraphContext => {
   }, [])
 
   return {
+    dialog,
     state,
     nodes,
     relations,
     labels,
     types,
     createRelationTargets: createRelationTargets.current,
-    createRelationDialog,
-    removeNodeDialog,
     createNode,
     deleteNode,
     createRelation,
@@ -196,7 +194,5 @@ export const useGraph = (): IGraphContext => {
     updateNodeTemplate,
     removeNodeTemplate,
     clickHandler,
-    closeCreateRelationDialog,
-    closeRemoveNodeDialog: () => setRemoveNodeDialog({ open: false, nodeId: null })
   }
 }
