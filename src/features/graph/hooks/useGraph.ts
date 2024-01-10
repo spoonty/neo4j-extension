@@ -17,13 +17,13 @@ const repository = new Neo4jRepositoryImpl(driver)
 const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
 const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
 const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
-const createRelationshipCase = new CreateRelationshipCaseImpl(repository.createRelation)
+const createRelationshipCase = new CreateRelationshipCaseImpl(repository.createRelationship)
 
 export enum InteractionState {
   DEFAULT,
   CREATE_NODE,
   DELETE_NODE,
-  CREATE_RELATION,
+  CREATE_RELATIONSHIP,
 }
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
@@ -33,14 +33,15 @@ export const useGraph = (): IGraphContext => {
   const { dialog, dialogType, setDialogType } = useDialog()
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
-  const [relations, setRelations] = useState<RelationshipD3[]>([])
+  const [relationships, setRelationships] = useState<RelationshipD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
   const [types, setTypes] = useState<string[]>([])
+
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
   const [nodeDelete, setNodeDelete] = useState('-1')
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
-  const createRelationTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
+  const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
 
   const getNodes = async () => {
     try {
@@ -49,7 +50,7 @@ export const useGraph = (): IGraphContext => {
       setNodes(nodes)
       setLabels(labels)
 
-      setRelations(relationships)
+      setRelationships(relationships)
       setTypes(types)
     } catch (error: any) {
       add('error', error.message)
@@ -86,7 +87,7 @@ export const useGraph = (): IGraphContext => {
       await deleteNodeCase.execute(nodeDelete)
 
       setNodes(nodes.filter((node) => node.elementId !== nodeDelete))
-      setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeDelete && relation.startNodeElementId !== nodeDelete))
+      setRelationships(relationships.filter((relationship) => relationship.endNodeElementId !== nodeDelete && relationship.startNodeElementId !== nodeDelete))
 
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
@@ -96,16 +97,16 @@ export const useGraph = (): IGraphContext => {
     }
   }
 
-  const createRelation = async (type: string, properties: KeyValue) => {
+  const createRelationship = async (type: string, properties: KeyValue) => {
     try {
-      const relationship = new RelationshipCreateDTO(createRelationTargets.current.source, createRelationTargets.current.target, type, properties)
+      const relationship = new RelationshipCreateDTO(createRelationshipTargets.current.source, createRelationshipTargets.current.target, type, properties)
 
       const relationshipD3 = await createRelationshipCase.execute(relationship)
 
-      setRelations([...relations, relationshipD3])
+      setRelationships([...relationships, relationshipD3])
       add('success', 'Relationship successfully created.')
 
-      createRelationTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+      createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
     } catch (error: any) {
       add('error', error.message)
     } finally {
@@ -114,17 +115,17 @@ export const useGraph = (): IGraphContext => {
   }
 
   const setSource = (sourceId: string) => {
-    createRelationTargets.current = {
-      ...createRelationTargets.current,
+    createRelationshipTargets.current = {
+      ...createRelationshipTargets.current,
       source: sourceId,
     }
 
-    state.current = InteractionState.CREATE_RELATION
+    state.current = InteractionState.CREATE_RELATIONSHIP
   }
 
   const setTarget = (targetId: string) => {
-    createRelationTargets.current = {
-      ...createRelationTargets.current,
+    createRelationshipTargets.current = {
+      ...createRelationshipTargets.current,
       target: targetId,
     }
 
@@ -157,7 +158,7 @@ export const useGraph = (): IGraphContext => {
 
   useEffect(() => {
     if (dialogType === DialogType.NONE) {
-      createRelationTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+      createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
       state.current = InteractionState.DEFAULT
       setNodes(getNodesWithoutTemplate())
     }
@@ -173,12 +174,12 @@ export const useGraph = (): IGraphContext => {
     dialog,
     state,
     nodes,
-    relations,
+    relationships,
     labels,
     types,
     createNode,
     deleteNode,
-    createRelation,
+    createRelationship,
     setSource,
     setTarget,
     updateNodeTemplate,

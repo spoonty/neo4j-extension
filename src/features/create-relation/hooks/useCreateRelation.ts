@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { DEFAULT_PROPERTIES } from '@/features/create-relation/constants'
 import { useGraphContext } from '@/features/graph/context'
 
-export const useCreateRelation = () => {
-  const { createRelation } = useGraphContext()
+export const useCreateRelationship = () => {
+  const { createRelationship } = useGraphContext()
 
   const [type, setType] = useState<string>('')
   const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
@@ -31,14 +31,14 @@ export const useCreateRelation = () => {
     setProperties(DEFAULT_PROPERTIES)
   }
 
-  const createRelationHandler = async () => {
-    await createRelation(type, convertProperties())
+  const createRelationshipHandler = async () => {
+    await createRelationship(type, convertProperties())
   }
 
   return {
     type,
     properties,
-    createRelationHandler,
+    createRelationshipHandler,
     setType,
     addProperty,
     clearData,

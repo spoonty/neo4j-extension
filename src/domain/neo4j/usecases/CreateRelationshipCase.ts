@@ -3,7 +3,7 @@ import {UseCase} from "@/utils/domain";
 import {RelationshipCreateDTO, RelationshipD3} from "@/domain/neo4j/models/Relationship";
 import {CreateRelationshipError} from "@/domain/errors/CreateRelationshipError";
 
-type Func = Neo4jRepository['createRelation']
+type Func = Neo4jRepository['createRelationship']
 
 export abstract class CreateRelationshipCase implements UseCase<Promise<RelationshipD3>> {
   abstract execute(relationship: RelationshipCreateDTO): Promise<RelationshipD3>

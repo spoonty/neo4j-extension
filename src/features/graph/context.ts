@@ -8,12 +8,12 @@ export interface IGraphContext {
   dialog: DialogData | null
   state: React.MutableRefObject<InteractionState>
   nodes: NodeD3[]
-  relations: RelationshipD3[]
+  relationships: RelationshipD3[]
   labels: string[]
   types: string[]
   createNode: (labels: string[], properties: KeyValue) => Promise<void>
   deleteNode: () => Promise<void>
-  createRelation: (type: string, properties: KeyValue) => Promise<void>
+  createRelationship: (type: string, properties: KeyValue) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void
   updateNodeTemplate: (labels: string[], properties: KeyValue) => void
@@ -24,12 +24,12 @@ export const GraphContext = createContext<IGraphContext>({
   dialog: null,
   state: { current: InteractionState.DEFAULT },
   nodes: [],
-  relations: [],
+  relationships: [],
   labels: [],
   types: [],
   createNode: async () => {},
   deleteNode: async () => {},
-  createRelation: async () => {},
+  createRelationship: async () => {},
   setSource: () => {},
   setTarget: () => {},
   updateNodeTemplate: () => {},

@@ -24,7 +24,7 @@ export class Neo4jRepositoryImpl implements Neo4jRepository {
     return await this.crudService.deleteNode(nodeId)
   }
 
-  createRelation = async (relation: RelationshipCreateDTO) => {
-    return await this.crudService.createRelation(relation)
+  createRelationship = async (relationship: RelationshipCreateDTO) => {
+    return await this.crudService.createRelationship(relationship)
   }
 }

@@ -4,7 +4,7 @@ import { Relationship, RelationshipCreateDTO } from '@/domain/neo4j/models/Relat
 import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
 import {Graph} from "@/domain/neo4j/models/Graph";
 
-type NodeRelation = {
+type NodeRelationship = {
   n: Node
   r: Relationship
 }
@@ -19,7 +19,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
             RETURN n, r
         `
 
-    const result = await this.driver.execute<Array<NodeRelation>>(query)
+    const result = await this.driver.execute<Array<NodeRelationship>>(query)
 
     const uniqueNodes = new Set()
 
@@ -33,12 +33,12 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
         return false
       }).map((node) => new Node(node.elementId, node.identity, node.labels, node.properties))
 
-    const relations = result
+    const relationships = result
       .map((record) => record.r)
       .filter((record) => !!record)
       .map((relationship) => new Relationship(relationship.elementId, relationship.end, relationship.endNodeElementId, relationship.start, relationship.startNodeElementId, relationship.properties, relationship.type))
 
-    return new Graph(nodes, relations)
+    return new Graph(nodes, relationships)
   }
 
   createNode = async (node: NodeCreateDTO): Promise<Node> => {
@@ -63,19 +63,19 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     return await this.driver.execute(query)
   }
 
-  createRelation = async (relation: RelationshipCreateDTO): Promise<any> => {
+  createRelationship = async (relationship: RelationshipCreateDTO): Promise<any> => {
     const query = `
       MATCH (node1), (node2)
       WHERE id(node1) = ${
-        relation.startNodeElementId.split(':').reverse()[0]
-      } AND id(node2) = ${relation.endNodeElementId.split(':').reverse()[0]}
-      CREATE (node1)-[r:${relation.type}]->(node2)
+        relationship.startNodeElementId.split(':').reverse()[0]
+      } AND id(node2) = ${relationship.endNodeElementId.split(':').reverse()[0]}
+      CREATE (node1)-[r:${relationship.type}]->(node2)
       SET r += $properties
       RETURN r
     `
 
     const result = await this.driver.execute<Array<{ r: Relationship }>>(query, {
-      properties: relation.properties,
+      properties: relationship.properties,
     })
 
     return result[0].r

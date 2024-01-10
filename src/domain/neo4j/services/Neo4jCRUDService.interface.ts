@@ -6,5 +6,5 @@ export interface Neo4jCRUDService {
   getGraph(): Promise<Graph>
   createNode(node: NodeCreateDTO): Promise<Node>
   deleteNode(nodeId: string): Promise<void>
-  createRelation(relation: RelationshipCreateDTO): Promise<any>
+  createRelationship(relationship: RelationshipCreateDTO): Promise<any>
 }

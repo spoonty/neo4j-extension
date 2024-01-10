@@ -15,7 +15,7 @@ export type NodeSimulation = d3.Simulation<
 export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
   const {
     nodes,
-    relations,
+    relationships,
     labels,
     clickHandler,
     setSource,
@@ -30,7 +30,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    if (!nodes || !relations) {
+    if (!nodes || !relationships) {
       return
     }
 
@@ -53,7 +53,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .force(
         'link',
         d3
-          .forceLink(relations)
+          .forceLink(relationships)
           .id((d: any) => d.elementId)
           .distance(300),
       )
@@ -77,16 +77,16 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('class', 'arrow-head')
       .attr('fill', '#edeef0')
 
-    const relation = group.append('g').selectAll('g').data(relations).join('g')
+    const relationship = group.append('g').selectAll('g').data(relationships).join('g')
 
-    relation
+    relationship
       .append('line')
       .attr('stroke', '#edeef0')
       .attr('stroke-opacity', 0.5)
       .attr('stroke-width', (d: any) => Math.sqrt(d.value))
       .attr('marker-end', 'url(#arrow)')
 
-    relation
+    relationship
       .append('text')
       .text((d: any) => d.type)
       .attr('text-anchor', 'middle')
@@ -111,7 +111,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('opacity', 0)
       .attr('data-element-id', (d: any) => d.elementId)
 
-    const relationButton = node
+    const relationshipButton = node
       .append('circle')
       .attr('class', 'edit-button')
       .attr('r', 10)
@@ -143,7 +143,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     node.on('click', function (event) {
       switch (state.current) {
-        case InteractionState.CREATE_RELATION:
+        case InteractionState.CREATE_RELATIONSHIP:
           const nodeId = d3.select(this).attr('data-element-id')
           setTarget(nodeId)
           break
@@ -193,7 +193,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
-      relationButton
+      relationshipButton
         .transition()
         .duration(500)
         .attr('cx', 0)
@@ -203,7 +203,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       optionsOpened.current = false
     })
 
-    relationButton.on('click', function (event) {
+    relationshipButton.on('click', function (event) {
       event.stopPropagation()
 
       const nodeId = d3.select(this).attr('data-element-id')
@@ -215,7 +215,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
-      relationButton
+      relationshipButton
         .transition()
         .duration(500)
         .attr('cx', 0)
@@ -248,7 +248,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       )
 
     container.on('click', (event) => {
-      // let handler: () => void
       const target = event.target as HTMLElement
 
       switch (target.tagName.toLowerCase()) {
@@ -257,6 +256,14 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
             clickHandler<{ x: number, y: number }>({x, y})
             setClickedPosition({ x, y })
             setIsAnimation(true)
+          }
+
+          if (!isAnimation) {
+            setTimeout(() => {
+              svg.current?.dispatchEvent(
+                new MouseEvent('click', { bubbles: false }),
+              )
+            }, 100)
           }
 
           let x = clickedPosition.x
@@ -280,7 +287,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           .attr('cx', 0)
           .attr('cy', 0)
           .style('opacity', 0)
-        relationButton
+        relationshipButton
           .transition()
           .duration(500)
           .attr('cx', 0)
@@ -292,14 +299,14 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     })
 
     simulation.on('tick', () => {
-      relation
+      relationship
         .select('line')
         .attr('x1', (d: any) => d.source.x)
         .attr('y1', (d: any) => d.source.y)
         .attr('x2', (d: any) => d.target.x)
         .attr('y2', (d: any) => d.target.y)
 
-      relation
+      relationship
         .select('text')
         .attr('x', (d: any) => (d.source.x + d.target.x) / 2)
         .attr('y', (d: any) => (d.source.y + d.target.y) / 2)
@@ -308,9 +315,9 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     })
 
     return simulation
-  }, [nodes, relations])
+  }, [nodes, relationships])
 
   useEffect(() => {
     render()
-  }, [nodes, relations])
+  }, [nodes, relationships])
 }

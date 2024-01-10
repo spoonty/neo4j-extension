@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { Steps } from '@/features/create-relation/constants'
-import { useCreateRelation } from '@/features/create-relation/hooks/useCreateRelation'
+import { useCreateRelationship } from '@/features/create-relation/hooks/useCreateRelation'
 import PropertiesStep from '@/features/create-relation/steps/PropertiesStep'
 import TypeStep from '@/features/create-relation/steps/TypeStep'
 import Button from '@/ui/Button/Button'
@@ -19,8 +19,8 @@ const View: FC<Props> = ({ onClose }) => {
     properties,
     addProperty,
     clearData,
-    createRelationHandler,
-  } = useCreateRelation()
+    createRelationshipHandler,
+  } = useCreateRelationship()
 
   const [step, setStep] = useState(Steps.SET_TYPE)
   const steps = [Steps.SET_TYPE, Steps.SET_PROPERTIES]
@@ -42,7 +42,7 @@ const View: FC<Props> = ({ onClose }) => {
   }
 
   const handler = async () => {
-    await createRelationHandler()
+    await createRelationshipHandler()
     closeHandler()
   }
 
@@ -72,7 +72,7 @@ const View: FC<Props> = ({ onClose }) => {
             'h-[482px]',
         )}
       >
-        <Header onClose={closeHandler}>CREATE RELATION</Header>
+        <Header onClose={closeHandler}>CREATE RELATIONSHIP</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">
           <Stepper steps={steps} current={step} />
           {renderStep()}

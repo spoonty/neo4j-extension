@@ -8,25 +8,9 @@ const View: FC = () => {
 
   const { dialog } = useGraphContext()
 
-  const createNodeHandler = (event: React.MouseEvent<SVGSVGElement>) => {
-    const target = event.target as HTMLElement
-
-    switch (target.tagName.toLowerCase()) {
-      case 'svg':
-        // after adding of template node, svg rerenders,
-        // so we need to click again to start zoom animation
-        setTimeout(() => {
-          svgRef.current?.dispatchEvent(
-            new MouseEvent('click', { bubbles: false }),
-          )
-        }, 100)
-        break
-    }
-  }
-
   return (
     <div>
-      <svg ref={svgRef} onClick={createNodeHandler} />
+      <svg ref={svgRef} />
 
       {
         dialog?.component && createElement(dialog.component, dialog.props)

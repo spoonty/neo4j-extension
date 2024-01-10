@@ -23,18 +23,18 @@ export class RelationshipD3 extends Relationship {
   source: string
   target: string
 
-  constructor(relation: Relationship) {
+  constructor(relationship: Relationship) {
     super(
-      relation.elementId,
-      relation.end,
-      relation.endNodeElementId,
-      relation.start,
-      relation.startNodeElementId,
-      relation.properties,
-      relation.type,
+      relationship.elementId,
+      relationship.end,
+      relationship.endNodeElementId,
+      relationship.start,
+      relationship.startNodeElementId,
+      relationship.properties,
+      relationship.type,
     )
 
-    this.source = relation.startNodeElementId
-    this.target = relation.endNodeElementId
+    this.source = relationship.startNodeElementId
+    this.target = relationship.endNodeElementId
   }
 }
