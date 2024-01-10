@@ -26,26 +26,21 @@ export enum InteractionState {
   CREATE_RELATION,
 }
 
+const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
+
 export const useGraph = (): IGraphContext => {
   const { add } = useToast()
-
-  const { dialog, setType } = useDialog()
-
-  const state = useRef<InteractionState>(InteractionState.DEFAULT)
+  const { dialog, dialogType, setDialogType } = useDialog()
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relations, setRelations] = useState<RelationshipD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
   const [types, setTypes] = useState<string[]>([])
-
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
-  const createRelationTargets = useRef<{
-    source: string | null
-    target: string | null
-  }>({
-    source: null,
-    target: null,
-  })
+  const [nodeDelete, setNodeDelete] = useState('-1')
+
+  const state = useRef<InteractionState>(InteractionState.DEFAULT)
+  const createRelationTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
 
   const getNodes = async () => {
     try {
@@ -61,8 +56,10 @@ export const useGraph = (): IGraphContext => {
     }
   }
 
-  const createNode = async (node: NodeCreateDTO) => {
+  const createNode = async (labels: string[], properties: KeyValue) => {
     try {
+      const node = new NodeCreateDTO(labels, properties)
+
       const nodeD3 = await createNodeCase.execute(node)
       nodeD3.setPosition(addNodePosition.x, addNodePosition.y)
 
@@ -73,55 +70,55 @@ export const useGraph = (): IGraphContext => {
         }
       })
 
-      setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
+      setNodes([...getNodesWithoutTemplate(), nodeD3])
       setLabels([...labels, ...nodeLabels])
 
       add('success', 'Node successfully created.')
     } catch (error: any) {
       add('error', error.message)
     } finally {
-      setType(DialogType.NONE)
+      setDialogType(DialogType.NONE)
     }
   }
 
-  const deleteNode = async (nodeId: string) => {
+  const deleteNode = async () => {
     try {
-      await deleteNodeCase.execute(nodeId)
+      await deleteNodeCase.execute(nodeDelete)
 
-      setNodes(nodes.filter((node) => node.elementId !== nodeId))
-      setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeId && relation.startNodeElementId !== nodeId))
+      setNodes(nodes.filter((node) => node.elementId !== nodeDelete))
+      setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeDelete && relation.startNodeElementId !== nodeDelete))
 
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
       add('error', error.message)
     } finally {
-      setType(DialogType.NONE)
+      setDialogType(DialogType.NONE)
     }
   }
 
-  const createRelation = async (relation: RelationshipCreateDTO) => {
+  const createRelation = async (type: string, properties: KeyValue) => {
     try {
-      const relationshipD3 = await createRelationshipCase.execute(relation)
+      const relationship = new RelationshipCreateDTO(createRelationTargets.current.source, createRelationTargets.current.target, type, properties)
+
+      const relationshipD3 = await createRelationshipCase.execute(relationship)
 
       setRelations([...relations, relationshipD3])
       add('success', 'Relationship successfully created.')
 
-      createRelationTargets.current = {
-        source: null,
-        target: null,
-      }
+      createRelationTargets.current = DEFAULT_RELATIONSHIP_TARGETS
     } catch (error: any) {
       add('error', error.message)
     } finally {
-      setType(DialogType.NONE)
+      setDialogType(DialogType.NONE)
     }
   }
 
   const setSource = (sourceId: string) => {
     createRelationTargets.current = {
+      ...createRelationTargets.current,
       source: sourceId,
-      target: null,
     }
+
     state.current = InteractionState.CREATE_RELATION
   }
 
@@ -131,7 +128,7 @@ export const useGraph = (): IGraphContext => {
       target: targetId,
     }
 
-    setType(DialogType.CREATE_RELATIONSHIP)
+    setDialogType(DialogType.CREATE_RELATIONSHIP)
   }
 
   const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
@@ -141,38 +138,32 @@ export const useGraph = (): IGraphContext => {
       addNodePosition.y,
     )
 
-    if (!!getTemplateNode()) {
-      setNodes([...nodes.slice(0, nodes.length - 1), node])
-    } else {
-      setNodes([...nodes, node])
-    }
-  }
-
-  const removeNodeTemplate = () => {
-    setNodes(nodes)
+    setNodes([...getNodesWithoutTemplate(), node])
   }
 
   const clickHandler = <T>(payload?: T) => {
     switch (state.current) {
       case InteractionState.DELETE_NODE:
-        setType(DialogType.DELETE_NODE)
+        setDialogType(DialogType.DELETE_NODE)
+        // @ts-ignore
+        setNodeDelete(payload?.nodeId)
         break
       default:
-        setType(DialogType.CREATE_NODE)
+        setDialogType(DialogType.CREATE_NODE)
         // @ts-ignore
         setAddNodePosition({ x: payload.x, y: payload.y })
     }
   }
 
-  const closeCreateRelationDialog = () => {
-    createRelationTargets.current = {
-      source: null,
-      target: null
+  useEffect(() => {
+    if (dialogType === DialogType.NONE) {
+      createRelationTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+      state.current = InteractionState.DEFAULT
+      setNodes(getNodesWithoutTemplate())
     }
-    state.current = InteractionState.DEFAULT
-  }
+  }, [dialogType]);
 
-  const getTemplateNode = () => nodes?.find((node) => node.elementId === '-1')
+  const getNodesWithoutTemplate = () => nodes.filter((node) => node.elementId !== '-1')
 
   useEffect(() => {
     getNodes()
@@ -185,14 +176,12 @@ export const useGraph = (): IGraphContext => {
     relations,
     labels,
     types,
-    createRelationTargets: createRelationTargets.current,
     createNode,
     deleteNode,
     createRelation,
     setSource,
     setTarget,
     updateNodeTemplate,
-    removeNodeTemplate,
     clickHandler,
   }
 }

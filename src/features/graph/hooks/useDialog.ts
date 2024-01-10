@@ -39,6 +39,7 @@ export const useDialog = () => {
 
   return {
     dialog,
-    setType
+    dialogType: type,
+    setDialogType: setType
   }
 }

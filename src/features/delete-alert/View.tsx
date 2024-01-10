@@ -11,12 +11,6 @@ interface Props {
 const View: FC<Props> = ({ onClose }) => {
   const { deleteNode } = useGraphContext()
 
-  const handler = () => {
-    // if (removeNodeDialog.nodeId) {
-    //   deleteNode(removeNodeDialog.nodeId)
-    // }
-  }
-
   return <Alert open>
     <Content className="p-4 flex flex-col gap-3">
       <Warning width="48" height="48" className="text-red-alert my-0 mx-auto" />
@@ -24,7 +18,7 @@ const View: FC<Props> = ({ onClose }) => {
         Are you sure you want to delete this node?
       </div>
       <Footer className="flex justify-between">
-        <Button variant={"cancel"} onClick={handler}>Delete</Button>
+        <Button variant={"cancel"} onClick={deleteNode}>Delete</Button>
         <Button onClick={onClose}>Cancel</Button>
       </Footer>
     </Content>
