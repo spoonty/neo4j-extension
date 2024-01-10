@@ -63,7 +63,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     return await this.driver.execute(query)
   }
 
-  createRelationship = async (relationship: RelationshipCreateDTO): Promise<any> => {
+  createRelationship = async (relationship: RelationshipCreateDTO): Promise<Relationship> => {
     const query = `
       MATCH (node1), (node2)
       WHERE id(node1) = ${
