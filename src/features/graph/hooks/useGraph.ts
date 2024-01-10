@@ -3,15 +3,18 @@ import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
 import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
 import {
-  Relation,
-  RelationCreateDTO,
-  RelationD3,
-} from '@/domain/neo4j/models/Relation'
+  Relationship,
+  RelationshipCreateDTO,
+  RelationshipD3,
+} from '@/domain/neo4j/models/Relationship'
 import { IGraphContext } from '@/features/graph/context'
 import { useToast } from '@/ui/Toast/hooks/useToast'
+import {GetGraphCaseImpl} from "@/domain/neo4j/usecases/GetGraphCase";
+import {ApplicationError} from "@/domain/errors/ApplicationError";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
+const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
 
 export enum InteractionState {
   DEFAULT,
@@ -26,7 +29,7 @@ export const useGraph = (): IGraphContext => {
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
-  const [relations, setRelations] = useState<RelationD3[]>([])
+  const [relations, setRelations] = useState<RelationshipD3[]>([])
   const [labels, setLabels] = useState<string[]>([])
   const [types, setTypes] = useState<string[]>([])
 
@@ -43,37 +46,17 @@ export const useGraph = (): IGraphContext => {
   const [removeNodeDialog, setRemoveNodeDialog] = useState<{ open: boolean, nodeId: string | null }>({ open: false, nodeId: null })
 
   const getNodes = async () => {
-    const { nodes, relations } = await repository.getGraph()
+    try {
+      const { nodes, labels, relationships, types } = await getGraphCase.execute()
 
-    const nodesParsed: NodeD3[] = []
-    const nodeLabels: string[] = []
+      setNodes(nodes)
+      setLabels(labels)
 
-    nodes.forEach((node: Node) => {
-      nodesParsed.push(new NodeD3(node))
-
-      node.labels.forEach((label) => {
-        if (!nodeLabels.includes(label)) {
-          nodeLabels.push(label)
-        }
-      })
-    })
-
-    const relationsParsed: RelationD3[] = []
-    const relationTypes: string[] = []
-
-    relations.forEach((relation: Relation) => {
-      relationsParsed.push(new RelationD3(relation))
-
-      if (relation.type && !relationTypes.includes(relation.type)) {
-        relationTypes.push(relation.type)
-      }
-    })
-
-    setNodes(nodesParsed)
-    setLabels(nodeLabels)
-
-    setRelations(relationsParsed)
-    setTypes(relationTypes)
+      setRelations(relationships)
+      setTypes(types)
+    } catch (error: any) {
+      add('error', error.message)
+    }
   }
 
   const createNode = async (node: NodeCreateDTO) => {
@@ -103,9 +86,9 @@ export const useGraph = (): IGraphContext => {
     add('success', 'Node successfully deleted.')
   }
 
-  const createRelation = async (relation: RelationCreateDTO) => {
+  const createRelation = async (relation: RelationshipCreateDTO) => {
     const result = await repository.createRelation(relation)
-    const relationD3 = new RelationD3(result)
+    const relationD3 = new RelationshipD3(result)
 
     setRelations([...relations, relationD3])
     add('success', 'Relation successfully created.')

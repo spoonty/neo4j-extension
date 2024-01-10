@@ -1,9 +1,10 @@
 import { Node, NodeCreateDTO } from '@/domain/neo4j/models/Node'
-import { RelationCreateDTO } from '@/domain/neo4j/models/Relation'
+import { RelationshipCreateDTO } from '@/domain/neo4j/models/Relationship'
+import {Graph} from "@/domain/neo4j/models/Graph";
 
 export interface Neo4jCRUDService {
-  getGraph(): any
+  getGraph(): Promise<Graph>
   addNode(node: NodeCreateDTO): Promise<Node>
   deleteNode(nodeId: string): Promise<void>
-  createRelation(relation: RelationCreateDTO): Promise<any>
+  createRelation(relation: RelationshipCreateDTO): Promise<any>
 }

@@ -1,4 +1,4 @@
-export class Relation {
+export class Relationship {
   constructor(
     readonly elementId: string,
     readonly end: { low: number; high: number },
@@ -10,7 +10,7 @@ export class Relation {
   ) {}
 }
 
-export class RelationCreateDTO {
+export class RelationshipCreateDTO {
   constructor(
     readonly startNodeElementId: string,
     readonly endNodeElementId: string,
@@ -19,11 +19,11 @@ export class RelationCreateDTO {
   ) {}
 }
 
-export class RelationD3 extends Relation {
+export class RelationshipD3 extends Relationship {
   source: string
   target: string
 
-  constructor(relation: Relation) {
+  constructor(relation: Relationship) {
     super(
       relation.elementId,
       relation.end,

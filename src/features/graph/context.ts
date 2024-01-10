@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react'
 import { NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
-import { RelationCreateDTO, RelationD3 } from '@/domain/neo4j/models/Relation'
+import { RelationshipCreateDTO, RelationshipD3 } from '@/domain/neo4j/models/Relationship'
 import { InteractionState } from '@/features/graph/hooks/useGraph'
 
 export interface IGraphContext {
   state: React.MutableRefObject<InteractionState>
   nodes: NodeD3[]
-  relations: RelationD3[]
+  relations: RelationshipD3[]
   labels: string[]
   types: string[]
   createRelationTargets: { source: string | null; target: string | null }
@@ -14,7 +14,7 @@ export interface IGraphContext {
   removeNodeDialog: { open: boolean, nodeId: string | null }
   createNode: (node: NodeCreateDTO) => Promise<void>
   deleteNode: (nodeId: string) => Promise<void>
-  createRelation: (relation: RelationCreateDTO) => Promise<void>
+  createRelation: (relation: RelationshipCreateDTO) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void
   updateNodeTemplate: (labels: string[], properties: KeyValue) => void
