@@ -41,7 +41,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     return new Graph(nodes, relations)
   }
 
-  addNode = async (node: NodeCreateDTO): Promise<Node> => {
+  createNode = async (node: NodeCreateDTO): Promise<Node> => {
     const query = `
             CREATE (n:${node.labels.join(':')} $properties)
             RETURN n

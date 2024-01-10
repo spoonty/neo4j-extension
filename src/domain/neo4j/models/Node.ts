@@ -24,4 +24,9 @@ export class NodeD3 extends Node {
   ) {
     super(node.elementId, node.identity, node.labels, node.properties)
   }
+
+  setPosition = (x: number, y: number ) => {
+    this.x = x
+    this.y = y
+  }
 }

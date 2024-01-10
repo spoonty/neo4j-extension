@@ -4,7 +4,7 @@ import {Graph} from "@/domain/neo4j/models/Graph";
 
 export interface Neo4jCRUDService {
   getGraph(): Promise<Graph>
-  addNode(node: NodeCreateDTO): Promise<Node>
+  createNode(node: NodeCreateDTO): Promise<Node>
   deleteNode(nodeId: string): Promise<void>
   createRelation(relation: RelationshipCreateDTO): Promise<any>
 }

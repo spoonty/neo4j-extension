@@ -3,18 +3,23 @@ import { DriverImpl } from '@/data/driver/Driver.impl'
 import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
 import { Node, NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
 import {
-  Relationship,
   RelationshipCreateDTO,
   RelationshipD3,
 } from '@/domain/neo4j/models/Relationship'
 import { IGraphContext } from '@/features/graph/context'
 import { useToast } from '@/ui/Toast/hooks/useToast'
 import {GetGraphCaseImpl} from "@/domain/neo4j/usecases/GetGraphCase";
-import {ApplicationError} from "@/domain/errors/ApplicationError";
+import {CreateNodeCaseImpl} from "@/domain/neo4j/usecases/CreateNodeCase";
+import {DeleteNodeCaseImpl} from "@/domain/neo4j/usecases/DeleteNodeCase";
+import {CreateRelationshipCaseImpl} from "@/domain/neo4j/usecases/CreateRelationshipCase";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
+
 const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
+const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
+const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
+const createRelationshipCase = new CreateRelationshipCaseImpl(repository.createRelation)
 
 export enum InteractionState {
   DEFAULT,
@@ -60,42 +65,53 @@ export const useGraph = (): IGraphContext => {
   }
 
   const createNode = async (node: NodeCreateDTO) => {
-    const result = await repository.addNode(node)
-    const nodeD3 = new NodeD3(result, addNodePosition.x, addNodePosition.y)
+    try {
+      const nodeD3 = await createNodeCase.execute(node)
+      nodeD3.setPosition(addNodePosition.x, addNodePosition.y)
 
-    const nodeLabels: string[] = []
-    result.labels.forEach((label) => {
-      if (!labels.includes(label)) {
-        nodeLabels.push(label)
-      }
-    })
+      const nodeLabels: string[] = []
+      nodeD3.labels.forEach((label) => {
+        if (!labels.includes(label)) {
+          nodeLabels.push(label)
+        }
+      })
 
-    setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
-    setLabels([...labels, ...nodeLabels])
+      setNodes([...nodes.slice(0, nodes.length - 1), nodeD3])
+      setLabels([...labels, ...nodeLabels])
 
-    add('success', 'Node successfully created.')
+      add('success', 'Node successfully created.')
+    } catch (error: any) {
+      add('error', error.message)
+    }
   }
 
   const deleteNode = async (nodeId: string) => {
-    await repository.deleteNode(nodeId)
+    try {
+      await deleteNodeCase.execute(nodeId)
 
-    setNodes(nodes.filter((node) => node.elementId !== nodeId))
-    setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeId && relation.startNodeElementId !== nodeId))
+      setNodes(nodes.filter((node) => node.elementId !== nodeId))
+      setRelations(relations.filter((relation) => relation.endNodeElementId !== nodeId && relation.startNodeElementId !== nodeId))
 
-    setRemoveNodeDialog({ open: false, nodeId: null })
-    add('success', 'Node successfully deleted.')
+      setRemoveNodeDialog({ open: false, nodeId: null })
+      add('success', 'Node successfully deleted.')
+    } catch (error: any) {
+      add('error', error.message)
+    }
   }
 
   const createRelation = async (relation: RelationshipCreateDTO) => {
-    const result = await repository.createRelation(relation)
-    const relationD3 = new RelationshipD3(result)
+    try {
+      const relationshipD3 = await createRelationshipCase.execute(relation)
 
-    setRelations([...relations, relationD3])
-    add('success', 'Relation successfully created.')
+      setRelations([...relations, relationshipD3])
+      add('success', 'Relationship successfully created.')
 
-    createRelationTargets.current = {
-      source: null,
-      target: null,
+      createRelationTargets.current = {
+        source: null,
+        target: null,
+      }
+    } catch (error: any) {
+      add('error', error.message)
     }
   }
 

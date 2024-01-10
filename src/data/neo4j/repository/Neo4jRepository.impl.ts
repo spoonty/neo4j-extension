@@ -16,8 +16,8 @@ export class Neo4jRepositoryImpl implements Neo4jRepository {
     return await this.crudService.getGraph()
   }
 
-  addNode = async (node: NodeCreateDTO) => {
-    return await this.crudService.addNode(node)
+  createNode = async (node: NodeCreateDTO) => {
+    return await this.crudService.createNode(node)
   }
 
   deleteNode = async (nodeId: string) => {
