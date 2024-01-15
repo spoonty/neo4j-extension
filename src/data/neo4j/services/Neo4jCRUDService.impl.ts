@@ -31,12 +31,11 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
           return true
         }
         return false
-      }).map((node) => new Node(node.elementId, node.identity, node.labels, node.properties))
+      })
 
     const relationships = result
       .map((record) => record.r)
       .filter((record) => !!record)
-      .map((relationship) => new Relationship(relationship.elementId, relationship.end, relationship.endNodeElementId, relationship.start, relationship.startNodeElementId, relationship.properties, relationship.type))
 
     return new Graph(nodes, relationships)
   }
