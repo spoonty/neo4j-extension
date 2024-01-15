@@ -22,12 +22,12 @@ const View: FC<Props> = ({ node, onClose }) => {
   console.log(node?.properties)
 
   const properties = {
-    key: ['ID', Object.keys(node.properties)],
-    value: [node.elementId, Object.keys(node.properties).map((key) => node.properties[key])]
+    key: ['ID', ...Object.keys(node.properties)],
+    value: [node.elementId, ...Object.keys(node.properties).map((key) => node.properties[key])]
   }
 
   return (
-    <Drawer open>
+    <Drawer open modal={false}>
       <Content>
         <Header onClose={onClose}>NODE DETAILS</Header>
         <div className='mt-4 px-2 h-[calc(100%-88px)] flex flex-col gap-5'>

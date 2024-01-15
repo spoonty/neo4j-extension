@@ -113,9 +113,19 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
 
     const relationshipButton = node
       .append('circle')
-      .attr('class', 'edit-button')
+      .attr('class', 'relation-button')
       .attr('r', 10)
       .attr('fill', '#bdbdbd')
+      .attr('cy', 0)
+      .attr('cx', 0)
+      .attr('opacity', 0)
+      .attr('data-element-id', (d: any) => d.elementId)
+
+    const editButton = node
+      .append('circle')
+      .attr('class', 'edit-button')
+      .attr('r', 10)
+      .attr('fill', '#1E88E5')
       .attr('cy', 0)
       .attr('cx', 0)
       .attr('opacity', 0)
@@ -159,16 +169,24 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           deleteButton
             .transition()
             .duration(500)
-            .attr('cx', optionsOpened.current ? 0 : -49)
-            .attr('cy', optionsOpened.current ? 0 : -25)
+            .attr('cx', optionsOpened.current ? 0 : -55)
+            .attr('cy', optionsOpened.current ? 0 : 0)
             .style('opacity', optionsOpened.current ? 0 : 1)
 
-          const relationButton = currentNode.select('.edit-button')
+          const relationButton = currentNode.select('.relation-button')
           relationButton
             .transition()
             .duration(500)
-            .attr('cx', optionsOpened.current ? 0 : -30)
+            .attr('cx', optionsOpened.current ? 0 : -33)
             .attr('cy', optionsOpened.current ? 0 : -45)
+            .style('opacity', optionsOpened.current ? 0 : 1)
+
+          const editButton = currentNode.select('.edit-button')
+          editButton
+            .transition()
+            .duration(500)
+            .attr('cx', optionsOpened.current ? 0 : -49)
+            .attr('cy', optionsOpened.current ? 0 : -25)
             .style('opacity', optionsOpened.current ? 0 : 1)
 
           optionsOpened.current = !optionsOpened.current
@@ -202,6 +220,12 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cx', 0)
         .attr('cy', 0)
         .style('opacity', 0)
+      editButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
 
       optionsOpened.current = false
     })
@@ -219,6 +243,37 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         .attr('cy', 0)
         .style('opacity', 0)
       relationshipButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+      editButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+
+      optionsOpened.current = false
+    })
+
+    editButton.on('click', function (event) {
+      event.stopPropagation()
+
+      deleteButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+      relationshipButton
+        .transition()
+        .duration(500)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .style('opacity', 0)
+      editButton
         .transition()
         .duration(500)
         .attr('cx', 0)
@@ -291,6 +346,12 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           .attr('cy', 0)
           .style('opacity', 0)
         relationshipButton
+          .transition()
+          .duration(500)
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .style('opacity', 0)
+        editButton
           .transition()
           .duration(500)
           .attr('cx', 0)

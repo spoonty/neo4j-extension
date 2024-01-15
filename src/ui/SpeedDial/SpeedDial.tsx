@@ -17,7 +17,7 @@ const SpeedDial: FC<Props> = ({ options, className }) => {
   const [hover, setHover] = useState(false)
 
   return (
-    <div className={cn('fixed end-6 bottom-6 group background-red-950', className)} onMouseOver={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+    <div className={cn('fixed start-6 bottom-6 group background-red-950', className)} onMouseOver={() => setHover(true)} onMouseLeave={() => setHover(false)}>
     <div className='flex flex-col gap-2'>
       {
         hover && options.map((option) => {
