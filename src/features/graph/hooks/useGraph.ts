@@ -24,13 +24,14 @@ export enum InteractionState {
   CREATE_NODE,
   DELETE_NODE,
   CREATE_RELATIONSHIP,
+  NODE_DETAILS
 }
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
 export const useGraph = (): IGraphContext => {
   const { add } = useToast()
-  const { dialog, dialogType, setDialogType } = useDialog()
+  const { dialog, dialogType, setDialogType, setProps } = useDialog()
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relationships, setRelationships] = useState<RelationshipD3[]>([])
@@ -38,7 +39,7 @@ export const useGraph = (): IGraphContext => {
   const [types, setTypes] = useState<string[]>([])
 
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
-  const [nodeDelete, setNodeDelete] = useState('-1')
+  const [focusedNode, setFocusedNode] = useState('-1')
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
@@ -84,10 +85,10 @@ export const useGraph = (): IGraphContext => {
 
   const deleteNode = async () => {
     try {
-      await deleteNodeCase.execute(nodeDelete)
+      await deleteNodeCase.execute(focusedNode)
 
-      setNodes(nodes.filter((node) => node.elementId !== nodeDelete))
-      setRelationships(relationships.filter((relationship) => relationship.endNodeElementId !== nodeDelete && relationship.startNodeElementId !== nodeDelete))
+      setNodes(nodes.filter((node) => node.elementId !== focusedNode))
+      setRelationships(relationships.filter((relationship) => relationship.endNodeElementId !== focusedNode && relationship.startNodeElementId !== focusedNode))
 
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
@@ -147,7 +148,15 @@ export const useGraph = (): IGraphContext => {
       case InteractionState.DELETE_NODE:
         setDialogType(DialogType.DELETE_NODE)
         // @ts-ignore
-        setNodeDelete(payload?.nodeId)
+        setFocusedNode(payload?.nodeId)
+        break
+      case InteractionState.NODE_DETAILS:
+        // @ts-ignore
+        const nodeId = payload.nodeId
+        const node = nodes.find((node) => node.elementId === nodeId)
+        setProps({ node })
+        setFocusedNode(nodeId)
+        setDialogType(DialogType.NODE_DETAILS)
         break
       default:
         setDialogType(DialogType.CREATE_NODE)

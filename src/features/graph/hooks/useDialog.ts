@@ -2,12 +2,14 @@ import {FunctionComponent, useEffect, useState} from "react";
 import CreateNodeDialog from '@/features/create-node/View'
 import CreateRelationship from '@/features/create-relation/View'
 import DeleteAlert from '@/features/delete-alert/View'
+import DetailsNode from '@/features/details-node/View'
 
 export enum DialogType {
   NONE,
   CREATE_NODE,
   CREATE_RELATIONSHIP,
-  DELETE_NODE
+  DELETE_NODE,
+  NODE_DETAILS
 }
 
 export type DialogData = {
@@ -18,11 +20,12 @@ export type DialogData = {
 export const useDialog = () => {
   const [dialog, setDialog] = useState<DialogData | null>(null)
   const [type, setType] = useState(DialogType.NONE)
+  const [props, setProps] = useState<KeyValue>({})
 
   useEffect(() => {
     const component = getComponent()
-    setDialog(component ? { component, props: { onClose: () => setType(DialogType.NONE) } } : null)
-  }, [type]);
+    setDialog(component ? { component, props: { onClose: () => setType(DialogType.NONE), ...props } } : null)
+  }, [type, props]);
 
   const getComponent = () => {
     switch (type) {
@@ -32,6 +35,8 @@ export const useDialog = () => {
         return CreateRelationship
       case DialogType.DELETE_NODE:
         return DeleteAlert
+      case DialogType.NODE_DETAILS:
+        return DetailsNode
       default:
         return null
     }
@@ -40,6 +45,7 @@ export const useDialog = () => {
   return {
     dialog,
     dialogType: type,
-    setDialogType: setType
+    setDialogType: setType,
+    setProps,
   }
 }

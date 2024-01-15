@@ -150,7 +150,10 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         default:
           if (optionsOpened.current) return
 
+          state.current = InteractionState.NODE_DETAILS
+
           const currentNode = d3.select(this)
+          clickHandler<{ nodeId: string }>({ nodeId: currentNode?.attr('data-element-id') })
 
           const deleteButton = currentNode.select('.delete-button')
           deleteButton
