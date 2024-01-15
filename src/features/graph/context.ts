@@ -26,7 +26,7 @@ export interface IGraphContext {
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => void
-  clickHandler: <T>(payload: T) => void
+  clickHandler: (payload: any) => void
 }
 
 export const GraphContext = createContext<IGraphContext>({

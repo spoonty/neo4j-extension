@@ -208,23 +208,20 @@ export const useGraph = (): IGraphContext => {
     setNodes([...getNodesWithoutTemplate(), node])
   }
 
-  const clickHandler = <T>(payload?: T) => {
+  const clickHandler = (payload?: any) => {
     switch (state.current) {
       case InteractionState.DELETE_NODE:
         setDialogType(DialogType.DELETE_NODE)
-        // @ts-ignore
         setFocusedNode(payload?.nodeId)
         break
       case InteractionState.UPDATE_NODE:
         setDialogType(DialogType.UPDATE_NODE)
         const initialNode = nodes.find(
-          // @ts-ignore
           (node) => node.elementId === payload.nodeId,
         )
         setProps({ initialNode })
         break
       case InteractionState.NODE_DETAILS:
-        // @ts-ignore
         const nodeId = payload.nodeId
         const node = nodes.find((node) => node.elementId === nodeId)
         setProps({ node })
@@ -232,7 +229,6 @@ export const useGraph = (): IGraphContext => {
         setDialogType(DialogType.NODE_DETAILS)
         break
       case InteractionState.RELATIONSHIP_DETAILS:
-        // @ts-ignore
         const relationshipId = payload.relationshipId
         const relationship = relationships.find(
           (relationship) => relationship.elementId === relationshipId,
@@ -242,7 +238,6 @@ export const useGraph = (): IGraphContext => {
         break
       default:
         setDialogType(DialogType.CREATE_NODE)
-        // @ts-ignore
         setAddNodePosition({ x: payload.x, y: payload.y })
     }
   }
