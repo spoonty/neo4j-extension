@@ -1,27 +1,25 @@
 import { FC } from 'react'
-import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { useGraphContext } from '@/features/graph/context'
-import { defineLabelColor } from '@/features/graph/helpers/labels'
+import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
 import Badge from '@/ui/Badge'
-import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
+import { Content, Drawer, Header } from '@/ui/Drawer'
 import ScrollArea from '@/ui/ScrollArea'
 import Table from '@/ui/Table/Table'
 
 interface Props {
-  node?: NodeD3
+  relationship?: RelationshipD3
   onClose: () => void
 }
 
-const View: FC<Props> = ({ node, onClose }) => {
-  const { labels } = useGraphContext()
-
-  if (!node) return null
+const View: FC<Props> = ({ relationship, onClose }) => {
+  if (!relationship) return null
 
   const properties = {
-    key: ['ID', ...Object.keys(node.properties)],
+    key: ['ID', ...Object.keys(relationship.properties)],
     value: [
-      node.elementId,
-      ...Object.keys(node.properties).map((key) => node.properties[key]),
+      relationship.elementId,
+      ...Object.keys(relationship.properties).map(
+        (key) => relationship.properties[key],
+      ),
     ],
   }
 
@@ -33,13 +31,9 @@ const View: FC<Props> = ({ node, onClose }) => {
           <ScrollArea.Root className="max-h-[90px]">
             <ScrollArea.Viewport className="h-full w-full">
               <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
-                {node.labels.map((label) => (
-                  <Badge
-                    style={{ backgroundColor: defineLabelColor(labels, label) }}
-                  >
-                    {label}
-                  </Badge>
-                ))}
+                <Badge style={{ backgroundColor: '#bdbdbd' }}>
+                  {relationship.type}
+                </Badge>
               </div>
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar
@@ -48,7 +42,7 @@ const View: FC<Props> = ({ node, onClose }) => {
             />
           </ScrollArea.Root>
 
-          <ScrollArea.Root className="h-[230px] pe-3">
+          <ScrollArea.Root className="h-[250px] pe-3">
             <ScrollArea.Viewport className="h-full w-full">
               <Table data={properties} />
             </ScrollArea.Viewport>

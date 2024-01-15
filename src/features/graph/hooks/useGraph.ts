@@ -237,6 +237,8 @@ export const useGraph = (): IGraphContext => {
         const relationship = relationships.find(
           (relationship) => relationship.elementId === relationshipId,
         )
+        setProps({ relationship })
+        setDialogType(DialogType.RELATIONSHIP_DETAILS)
         break
       default:
         setDialogType(DialogType.CREATE_NODE)

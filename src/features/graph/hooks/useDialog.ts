@@ -3,6 +3,7 @@ import CreateNodeDialog from '@/features/create-node/View'
 import CreateRelationship from '@/features/create-relation/View'
 import DeleteAlert from '@/features/delete-alert/View'
 import DetailsNode from '@/features/details-node/View'
+import RelationshipDetails from '@/features/relationship-details/View'
 
 export enum DialogType {
   NONE,
@@ -11,6 +12,7 @@ export enum DialogType {
   CREATE_RELATIONSHIP,
   DELETE_NODE,
   NODE_DETAILS,
+  RELATIONSHIP_DETAILS,
 }
 
 export type DialogData = {
@@ -46,6 +48,8 @@ export const useDialog = () => {
         return DeleteAlert
       case DialogType.NODE_DETAILS:
         return DetailsNode
+      case DialogType.RELATIONSHIP_DETAILS:
+        return RelationshipDetails
       default:
         return null
     }
