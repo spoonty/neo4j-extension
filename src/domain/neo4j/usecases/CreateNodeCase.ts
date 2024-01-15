@@ -1,7 +1,7 @@
-import {Neo4jRepository} from "@/domain/neo4j/repository/Neo4jRepository.interface";
-import {UseCase} from "@/utils/domain";
-import {NodeCreateDTO, NodeD3} from "@/domain/neo4j/models/Node";
-import {CreateNodeError} from "@/domain/errors/CreateNodeError";
+import { CreateNodeError } from '@/domain/errors/CreateNodeError'
+import { NodeCreateDTO, NodeD3 } from '@/domain/neo4j/models/Node'
+import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
+import { UseCase } from '@/utils/domain'
 
 type Func = Neo4jRepository['createNode']
 

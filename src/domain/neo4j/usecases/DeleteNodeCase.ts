@@ -1,6 +1,6 @@
-import {Neo4jRepository} from "@/domain/neo4j/repository/Neo4jRepository.interface";
-import {UseCase} from "@/utils/domain";
-import {DeleteNodeError} from "@/domain/errors/DeleteNodeError";
+import { DeleteNodeError } from '@/domain/errors/DeleteNodeError'
+import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
+import { UseCase } from '@/utils/domain'
 
 type Func = Neo4jRepository['deleteNode']
 

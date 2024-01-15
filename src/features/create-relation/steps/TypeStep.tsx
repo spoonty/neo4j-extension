@@ -1,10 +1,10 @@
-import {FC, useMemo, useState} from 'react'
+import { FC, useMemo, useState } from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
+import { useGraphContext } from '@/features/graph/context'
 import Badge from '@/ui/Badge'
 import IconButton from '@/ui/Button/IconButton'
 import Clue from '@/ui/Clue'
 import PopoverInput from '@/ui/Input/PopoverInput'
-import {useGraphContext} from "@/features/graph/context";
 
 interface Props {
   currentType: string
@@ -58,7 +58,12 @@ const TypeStep: FC<Props> = ({ currentType, onSetType, onClearType }) => {
 
       <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
         {currentType && (
-          <Badge onRemove={() => onClearType()} style={{backgroundColor: '#bdbdbd'}}>{currentType}</Badge>
+          <Badge
+            onRemove={() => onClearType()}
+            style={{ backgroundColor: '#bdbdbd' }}
+          >
+            {currentType}
+          </Badge>
         )}
       </div>
     </div>

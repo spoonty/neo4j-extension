@@ -1,16 +1,24 @@
-import {useEffect, useRef, useState} from 'react'
-import {DriverImpl} from '@/data/driver/Driver.impl'
-import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO} from '@/domain/neo4j/models/Node'
-import {RelationshipCreateDTO, RelationshipD3,} from '@/domain/neo4j/models/Relationship'
-import {IGraphContext} from '@/features/graph/context'
-import {useToast} from '@/ui/Toast/hooks/useToast'
-import {GetGraphCaseImpl} from "@/domain/neo4j/usecases/GetGraphCase";
-import {CreateNodeCaseImpl} from "@/domain/neo4j/usecases/CreateNodeCase";
-import {DeleteNodeCaseImpl} from "@/domain/neo4j/usecases/DeleteNodeCase";
-import {CreateRelationshipCaseImpl} from "@/domain/neo4j/usecases/CreateRelationshipCase";
-import {DialogType, useDialog} from "@/features/graph/hooks/useDialog";
-import {UpdateNodeCaseImpl} from "@/domain/neo4j/usecases/UpdateNodeCase";
+import { useEffect, useRef, useState } from 'react'
+import { DriverImpl } from '@/data/driver/Driver.impl'
+import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {
+  Node,
+  NodeCreateDTO,
+  NodeD3,
+  NodeUpdateDTO,
+} from '@/domain/neo4j/models/Node'
+import {
+  RelationshipCreateDTO,
+  RelationshipD3,
+} from '@/domain/neo4j/models/Relationship'
+import { CreateNodeCaseImpl } from '@/domain/neo4j/usecases/CreateNodeCase'
+import { CreateRelationshipCaseImpl } from '@/domain/neo4j/usecases/CreateRelationshipCase'
+import { DeleteNodeCaseImpl } from '@/domain/neo4j/usecases/DeleteNodeCase'
+import { GetGraphCaseImpl } from '@/domain/neo4j/usecases/GetGraphCase'
+import { UpdateNodeCaseImpl } from '@/domain/neo4j/usecases/UpdateNodeCase'
+import { IGraphContext } from '@/features/graph/context'
+import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
+import { useToast } from '@/ui/Toast/hooks/useToast'
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -19,7 +27,9 @@ const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
 const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
 const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
 const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
-const createRelationshipCase = new CreateRelationshipCaseImpl(repository.createRelationship)
+const createRelationshipCase = new CreateRelationshipCaseImpl(
+  repository.createRelationship,
+)
 
 export enum InteractionState {
   DEFAULT,
@@ -50,7 +60,8 @@ export const useGraph = (): IGraphContext => {
 
   const getNodes = async () => {
     try {
-      const { nodes, labels, relationships, types } = await getGraphCase.execute()
+      const { nodes, labels, relationships, types } =
+        await getGraphCase.execute()
 
       setNodes(nodes)
       setLabels(labels)
@@ -87,12 +98,17 @@ export const useGraph = (): IGraphContext => {
     }
   }
 
-  const updateNode = async (nodeId: string, labels: string[], properties: KeyValue) => {
+  const updateNode = async (
+    nodeId: string,
+    labels: string[],
+    properties: KeyValue,
+  ) => {
     try {
       const node = nodes.find((node) => node.elementId === nodeId)!
       const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
 
-      const {node: nodeD3, relationships: updatedRelationships} = await updateNodeCase.execute(node, updatedNode, relationships)
+      const { node: nodeD3, relationships: updatedRelationships } =
+        await updateNodeCase.execute(node, updatedNode, relationships)
 
       const nodeLabels: string[] = []
       nodeD3.labels.forEach((label) => {
@@ -102,8 +118,10 @@ export const useGraph = (): IGraphContext => {
       })
 
       setNodes([
-          ...getNodesWithoutTemplate().filter((node) => node.elementId !== nodeId),
-        nodeD3
+        ...getNodesWithoutTemplate().filter(
+          (node) => node.elementId !== nodeId,
+        ),
+        nodeD3,
       ])
       setRelationships(updatedRelationships)
 
@@ -120,7 +138,13 @@ export const useGraph = (): IGraphContext => {
       await deleteNodeCase.execute(focusedNode)
 
       setNodes(nodes.filter((node) => node.elementId !== focusedNode))
-      setRelationships(relationships.filter((relationship) => relationship.endNodeElementId !== focusedNode && relationship.startNodeElementId !== focusedNode))
+      setRelationships(
+        relationships.filter(
+          (relationship) =>
+            relationship.endNodeElementId !== focusedNode &&
+            relationship.startNodeElementId !== focusedNode,
+        ),
+      )
 
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
@@ -132,7 +156,12 @@ export const useGraph = (): IGraphContext => {
 
   const createRelationship = async (type: string, properties: KeyValue) => {
     try {
-      const relationship = new RelationshipCreateDTO(createRelationshipTargets.current.source, createRelationshipTargets.current.target, type, properties)
+      const relationship = new RelationshipCreateDTO(
+        createRelationshipTargets.current.source,
+        createRelationshipTargets.current.target,
+        type,
+        properties,
+      )
 
       const relationshipD3 = await createRelationshipCase.execute(relationship)
 
@@ -165,7 +194,11 @@ export const useGraph = (): IGraphContext => {
     setDialogType(DialogType.CREATE_RELATIONSHIP)
   }
 
-  const updateNodeTemplate = (labels: string[], properties: KeyValue, initialNode?: NodeD3) => {
+  const updateNodeTemplate = (
+    labels: string[],
+    properties: KeyValue,
+    initialNode?: NodeD3,
+  ) => {
     const node = new NodeD3(
       new Node('-1', { low: -1, high: -1 }, labels, properties),
       initialNode?.x || addNodePosition.x,
@@ -184,8 +217,10 @@ export const useGraph = (): IGraphContext => {
         break
       case InteractionState.UPDATE_NODE:
         setDialogType(DialogType.UPDATE_NODE)
-        // @ts-ignore
-        const initialNode = nodes.find((node) => node.elementId === payload.nodeId)
+        const initialNode = nodes.find(
+          // @ts-ignore
+          (node) => node.elementId === payload.nodeId,
+        )
         setProps({ initialNode })
         break
       case InteractionState.NODE_DETAILS:
@@ -199,7 +234,9 @@ export const useGraph = (): IGraphContext => {
       case InteractionState.RELATIONSHIP_DETAILS:
         // @ts-ignore
         const relationshipId = payload.relationshipId
-        const relationship = relationships.find((relationship) => relationship.elementId === relationshipId)
+        const relationship = relationships.find(
+          (relationship) => relationship.elementId === relationshipId,
+        )
         break
       default:
         setDialogType(DialogType.CREATE_NODE)
@@ -214,9 +251,10 @@ export const useGraph = (): IGraphContext => {
       state.current = InteractionState.DEFAULT
       setNodes(getNodesWithoutTemplate())
     }
-  }, [dialogType]);
+  }, [dialogType])
 
-  const getNodesWithoutTemplate = () => nodes.filter((node) => node.elementId !== '-1')
+  const getNodesWithoutTemplate = () =>
+    nodes.filter((node) => node.elementId !== '-1')
 
   useEffect(() => {
     getNodes()

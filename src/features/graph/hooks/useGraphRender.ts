@@ -1,10 +1,13 @@
-import {RefObject, useCallback, useEffect, useRef, useState} from 'react'
-import {NodeD3} from '@/domain/neo4j/models/Node'
-import {useGraphContext} from '@/features/graph/context'
-import {drag} from '@/features/graph/helpers/drag'
-import {defineLabelColor, getPropertyToDisplay,} from '@/features/graph/helpers/labels'
-import {clickZoom, zoom} from '@/features/graph/helpers/zoom'
-import {InteractionState} from '@/features/graph/hooks/useGraph'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { NodeD3 } from '@/domain/neo4j/models/Node'
+import { useGraphContext } from '@/features/graph/context'
+import { drag } from '@/features/graph/helpers/drag'
+import {
+  defineLabelColor,
+  getPropertyToDisplay,
+} from '@/features/graph/helpers/labels'
+import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
+import { InteractionState } from '@/features/graph/hooks/useGraph'
 import * as d3 from 'd3'
 
 export type NodeSimulation = d3.Simulation<
@@ -77,7 +80,13 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('class', 'arrow-head')
       .attr('fill', '#edeef0')
 
-    const relationship = group.append('g').selectAll('g').data(relationships).join('g').attr('data-element-id', (d: any) => d.elementId).attr('cursor', 'pointer')
+    const relationship = group
+      .append('g')
+      .selectAll('g')
+      .data(relationships)
+      .join('g')
+      .attr('data-element-id', (d: any) => d.elementId)
+      .attr('cursor', 'pointer')
 
     relationship
       .append('line')
@@ -163,7 +172,9 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           state.current = InteractionState.NODE_DETAILS
 
           const currentNode = d3.select(this)
-          clickHandler<{ nodeId: string }>({ nodeId: currentNode?.attr('data-element-id') })
+          clickHandler<{ nodeId: string }>({
+            nodeId: currentNode?.attr('data-element-id'),
+          })
 
           const deleteButton = currentNode.select('.delete-button')
           deleteButton
@@ -195,9 +206,13 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           return clickZoom(
             container,
             zoomHandler,
-            { x: position.current.x, y: position.current.y, scale: scale.current },
+            {
+              x: position.current.x,
+              y: position.current.y,
+              scale: scale.current,
+            },
             // @ts-ignore
-            { x: currentNode.data()[0].x, y: currentNode.data()[0].y }
+            { x: currentNode.data()[0].x, y: currentNode.data()[0].y },
           )
       }
     })
@@ -206,7 +221,9 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       const currentRelationship = d3.select(this)
 
       state.current = InteractionState.RELATIONSHIP_DETAILS
-      clickHandler({ relationshipId: currentRelationship?.attr('data-element-id') })
+      clickHandler({
+        relationshipId: currentRelationship?.attr('data-element-id'),
+      })
 
       // @ts-ignore
       const source = currentRelationship.data()[0].source
@@ -218,7 +235,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
         zoomHandler,
         { x: position.current.x, y: position.current.y, scale: scale.current },
         // @ts-ignore
-        { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 }
+        { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 },
       )
     })
 
@@ -335,7 +352,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       switch (target.tagName.toLowerCase()) {
         case 'svg':
           const handler = (x: number, y: number) => {
-            clickHandler<{ x: number, y: number }>({x, y})
+            clickHandler<{ x: number; y: number }>({ x, y })
             setClickedPosition({ x, y })
             setIsAnimation(true)
           }
@@ -354,11 +371,18 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
           return clickZoom(
             container,
             zoomHandler,
-            { x: position.current.x, y: position.current.y, scale: scale.current },
+            {
+              x: position.current.x,
+              y: position.current.y,
+              scale: scale.current,
+            },
             // @ts-ignore
             { x: x || d3.pointer(event)[0], y: y || d3.pointer(event)[1] },
             handler,
-            { animation: isAnimation, finishAnimation: () => setIsAnimation(false) }
+            {
+              animation: isAnimation,
+              finishAnimation: () => setIsAnimation(false),
+            },
           )
       }
 

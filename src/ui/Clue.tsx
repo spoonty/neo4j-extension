@@ -9,7 +9,7 @@ interface Props extends PropsWithChildren {
 const Clue: FC<Props> = ({ children, className }) => (
   <div
     className={cn(
-      'text-main-gray flex cursor-default items-center text-sm leading-4',
+      'flex cursor-default items-center text-sm leading-4 text-main-gray',
       className,
     )}
   >

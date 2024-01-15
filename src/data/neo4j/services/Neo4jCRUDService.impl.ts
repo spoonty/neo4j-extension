@@ -1,8 +1,11 @@
 import { Driver } from '@/data/driver/Driver.interface'
-import {Node, NodeCreateDTO, NodeUpdateDTO} from '@/domain/neo4j/models/Node'
-import { Relationship, RelationshipCreateDTO } from '@/domain/neo4j/models/Relationship'
+import { Graph } from '@/domain/neo4j/models/Graph'
+import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/neo4j/models/Node'
+import {
+  Relationship,
+  RelationshipCreateDTO,
+} from '@/domain/neo4j/models/Relationship'
 import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
-import {Graph} from "@/domain/neo4j/models/Graph";
 
 type NodeRelationship = {
   n: Node
@@ -62,7 +65,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
       RETURN n
     `
 
-    const result = await this.driver.execute<Array<{n: Node}>>(query, {
+    const result = await this.driver.execute<Array<{ n: Node }>>(query, {
       properties: node.properties,
     })
 
@@ -78,7 +81,9 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     return await this.driver.execute(query)
   }
 
-  createRelationship = async (relationship: RelationshipCreateDTO): Promise<Relationship> => {
+  createRelationship = async (
+    relationship: RelationshipCreateDTO,
+  ): Promise<Relationship> => {
     const query = `
       MATCH (node1), (node2)
       WHERE id(node1) = ${
@@ -89,9 +94,12 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
       RETURN r
     `
 
-    const result = await this.driver.execute<Array<{ r: Relationship }>>(query, {
-      properties: relationship.properties,
-    })
+    const result = await this.driver.execute<Array<{ r: Relationship }>>(
+      query,
+      {
+        properties: relationship.properties,
+      },
+    )
 
     return result[0].r
   }

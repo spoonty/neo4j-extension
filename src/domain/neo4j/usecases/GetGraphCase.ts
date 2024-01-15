@@ -1,14 +1,17 @@
-import {UseCase} from "@/utils/domain";
-import {GraphD3} from "@/domain/neo4j/models/Graph";
-import {Neo4jRepository} from "@/domain/neo4j/repository/Neo4jRepository.interface";
-import {Node, NodeD3} from "@/domain/neo4j/models/Node";
-import {Relationship, RelationshipD3} from "@/domain/neo4j/models/Relationship";
-import {GetGraphError} from "@/domain/errors/GetGraphError";
+import { GetGraphError } from '@/domain/errors/GetGraphError'
+import { GraphD3 } from '@/domain/neo4j/models/Graph'
+import { Node, NodeD3 } from '@/domain/neo4j/models/Node'
+import {
+  Relationship,
+  RelationshipD3,
+} from '@/domain/neo4j/models/Relationship'
+import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
+import { UseCase } from '@/utils/domain'
 
 type Func = Neo4jRepository['getGraph']
 
 export abstract class GetGraphCase implements UseCase<Promise<GraphD3>> {
-  abstract execute(): Promise<GraphD3>;
+  abstract execute(): Promise<GraphD3>
 }
 
 export class GetGraphCaseImpl implements GetGraphCase {

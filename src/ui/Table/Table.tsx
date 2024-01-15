@@ -10,7 +10,7 @@ interface Props {
 
 const Table: FC<Props> = ({ data, className }) => (
   <div className={cn('relative overflow-x-auto rounded-lg', className)}>
-    <table className="text-main-gray w-full text-left text-sm">
+    <table className="w-full text-left text-sm text-main-gray">
       <Head labels={Object.keys(data)} />
       <Body data={Object.keys(data).map((key) => data[key])} />
     </table>

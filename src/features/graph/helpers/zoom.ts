@@ -14,10 +14,10 @@ export const zoom = (
 export const clickZoom = (
   selection: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
   zoomHandler: d3.ZoomBehavior<Element, unknown>,
-  posCurrent: { x: number, y: number, scale: number },
-  posClicked: { x: number, y: number },
-  handler?: (x: number, y:number) => void,
-  animation?: { animation: boolean, finishAnimation: () => void }
+  posCurrent: { x: number; y: number; scale: number },
+  posClicked: { x: number; y: number },
+  handler?: (x: number, y: number) => void,
+  animation?: { animation: boolean; finishAnimation: () => void },
 ) => {
   const distanceX = (posClicked.x - posCurrent.x) / posCurrent.scale
   const distanceY = (posClicked.y - posCurrent.y) / posCurrent.scale
@@ -44,4 +44,3 @@ export const clickZoom = (
 
   animation?.finishAnimation()
 }
-

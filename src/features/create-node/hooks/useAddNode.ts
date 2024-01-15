@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react'
+import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { DEFAULT_PROPERTIES } from '@/features/create-node/constants'
 import { useGraphContext } from '@/features/graph/context'
-import {NodeD3} from "@/domain/neo4j/models/Node";
 
 export const useAddNode = (initialNode?: NodeD3) => {
-  const { updateNodeTemplate, createNode, updateNode } =
-    useGraphContext()
+  const { updateNodeTemplate, createNode, updateNode } = useGraphContext()
 
-  const [labels, setLabels] = useState<string[]>(initialNode ? initialNode.labels : [])
-  const [properties, setProperties] = useState<KeyValue>(initialNode ? {
-    key: ['ID', ...Object.keys(initialNode.properties)],
-    value: [initialNode.elementId, ...Object.keys(initialNode.properties).map((key) => initialNode.properties[key])]
-  } : DEFAULT_PROPERTIES)
+  const [labels, setLabels] = useState<string[]>(
+    initialNode ? initialNode.labels : [],
+  )
+  const [properties, setProperties] = useState<KeyValue>(
+    initialNode
+      ? {
+          key: ['ID', ...Object.keys(initialNode.properties)],
+          value: [
+            initialNode.elementId,
+            ...Object.keys(initialNode.properties).map(
+              (key) => initialNode.properties[key],
+            ),
+          ],
+        }
+      : DEFAULT_PROPERTIES,
+  )
 
   const createNodeHandler = async () => {
     if (initialNode) {

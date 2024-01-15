@@ -1,12 +1,14 @@
-import {Node, NodeD3} from "@/domain/neo4j/models/Node";
-import {Relationship, RelationshipD3} from "@/domain/neo4j/models/Relationship";
+import { Node, NodeD3 } from '@/domain/neo4j/models/Node'
+import {
+  Relationship,
+  RelationshipD3,
+} from '@/domain/neo4j/models/Relationship'
 
 export class Graph {
   constructor(
     readonly nodes: Node[],
-    readonly relationships: Relationship[]
-  ) {
-  }
+    readonly relationships: Relationship[],
+  ) {}
 }
 
 export class GraphD3 {
@@ -15,6 +17,5 @@ export class GraphD3 {
     readonly relationships: RelationshipD3[],
     readonly labels: string[],
     readonly types: string[],
-  ) {
-  }
+  ) {}
 }
