@@ -1,5 +1,5 @@
 import { Driver } from '@/data/driver/Driver.interface'
-import { Node, NodeCreateDTO } from '@/domain/neo4j/models/Node'
+import {Node, NodeCreateDTO, NodeUpdateDTO} from '@/domain/neo4j/models/Node'
 import { Relationship, RelationshipCreateDTO } from '@/domain/neo4j/models/Relationship'
 import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
 import {Graph} from "@/domain/neo4j/models/Graph";
@@ -47,6 +47,22 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
         `
 
     const result = await this.driver.execute<Array<{ n: Node }>>(query, {
+      properties: node.properties,
+    })
+
+    return result[0].n
+  }
+
+  updateNode = async (nodeId: string, node: NodeUpdateDTO) => {
+    const query = `
+      MATCH (n) WHERE ID(n)=${nodeId.split(':').reverse()[0]}
+      REMOVE n:${node.labels.join(':')}
+      SET n:${node.newLabels.join(':')}
+      SET n += $properties
+      RETURN n
+    `
+
+    const result = await this.driver.execute<Array<{n: Node}>>(query, {
       properties: node.properties,
     })
 

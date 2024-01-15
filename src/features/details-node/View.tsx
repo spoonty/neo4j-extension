@@ -19,8 +19,6 @@ const View: FC<Props> = ({ node, onClose }) => {
 
   if (!node) return null
 
-  console.log(node?.properties)
-
   const properties = {
     key: ['ID', ...Object.keys(node.properties)],
     value: [node.elementId, ...Object.keys(node.properties).map((key) => node.properties[key])]

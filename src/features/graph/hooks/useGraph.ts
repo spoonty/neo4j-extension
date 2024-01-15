@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react'
 import {DriverImpl} from '@/data/driver/Driver.impl'
 import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {Node, NodeCreateDTO, NodeD3} from '@/domain/neo4j/models/Node'
+import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO} from '@/domain/neo4j/models/Node'
 import {RelationshipCreateDTO, RelationshipD3,} from '@/domain/neo4j/models/Relationship'
 import {IGraphContext} from '@/features/graph/context'
 import {useToast} from '@/ui/Toast/hooks/useToast'
@@ -10,18 +10,21 @@ import {CreateNodeCaseImpl} from "@/domain/neo4j/usecases/CreateNodeCase";
 import {DeleteNodeCaseImpl} from "@/domain/neo4j/usecases/DeleteNodeCase";
 import {CreateRelationshipCaseImpl} from "@/domain/neo4j/usecases/CreateRelationshipCase";
 import {DialogType, useDialog} from "@/features/graph/hooks/useDialog";
+import {UpdateNodeCaseImpl} from "@/domain/neo4j/usecases/UpdateNodeCase";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
 
 const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
 const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
+const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
 const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
 const createRelationshipCase = new CreateRelationshipCaseImpl(repository.createRelationship)
 
 export enum InteractionState {
   DEFAULT,
   CREATE_NODE,
+  UPDATE_NODE,
   DELETE_NODE,
   CREATE_RELATIONSHIP,
   NODE_DETAILS
@@ -83,6 +86,34 @@ export const useGraph = (): IGraphContext => {
     }
   }
 
+  const updateNode = async (nodeId: string, labels: string[], properties: KeyValue) => {
+    try {
+      const node = nodes.find((node) => node.elementId === nodeId)!
+      const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
+
+      const {node: nodeD3, relationships: updatedRelationships} = await updateNodeCase.execute(node, updatedNode, relationships)
+
+      const nodeLabels: string[] = []
+      nodeD3.labels.forEach((label) => {
+        if (!labels.includes(label)) {
+          nodeLabels.push(label)
+        }
+      })
+
+      setNodes([
+          ...getNodesWithoutTemplate().filter((node) => node.elementId !== nodeId),
+        nodeD3
+      ])
+      setRelationships(updatedRelationships)
+
+      add('success', 'Node successfully updated.')
+    } catch (error: any) {
+      add('error', error.message)
+    } finally {
+      setDialogType(DialogType.NONE)
+    }
+  }
+
   const deleteNode = async () => {
     try {
       await deleteNodeCase.execute(focusedNode)
@@ -133,11 +164,11 @@ export const useGraph = (): IGraphContext => {
     setDialogType(DialogType.CREATE_RELATIONSHIP)
   }
 
-  const updateNodeTemplate = (labels: string[], properties: KeyValue) => {
+  const updateNodeTemplate = (labels: string[], properties: KeyValue, initialNode?: NodeD3) => {
     const node = new NodeD3(
       new Node('-1', { low: -1, high: -1 }, labels, properties),
-      addNodePosition.x,
-      addNodePosition.y,
+      initialNode?.x || addNodePosition.x,
+      initialNode?.y || addNodePosition.y,
     )
 
     setNodes([...getNodesWithoutTemplate(), node])
@@ -149,6 +180,12 @@ export const useGraph = (): IGraphContext => {
         setDialogType(DialogType.DELETE_NODE)
         // @ts-ignore
         setFocusedNode(payload?.nodeId)
+        break
+      case InteractionState.UPDATE_NODE:
+        setDialogType(DialogType.UPDATE_NODE)
+        // @ts-ignore
+        const initialNode = nodes.find((node) => node.elementId === payload.nodeId)
+        setProps({ initialNode })
         break
       case InteractionState.NODE_DETAILS:
         // @ts-ignore
@@ -187,6 +224,7 @@ export const useGraph = (): IGraphContext => {
     labels,
     types,
     createNode,
+    updateNode,
     deleteNode,
     createRelationship,
     setSource,

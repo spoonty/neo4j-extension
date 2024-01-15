@@ -261,6 +261,10 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     editButton.on('click', function (event) {
       event.stopPropagation()
 
+      const nodeId = d3.select(this).attr('data-element-id')
+      state.current = InteractionState.UPDATE_NODE
+      clickHandler<{ nodeId: string }>({ nodeId })
+
       deleteButton
         .transition()
         .duration(500)

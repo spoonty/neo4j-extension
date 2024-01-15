@@ -7,12 +7,14 @@ import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
 import { cn } from '@/utils/dom'
+import {NodeD3} from "@/domain/neo4j/models/Node";
 
 interface Props {
+  initialNode?: NodeD3,
   onClose: () => void
 }
 
-const View: FC<Props> = ({ onClose }) => {
+const View: FC<Props> = ({ initialNode, onClose }) => {
   const {
     labels,
     properties,
@@ -21,7 +23,7 @@ const View: FC<Props> = ({ onClose }) => {
     removeLabel,
     addProperty,
     clearData,
-  } = useAddNode()
+  } = useAddNode(initialNode)
 
   const [step, setStep] = useState(Steps.SET_LABELS)
   const steps = [Steps.SET_LABELS, Steps.SET_PROPERTIES]
@@ -73,7 +75,7 @@ const View: FC<Props> = ({ onClose }) => {
             'h-[482px]',
         )}
       >
-        <Header onClose={closeHandler}>CREATE NODE</Header>
+        <Header onClose={closeHandler}>{initialNode ? 'UPDATE NODE' : 'CREATE NODE'}</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">
           <Stepper steps={steps} current={step} />
           {renderStep()}
@@ -88,7 +90,8 @@ const View: FC<Props> = ({ onClose }) => {
             variant="confirm"
             onClick={step === Steps.SET_PROPERTIES ? createHandler : onNextStep}
           >
-            {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
+            {step === Steps.SET_PROPERTIES
+              ? initialNode ? 'Update' : 'Create' : 'Next'}
           </Button>
         </Footer>
       </Content>

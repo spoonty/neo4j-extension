@@ -7,6 +7,7 @@ import DetailsNode from '@/features/details-node/View'
 export enum DialogType {
   NONE,
   CREATE_NODE,
+  UPDATE_NODE,
   CREATE_RELATIONSHIP,
   DELETE_NODE,
   NODE_DETAILS
@@ -29,6 +30,7 @@ export const useDialog = () => {
 
   const getComponent = () => {
     switch (type) {
+      case DialogType.UPDATE_NODE:
       case DialogType.CREATE_NODE:
         return CreateNodeDialog
       case DialogType.CREATE_RELATIONSHIP:

@@ -14,6 +14,14 @@ export class NodeCreateDTO {
   ) {}
 }
 
+export class NodeUpdateDTO {
+  constructor(
+    readonly labels: Array<string>,
+    readonly newLabels: Array<string>,
+    readonly properties: KeyValue,
+  ) {}
+}
+
 export class NodeD3 extends Node {
   constructor(
     node: Node,

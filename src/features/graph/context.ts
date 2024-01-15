@@ -12,11 +12,12 @@ export interface IGraphContext {
   labels: string[]
   types: string[]
   createNode: (labels: string[], properties: KeyValue) => Promise<void>
+  updateNode: (nodeId: string, labels: string[], properties: KeyValue) => Promise<void>
   deleteNode: () => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void
-  updateNodeTemplate: (labels: string[], properties: KeyValue) => void
+  updateNodeTemplate: (labels: string[], properties: KeyValue, initialNode?: NodeD3) => void
   clickHandler: <T>(payload: T) => void
 }
 
@@ -28,6 +29,7 @@ export const GraphContext = createContext<IGraphContext>({
   labels: [],
   types: [],
   createNode: async () => {},
+  updateNode: async () => {},
   deleteNode: async () => {},
   createRelationship: async () => {},
   setSource: () => {},
