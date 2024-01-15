@@ -77,7 +77,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('class', 'arrow-head')
       .attr('fill', '#edeef0')
 
-    const relationship = group.append('g').selectAll('g').data(relationships).join('g')
+    const relationship = group.append('g').selectAll('g').data(relationships).join('g').attr('data-element-id', (d: any) => d.elementId).attr('cursor', 'pointer')
 
     relationship
       .append('line')
@@ -200,6 +200,26 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
             { x: currentNode.data()[0].x, y: currentNode.data()[0].y }
           )
       }
+    })
+
+    relationship.on('click', function (event) {
+      const currentRelationship = d3.select(this)
+
+      state.current = InteractionState.RELATIONSHIP_DETAILS
+      clickHandler({ relationshipId: currentRelationship?.attr('data-element-id') })
+
+      // @ts-ignore
+      const source = currentRelationship.data()[0].source
+      // @ts-ignore
+      const target = currentRelationship.data()[0].target
+
+      return clickZoom(
+        container,
+        zoomHandler,
+        { x: position.current.x, y: position.current.y, scale: scale.current },
+        // @ts-ignore
+        { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 }
+      )
     })
 
     deleteButton.on('click', function (event) {

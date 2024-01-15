@@ -27,7 +27,8 @@ export enum InteractionState {
   UPDATE_NODE,
   DELETE_NODE,
   CREATE_RELATIONSHIP,
-  NODE_DETAILS
+  NODE_DETAILS,
+  RELATIONSHIP_DETAILS,
 }
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
@@ -194,6 +195,11 @@ export const useGraph = (): IGraphContext => {
         setProps({ node })
         setFocusedNode(nodeId)
         setDialogType(DialogType.NODE_DETAILS)
+        break
+      case InteractionState.RELATIONSHIP_DETAILS:
+        // @ts-ignore
+        const relationshipId = payload.relationshipId
+        const relationship = relationships.find((relationship) => relationship.elementId === relationshipId)
         break
       default:
         setDialogType(DialogType.CREATE_NODE)
