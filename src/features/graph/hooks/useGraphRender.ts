@@ -326,7 +326,10 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
             handler,
             {
               animation: isAnimation,
-              finishAnimation: () => setIsAnimation(false),
+              finishAnimation: () => {
+                setIsAnimation(false)
+                setClickedPosition({ x: 0, y: 0 })
+              },
             },
           )
       }
