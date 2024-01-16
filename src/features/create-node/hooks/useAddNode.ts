@@ -9,7 +9,7 @@ export const useAddNode = (initialNode?: NodeD3) => {
   const [labels, setLabels] = useState<string[]>(
     initialNode ? initialNode.labels : [],
   )
-  const [properties, setProperties] = useState<KeyValue>(
+  const [properties, setProperties] = useState<KeyValue<'key' | 'value', string[]>>(
     initialNode
       ? {
           key: ['ID', ...Object.keys(initialNode.properties)],
@@ -46,6 +46,15 @@ export const useAddNode = (initialNode?: NodeD3) => {
     })
   }
 
+  const deleteProperty = (idx: number) => {
+    setProperties({
+      // @ts-ignore
+      key: properties['key'].filter((_, i) => i !== idx),
+      // @ts-ignore
+      value: properties['value'].filter((_, i) => i !== idx),
+    })
+  }
+
   const convertProperties = () => {
     const convertedProperties = {}
 
@@ -75,6 +84,7 @@ export const useAddNode = (initialNode?: NodeD3) => {
     addLabel,
     removeLabel,
     addProperty,
+    deleteProperty,
     clearData,
   }
 }

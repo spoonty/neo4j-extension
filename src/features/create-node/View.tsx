@@ -22,6 +22,7 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
     addLabel,
     removeLabel,
     addProperty,
+    deleteProperty,
     clearData,
   } = useAddNode(initialNode)
 
@@ -61,7 +62,7 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
         )
       case Steps.SET_PROPERTIES:
         return (
-          <PropertiesStep properties={properties} addProperty={addProperty} />
+          <PropertiesStep properties={properties} addProperty={addProperty} deleteHandler={deleteProperty} />
         )
     }
   }

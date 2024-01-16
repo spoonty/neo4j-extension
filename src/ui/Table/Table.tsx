@@ -6,15 +6,28 @@ import { cn } from '@/utils/dom'
 interface Props {
   data: KeyValue<string, string[]>
   className?: string
+  deleteAction?: (i: number) => void
 }
 
-const Table: FC<Props> = ({ data, className }) => (
-  <div className={cn('relative overflow-x-auto rounded-lg', className)}>
-    <table className="w-full text-left text-sm text-main-gray">
-      <Head labels={Object.keys(data)} />
-      <Body data={Object.keys(data).map((key) => data[key])} />
-    </table>
-  </div>
-)
+const Table: FC<Props> = ({ data, deleteAction, className }) => {
+  const header = (() => {
+    const header = Object.keys(data)
+
+    if (!!deleteAction) {
+      header.push('Action')
+    }
+
+    return header
+  })()
+
+  return (
+    <div className={cn('relative overflow-x-auto rounded-lg', className)}>
+      <table className="w-full text-left text-sm text-main-gray">
+        <Head labels={header} />
+        <Body data={Object.keys(data).map((key) => data[key])} deleteAction={deleteAction} />
+      </table>
+    </div>
+  )
+}
 
 export default Table

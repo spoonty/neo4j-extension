@@ -10,9 +10,10 @@ import { cn } from '@/utils/dom'
 interface Props {
   properties: KeyValue
   addProperty: (value: KeyValue) => void
+  deleteHandler: (i: number) => void
 }
 
-const PropertiesStep: FC<Props> = ({ properties, addProperty }) => {
+const PropertiesStep: FC<Props> = ({ properties, addProperty, deleteHandler }) => {
   const [key, setKey] = useState('')
   const [value, setValue] = useState('')
 
@@ -47,7 +48,7 @@ const PropertiesStep: FC<Props> = ({ properties, addProperty }) => {
           )}
         >
           <ScrollArea.Viewport className="h-full w-full">
-            <Table data={properties} />
+            <Table data={properties} deleteAction={deleteHandler} />
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar
             orientation="vertical"

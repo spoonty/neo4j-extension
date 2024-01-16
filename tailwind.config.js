@@ -16,6 +16,7 @@ module.exports = {
         'main-dark-opacity': 'var(--main-dark-opacity)',
         'light-dark': 'var(--light-dark)',
         'border-dark': 'var(--border-dark)',
+        'dark-gray': 'var(--dark-gray)',
         'main-gray': 'var(--main-gray)',
         'light-gray': 'var(--light-gray)',
         'light-blue': 'var(--light-blue)',
