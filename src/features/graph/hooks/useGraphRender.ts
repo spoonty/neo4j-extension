@@ -121,6 +121,7 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
       .attr('stroke-width', 1.5)
       .attr('r', 40)
       .attr('fill', (d: any) => defineLabelColor(labels, d.labels[0]))
+      .attr('class', 'node-circle')
 
     node
       .append('text')
@@ -271,7 +272,20 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     })
 
     node.on('mouseover', function () {
-      d3.select(this).attr('cursor', 'pointer')
+      d3
+        .select(this)
+        .attr('cursor', 'pointer')
+        .select('.node-circle')
+        .attr('stroke-width', 5)
+        .style("stroke-opacity", .8)
+    })
+
+    node.on('mouseleave', function () {
+      d3
+        .select(this)
+        .select('.node-circle')
+        .attr('stroke-width', 1.5)
+        .style("stroke-opacity", 1)
     })
 
     // @ts-ignore
