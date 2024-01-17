@@ -16,7 +16,7 @@ export class Node {
   private readonly _editButton: NodeControlElement
   private readonly _relationshipButton: NodeControlElement
 
-  constructor(nodes: NodeD3[], private readonly labels: string[], group: Group, simulation: Simulation) {
+  constructor(nodes: NodeD3[], labels: string[], group: Group, simulation: Simulation) {
     this.node = group
       .get
       .append('g')
@@ -54,6 +54,23 @@ export class Node {
 
     this.node
       .call(drag(simulation) as (selection: d3.Selection<BaseType | SVGGElement, NodeD3, SVGGElement, unknown>) => void)
+
+    this.node.on('mouseover', function () {
+      d3
+        .select(this)
+        .attr('cursor', 'pointer')
+        .select('.node-circle')
+        .attr('stroke-width', 5)
+        .style("stroke-opacity", .8)
+    })
+
+    this.node.on('mouseleave', function () {
+      d3
+        .select(this)
+        .select('.node-circle')
+        .attr('stroke-width', 1.5)
+        .style("stroke-opacity", 1)
+    })
   }
 
   public closeButtons(node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>) {

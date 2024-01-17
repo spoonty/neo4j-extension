@@ -63,8 +63,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
     onRelationshipButtonClick(node)
     onNodeEditButtonClick(node)
 
-    onNodeMouseEvents(node)
-
     onContainerClick(container, node, zoomHandler)
 
     onTick(simulation, node, relationship)
@@ -182,25 +180,6 @@ export const useGraphRender = (svg: RefObject<SVGSVGElement>) => {
             { x: currentNode.data()[0].x, y: currentNode.data()[0].y },
           )
       }
-    })
-  }
-
-  const onNodeMouseEvents = (node: Node) => {
-    node.get.on('mouseover', function () {
-      d3
-        .select(this)
-        .attr('cursor', 'pointer')
-        .select('.node-circle')
-        .attr('stroke-width', 5)
-        .style("stroke-opacity", .8)
-    })
-
-    node.get.on('mouseleave', function () {
-      d3
-        .select(this)
-        .select('.node-circle')
-        .attr('stroke-width', 1.5)
-        .style("stroke-opacity", 1)
     })
   }
 
