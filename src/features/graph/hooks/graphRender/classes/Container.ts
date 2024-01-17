@@ -1,8 +1,13 @@
-import * as d3 from "d3";
-import {RefObject} from "react";
+import { RefObject } from 'react'
+import * as d3 from 'd3'
 
 export class Container {
-  private readonly container: d3.Selection<SVGSVGElement | null, unknown, null, undefined>
+  private readonly container: d3.Selection<
+    SVGSVGElement | null,
+    unknown,
+    null,
+    undefined
+  >
 
   constructor(svg: RefObject<SVGSVGElement>) {
     this.container = d3

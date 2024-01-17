@@ -1,17 +1,25 @@
-import {useEffect, useRef, useState} from 'react'
-import {DriverImpl} from '@/data/driver/Driver.impl'
-import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/neo4j/models/Node'
-import {RelationshipCreateDTO, RelationshipD3,} from '@/domain/neo4j/models/Relationship'
-import {CreateNodeCaseImpl} from '@/domain/neo4j/usecases/CreateNodeCase'
-import {CreateRelationshipCaseImpl} from '@/domain/neo4j/usecases/CreateRelationshipCase'
-import {DeleteNodeCaseImpl} from '@/domain/neo4j/usecases/DeleteNodeCase'
-import {GetGraphCaseImpl} from '@/domain/neo4j/usecases/GetGraphCase'
-import {UpdateNodeCaseImpl} from '@/domain/neo4j/usecases/UpdateNodeCase'
-import {IGraphContext} from '@/features/graph/context'
-import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
-import {useToast} from '@/ui/Toast/hooks/useToast'
-import {InteractionState} from "@/features/graph/constants";
+import { useEffect, useRef, useState } from 'react'
+import { DriverImpl } from '@/data/driver/Driver.impl'
+import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {
+  Node,
+  NodeCreateDTO,
+  NodeD3,
+  NodeUpdateDTO,
+} from '@/domain/neo4j/models/Node'
+import {
+  RelationshipCreateDTO,
+  RelationshipD3,
+} from '@/domain/neo4j/models/Relationship'
+import { CreateNodeCaseImpl } from '@/domain/neo4j/usecases/CreateNodeCase'
+import { CreateRelationshipCaseImpl } from '@/domain/neo4j/usecases/CreateRelationshipCase'
+import { DeleteNodeCaseImpl } from '@/domain/neo4j/usecases/DeleteNodeCase'
+import { GetGraphCaseImpl } from '@/domain/neo4j/usecases/GetGraphCase'
+import { UpdateNodeCaseImpl } from '@/domain/neo4j/usecases/UpdateNodeCase'
+import { InteractionState } from '@/features/graph/constants'
+import { IGraphContext } from '@/features/graph/context'
+import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
+import { useToast } from '@/ui/Toast/hooks/useToast'
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -176,6 +184,8 @@ export const useGraph = (): IGraphContext => {
     }
 
     setDialogType(DialogType.CREATE_RELATIONSHIP)
+
+    return createRelationshipTargets.current.source
   }
 
   const updateNodeTemplate = (

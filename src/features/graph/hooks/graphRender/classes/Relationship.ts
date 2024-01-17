@@ -1,13 +1,17 @@
-import * as d3 from "d3";
-import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
-import {Group} from "@/features/graph/hooks/graphRender/classes/Group";
+import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
+import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
+import * as d3 from 'd3'
 
 export class Relationship {
-  private readonly relationship: d3.Selection<d3.BaseType | SVGGElement, RelationshipD3, SVGGElement, unknown>
+  private readonly relationship: d3.Selection<
+    d3.BaseType | SVGGElement,
+    RelationshipD3,
+    SVGGElement,
+    unknown
+  >
 
   constructor(relationships: RelationshipD3[], group: Group) {
-    const arrowMaker = group
-      .get
+    const arrowMaker = group.get
       .append('defs')
       .append('marker')
       .attr('id', 'arrow')
@@ -23,8 +27,7 @@ export class Relationship {
       .attr('class', 'arrow-head')
       .attr('fill', '#edeef0')
 
-    this.relationship = group
-      .get
+    this.relationship = group.get
       .append('g')
       .selectAll('g')
       .data(relationships)

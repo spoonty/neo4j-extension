@@ -1,24 +1,36 @@
-import * as d3 from "d3";
-import {NodeD3} from "@/domain/neo4j/models/Node";
-import {defineLabelColor, getPropertyToDisplay} from "@/features/graph/helpers/labels";
-import {drag} from "@/features/graph/helpers/drag";
-import {BaseType} from "d3";
-import {NodeControlElement} from "@/features/graph/hooks/graphRender/classes/NodeControlElement";
-import {Group} from "@/features/graph/hooks/graphRender/classes/Group";
-import {Simulation} from "@/features/graph/hooks/graphRender/classes/Simulation";
-import {IGraphContext} from "@/features/graph/context";
-import {InteractionState} from "@/features/graph/constants";
-import {clickZoom} from "@/features/graph/helpers/zoom";
+import { NodeD3 } from '@/domain/neo4j/models/Node'
+import { InteractionState } from '@/features/graph/constants'
+import { IGraphContext } from '@/features/graph/context'
+import { drag } from '@/features/graph/helpers/drag'
+import {
+  defineLabelColor,
+  getPropertyToDisplay,
+} from '@/features/graph/helpers/labels'
+import { clickZoom } from '@/features/graph/helpers/zoom'
+import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
+import { NodeControlElement } from '@/features/graph/hooks/graphRender/classes/NodeControlElement'
+import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
+import * as d3 from 'd3'
+import { BaseType } from 'd3'
 
 export class Node {
-  private readonly node: d3.Selection<d3.BaseType | SVGGElement, NodeD3, SVGGElement, unknown>
+  private readonly node: d3.Selection<
+    d3.BaseType | SVGGElement,
+    NodeD3,
+    SVGGElement,
+    unknown
+  >
   private readonly _deleteButton: NodeControlElement
   private readonly _editButton: NodeControlElement
   private readonly _relationshipButton: NodeControlElement
 
-  constructor(nodes: NodeD3[], labels: string[], group: Group, simulation: Simulation) {
-    this.node = group
-      .get
+  constructor(
+    nodes: NodeD3[],
+    labels: string[],
+    group: Group,
+    simulation: Simulation,
+  ) {
+    this.node = group.get
       .append('g')
       .selectAll('g')
       .data(nodes)
@@ -52,33 +64,44 @@ export class Node {
       .attr('fill', '#17191b')
       .style('user-select', 'none')
 
-    this.node
-      .call(drag(simulation) as (selection: d3.Selection<BaseType | SVGGElement, NodeD3, SVGGElement, unknown>) => void)
+    this.node.call(
+      drag(simulation) as (
+        selection: d3.Selection<
+          BaseType | SVGGElement,
+          NodeD3,
+          SVGGElement,
+          unknown
+        >,
+      ) => void,
+    )
 
     this.node.on('mouseover', function () {
-      d3
-        .select(this)
+      d3.select(this)
         .attr('cursor', 'pointer')
         .select('.node-circle')
         .attr('stroke-width', 5)
-        .style("stroke-opacity", .8)
+        .style('stroke-opacity', 0.8)
     })
 
     this.node.on('mouseleave', function () {
-      d3
-        .select(this)
+      d3.select(this)
         .select('.node-circle')
         .attr('stroke-width', 1.5)
-        .style("stroke-opacity", 1)
+        .style('stroke-opacity', 1)
     })
   }
 
-  public closeButtons(node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>) {
-    [this._editButton, this._relationshipButton, this._deleteButton]
-      .forEach((button: NodeControlElement) => button.closeElement(node))
+  public closeButtons(
+    node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+  ) {
+    ;[this._editButton, this._relationshipButton, this._deleteButton].forEach(
+      (button: NodeControlElement) => button.closeElement(node),
+    )
   }
 
-  public openButtons(node: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>) {
+  public openButtons(
+    node: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+  ) {
     this._editButton.openElement(node)
     this._relationshipButton.openElement(node)
     this._deleteButton.openElement(node)

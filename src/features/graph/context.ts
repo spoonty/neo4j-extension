@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
+import { InteractionState } from '@/features/graph/constants'
 import { DialogData } from '@/features/graph/hooks/useDialog'
-import {InteractionState} from "@/features/graph/constants";
 
 export interface IGraphContext {
   dialog: DialogData | null
@@ -20,7 +20,7 @@ export interface IGraphContext {
   deleteNode: () => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
   setSource: (sourceId: string) => void
-  setTarget: (targetId: string) => void
+  setTarget: (targetId: string) => void | string
   updateNodeTemplate: (
     labels: string[],
     properties: KeyValue,
