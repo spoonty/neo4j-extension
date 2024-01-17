@@ -1,12 +1,9 @@
 import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { InteractionState } from '@/features/graph/constants'
-import { IGraphContext } from '@/features/graph/context'
 import { drag } from '@/features/graph/helpers/drag'
 import {
   defineLabelColor,
   getPropertyToDisplay,
 } from '@/features/graph/helpers/labels'
-import { clickZoom } from '@/features/graph/helpers/zoom'
 import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
 import { NodeControlElement } from '@/features/graph/hooks/graphRender/classes/NodeControlElement'
 import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
@@ -65,7 +62,7 @@ export class Node {
       .style('user-select', 'none')
 
     this.node.call(
-      drag(simulation) as (
+      drag(this, simulation) as (
         selection: d3.Selection<
           BaseType | SVGGElement,
           NodeD3,
