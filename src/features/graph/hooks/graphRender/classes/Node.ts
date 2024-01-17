@@ -60,6 +60,8 @@ export class Node {
       .attr('font-size', '10px')
       .attr('fill', '#17191b')
       .style('user-select', 'none')
+      .style('white-space', 'pre')
+      .call(this.wrap, 70)
 
     this.node.call(
       drag(this, simulation) as (
@@ -102,6 +104,48 @@ export class Node {
     this._editButton.openElement(node)
     this._relationshipButton.openElement(node)
     this._deleteButton.openElement(node)
+  }
+
+  private wrap(text: any, width: number) {
+    text.each(function () {
+      // @ts-ignore
+      const node = d3.select(this)
+      const words = node.text().split(/\s+/).reverse()
+      let line: string[] = []
+      const lineHeight = 0.4
+      let lineNumber = 0
+
+      node.text(null)
+
+      let tspan = node.append('tspan')
+
+      let word = words.pop()
+      while (word && lineNumber < 1) {
+        line.push(word)
+        tspan.text(line.join(' '))
+
+        if (tspan.node()!.getComputedTextLength() > width) {
+          lineNumber++
+          tspan.attr('y', -lineHeight + 'em')
+
+          line.pop()
+          tspan.text(line.join(' '))
+          line = [word]
+          tspan = node
+            .append('tspan')
+            .attr('x', 0)
+            .attr('y', lineNumber * lineHeight + 'em')
+            .attr('dy', lineNumber * lineHeight + 'em')
+            .text(word)
+        }
+
+        word = words.pop()
+
+        if (lineNumber >= 1 && word) {
+          tspan.text(word + '...')
+        }
+      }
+    })
   }
 
   public get get() {
