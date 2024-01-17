@@ -1,24 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { DriverImpl } from '@/data/driver/Driver.impl'
-import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {
-  Node,
-  NodeCreateDTO,
-  NodeD3,
-  NodeUpdateDTO,
-} from '@/domain/neo4j/models/Node'
-import {
-  RelationshipCreateDTO,
-  RelationshipD3,
-} from '@/domain/neo4j/models/Relationship'
-import { CreateNodeCaseImpl } from '@/domain/neo4j/usecases/CreateNodeCase'
-import { CreateRelationshipCaseImpl } from '@/domain/neo4j/usecases/CreateRelationshipCase'
-import { DeleteNodeCaseImpl } from '@/domain/neo4j/usecases/DeleteNodeCase'
-import { GetGraphCaseImpl } from '@/domain/neo4j/usecases/GetGraphCase'
-import { UpdateNodeCaseImpl } from '@/domain/neo4j/usecases/UpdateNodeCase'
-import { IGraphContext } from '@/features/graph/context'
-import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
-import { useToast } from '@/ui/Toast/hooks/useToast'
+import {useEffect, useRef, useState} from 'react'
+import {DriverImpl} from '@/data/driver/Driver.impl'
+import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/neo4j/models/Node'
+import {RelationshipCreateDTO, RelationshipD3,} from '@/domain/neo4j/models/Relationship'
+import {CreateNodeCaseImpl} from '@/domain/neo4j/usecases/CreateNodeCase'
+import {CreateRelationshipCaseImpl} from '@/domain/neo4j/usecases/CreateRelationshipCase'
+import {DeleteNodeCaseImpl} from '@/domain/neo4j/usecases/DeleteNodeCase'
+import {GetGraphCaseImpl} from '@/domain/neo4j/usecases/GetGraphCase'
+import {UpdateNodeCaseImpl} from '@/domain/neo4j/usecases/UpdateNodeCase'
+import {IGraphContext} from '@/features/graph/context'
+import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
+import {useToast} from '@/ui/Toast/hooks/useToast'
+import {InteractionState} from "@/features/graph/constants";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -30,16 +23,6 @@ const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
 const createRelationshipCase = new CreateRelationshipCaseImpl(
   repository.createRelationship,
 )
-
-export enum InteractionState {
-  DEFAULT,
-  CREATE_NODE,
-  UPDATE_NODE,
-  DELETE_NODE,
-  CREATE_RELATIONSHIP,
-  NODE_DETAILS,
-  RELATIONSHIP_DETAILS,
-}
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
@@ -90,6 +73,7 @@ export const useGraph = (): IGraphContext => {
       setNodes([...getNodesWithoutTemplate(), nodeD3])
       setLabels([...labels, ...nodeLabels])
 
+      state.current = InteractionState.DEFAULT
       add('success', 'Node successfully created.')
     } catch (error: any) {
       add('error', error.message)
@@ -221,14 +205,14 @@ export const useGraph = (): IGraphContext => {
         )
         setProps({ initialNode })
         break
-      case InteractionState.NODE_DETAILS:
+      case InteractionState.READ_NODE:
         const nodeId = payload.nodeId
         const node = nodes.find((node) => node.elementId === nodeId)
         setProps({ node })
         setFocusedNode(nodeId)
         setDialogType(DialogType.NODE_DETAILS)
         break
-      case InteractionState.RELATIONSHIP_DETAILS:
+      case InteractionState.READ_RELATIONSHIP:
         const relationshipId = payload.relationshipId
         const relationship = relationships.find(
           (relationship) => relationship.elementId === relationshipId,

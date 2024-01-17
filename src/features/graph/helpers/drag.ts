@@ -1,14 +1,14 @@
 import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { NodeSimulation } from '@/features/graph/hooks/useGraphRender'
+import {NodeSimulation, Simulation} from '@/features/graph/hooks/useGraphRender'
 import * as d3 from 'd3'
 
 export const drag = (
-  simulation: NodeSimulation,
+  simulation: Simulation,
 ): d3.DragBehavior<Element, unknown, unknown> => {
   const dragstarted = (
     event: d3.D3DragEvent<SVGSVGElement, NodeD3, NodeD3>,
   ) => {
-    if (!event.active) simulation.alphaTarget(0.3).restart()
+    if (!event.active) simulation.simulation.alphaTarget(0.3).restart()
 
     event.subject.fx = event.subject.x
     event.subject.fy = event.subject.y

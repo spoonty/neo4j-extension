@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
 import { DialogData } from '@/features/graph/hooks/useDialog'
-import { InteractionState } from '@/features/graph/hooks/useGraph'
+import {InteractionState} from "@/features/graph/constants";
 
 export interface IGraphContext {
   dialog: DialogData | null
