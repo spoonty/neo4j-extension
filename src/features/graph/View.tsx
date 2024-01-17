@@ -1,7 +1,7 @@
 import { createElement, FC, useRef } from 'react'
 import PlusIcon from '@/assets/icons/PlusIcon'
 import { useGraphContext } from '@/features/graph/context'
-import { useGraphRender } from '@/features/graph/hooks/useGraphRender'
+import { useGraphRender } from '@/features/graph/hooks/graphRender/useGraphRender'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
 
 const View: FC = () => {
