@@ -1,9 +1,8 @@
+import { Container } from '@/features/graph/hooks/graphRender/classes/Container'
+import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
 import * as d3 from 'd3'
-import {Group} from "@/features/graph/hooks/graphRender/classes/Group";
 
-export const zoom = (
-  group: Group
-) => {
+export const zoom = (group: Group) => {
   const zoomed = (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
     // @ts-ignore
     group.get.attr('transform', event.transform)
@@ -13,7 +12,7 @@ export const zoom = (
 }
 
 export const clickZoom = (
-  selection: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  selection: Container,
   zoomHandler: d3.ZoomBehavior<Element, unknown>,
   posCurrent: { x: number; y: number; scale: number },
   posClicked: { x: number; y: number },
@@ -23,7 +22,7 @@ export const clickZoom = (
   const distanceX = (posClicked.x - posCurrent.x) / posCurrent.scale
   const distanceY = (posClicked.y - posCurrent.y) / posCurrent.scale
 
-  if (animation && !animation?.animation) {
+  if (!!handler && animation && !animation?.animation) {
     handler?.(distanceX, distanceY)
     return
   }
@@ -32,7 +31,7 @@ export const clickZoom = (
   const deltaX = -window.innerWidth / (4 * scaleFactor) - posClicked.x
   const deltaY = -posClicked.y
 
-  selection
+  selection.get
     .transition()
     .duration(500)
     .call(

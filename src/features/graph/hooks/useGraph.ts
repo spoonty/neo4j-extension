@@ -179,12 +179,14 @@ export const useGraph = (): IGraphContext => {
   }
 
   const setTarget = (targetId: string) => {
-    createRelationshipTargets.current = {
-      ...createRelationshipTargets.current,
-      target: targetId,
-    }
+    if (createRelationshipTargets.current.target === '-1') {
+      createRelationshipTargets.current = {
+        ...createRelationshipTargets.current,
+        target: targetId,
+      }
 
-    setDialogType(DialogType.CREATE_RELATIONSHIP)
+      setDialogType(DialogType.CREATE_RELATIONSHIP)
+    }
 
     return createRelationshipTargets.current.source
   }
@@ -203,11 +205,7 @@ export const useGraph = (): IGraphContext => {
     setNodes([...getNodesWithoutTemplate(), node])
   }
 
-  const updateRelationshipTemplate = (
-    type: string,
-    properties: KeyValue,
-    initialRelationship?: RelationshipD3,
-  ) => {
+  const updateRelationshipTemplate = (type: string, properties: KeyValue) => {
     const relationship = new RelationshipD3(
       new Relationship(
         '-1',
@@ -262,6 +260,7 @@ export const useGraph = (): IGraphContext => {
       createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
       state.current = InteractionState.DEFAULT
       setNodes(getNodesWithoutTemplate())
+      setRelationships(getRelationshipsWithoutTemplate())
     }
   }, [dialogType])
 

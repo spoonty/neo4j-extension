@@ -64,7 +64,7 @@ const View: FC<Props> = ({ onClose }) => {
   }
 
   return (
-    <Drawer open modal={true}>
+    <Drawer open modal>
       <Content
         className={cn(
           step === Steps.SET_PROPERTIES &&

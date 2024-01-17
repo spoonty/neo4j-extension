@@ -23,7 +23,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
   const [clickedPosition, setClickedPosition] = useState({ x: 0, y: 0 })
-  const [isAnimation, setIsAnimation] = useState(false)
+  const isAnimation = useRef(false)
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
@@ -100,6 +100,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
   ) => {
     container.get.on('click', (event) => {
+      if (state.current === InteractionState.DEFAULT) return
+
       const target = event.target as HTMLElement
 
       switch (target.tagName.toLowerCase()) {
@@ -107,16 +109,14 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
           const handler = (x: number, y: number) => {
             clickHandler({ x, y })
             setClickedPosition({ x, y })
-            setIsAnimation(true)
+            isAnimation.current = true
           }
 
           state.current = InteractionState.CREATE_NODE
 
-          if (!isAnimation) {
+          if (!isAnimation.current) {
             setTimeout(() => {
-              svg.current?.dispatchEvent(
-                new MouseEvent('click', { bubbles: false }),
-              )
+              target.dispatchEvent(new MouseEvent('click', { bubbles: false }))
             }, 100)
           }
 
@@ -124,7 +124,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
           let y = clickedPosition.y
 
           return clickZoom(
-            container.get,
+            container,
             zoomHandler,
             {
               x: position.current.x,
@@ -134,9 +134,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
             { x: x || d3.pointer(event)[0], y: y || d3.pointer(event)[1] },
             handler,
             {
-              animation: isAnimation,
+              animation: isAnimation.current,
               finishAnimation: () => {
-                setIsAnimation(false)
+                isAnimation.current = false
                 setClickedPosition({ x: 0, y: 0 })
               },
             },
@@ -170,8 +170,20 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
             y: (source.data()[0] as { y: number }).y,
           }
 
+          if (!isAnimation.current) {
+            setTimeout(() => {
+              currentNode.dispatch('click')
+            }, 100)
+            isAnimation.current = true
+            return
+          }
+
+          svg.current?.dispatchEvent(
+            new MouseEvent('click', { bubbles: false }),
+          )
+
           return clickZoom(
-            container.get,
+            container,
             zoomHandler,
             {
               x: position.current.x,
@@ -187,6 +199,13 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
                 (sourcePosition.y +
                   (currentNode.data()[0] as { y: number }).y) /
                 2,
+            },
+            undefined,
+            {
+              animation: isAnimation.current,
+              finishAnimation: () => {
+                isAnimation.current = false
+              },
             },
           )
         default:
@@ -207,7 +226,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
           event.stopPropagation()
 
           return clickZoom(
-            container.get,
+            container,
             zoomHandler,
             {
               x: position.current.x,
@@ -244,7 +263,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       ).target
 
       return clickZoom(
-        container.get,
+        container,
         zoomHandler,
         { x: position.current.x, y: position.current.y, scale: scale.current },
         { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 },

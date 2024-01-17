@@ -26,11 +26,7 @@ export interface IGraphContext {
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => void
-  updateRelationshipTemplate: (
-    type: string,
-    properties: KeyValue,
-    initialRelationship?: RelationshipD3,
-  ) => void
+  updateRelationshipTemplate: (type: string, properties: KeyValue) => void
   clickHandler: (payload: any) => void
 }
 

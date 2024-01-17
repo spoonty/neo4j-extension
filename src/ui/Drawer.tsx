@@ -31,6 +31,8 @@ export const Content: FC<
         className,
       )}
       onOpenAutoFocus={(e) => e.preventDefault()}
+      onCloseAutoFocus={(e) => e.preventDefault()}
+      autoFocus={false}
     >
       {children}
     </DialogPrimitive.Content>
