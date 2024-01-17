@@ -6,6 +6,9 @@ import {BaseType} from "d3";
 import {NodeControlElement} from "@/features/graph/hooks/graphRender/classes/NodeControlElement";
 import {Group} from "@/features/graph/hooks/graphRender/classes/Group";
 import {Simulation} from "@/features/graph/hooks/graphRender/classes/Simulation";
+import {IGraphContext} from "@/features/graph/context";
+import {InteractionState} from "@/features/graph/constants";
+import {clickZoom} from "@/features/graph/helpers/zoom";
 
 export class Node {
   private readonly node: d3.Selection<d3.BaseType | SVGGElement, NodeD3, SVGGElement, unknown>
