@@ -25,8 +25,8 @@ export class NodeUpdateDTO {
 export class NodeD3 extends Node {
   constructor(
     node: Node,
-    public x?: number,
-    public y?: number,
+    public x: number = 0,
+    public y: number = 0,
     public fx?: number | null,
     public fy?: number | null,
   ) {

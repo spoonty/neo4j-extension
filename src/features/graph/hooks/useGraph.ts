@@ -8,6 +8,7 @@ import {
   NodeUpdateDTO,
 } from '@/domain/neo4j/models/Node'
 import {
+  Relationship,
   RelationshipCreateDTO,
   RelationshipD3,
 } from '@/domain/neo4j/models/Relationship'
@@ -157,7 +158,7 @@ export const useGraph = (): IGraphContext => {
 
       const relationshipD3 = await createRelationshipCase.execute(relationship)
 
-      setRelationships([...relationships, relationshipD3])
+      setRelationships([...getRelationshipsWithoutTemplate(), relationshipD3])
       add('success', 'Relationship successfully created.')
 
       createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
@@ -200,6 +201,26 @@ export const useGraph = (): IGraphContext => {
     )
 
     setNodes([...getNodesWithoutTemplate(), node])
+  }
+
+  const updateRelationshipTemplate = (
+    type: string,
+    properties: KeyValue,
+    initialRelationship?: RelationshipD3,
+  ) => {
+    const relationship = new RelationshipD3(
+      new Relationship(
+        '-1',
+        { low: -1, high: -1 },
+        createRelationshipTargets.current.target,
+        { low: -1, high: -1 },
+        createRelationshipTargets.current.source,
+        properties,
+        type || '',
+      ),
+    )
+
+    setRelationships([...getRelationshipsWithoutTemplate(), relationship])
   }
 
   const clickHandler = (payload?: any) => {
@@ -247,6 +268,9 @@ export const useGraph = (): IGraphContext => {
   const getNodesWithoutTemplate = () =>
     nodes.filter((node) => node.elementId !== '-1')
 
+  const getRelationshipsWithoutTemplate = () =>
+    relationships.filter((relationship) => relationship.elementId !== '-1')
+
   useEffect(() => {
     getNodes()
   }, [])
@@ -265,6 +289,7 @@ export const useGraph = (): IGraphContext => {
     setSource,
     setTarget,
     updateNodeTemplate,
+    updateRelationshipTemplate,
     clickHandler,
   }
 }

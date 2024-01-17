@@ -26,6 +26,11 @@ export interface IGraphContext {
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => void
+  updateRelationshipTemplate: (
+    type: string,
+    properties: KeyValue,
+    initialRelationship?: RelationshipD3,
+  ) => void
   clickHandler: (payload: any) => void
 }
 
@@ -43,6 +48,7 @@ export const GraphContext = createContext<IGraphContext>({
   setSource: () => {},
   setTarget: () => {},
   updateNodeTemplate: () => {},
+  updateRelationshipTemplate: () => {},
   clickHandler: () => {},
 })
 
