@@ -180,14 +180,12 @@ export const useGraph = (): IGraphContext => {
   }
 
   const setTarget = (targetId: string) => {
-    if (createRelationshipTargets.current.target === '-1') {
-      createRelationshipTargets.current = {
-        ...createRelationshipTargets.current,
-        target: targetId,
-      }
-
-      setDialogType(DialogType.CREATE_RELATIONSHIP)
+    createRelationshipTargets.current = {
+      ...createRelationshipTargets.current,
+      target: targetId,
     }
+
+    setDialogType(DialogType.CREATE_RELATIONSHIP)
 
     return createRelationshipTargets.current.source
   }
