@@ -7,8 +7,8 @@ import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
 import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
 import { Relationship } from '@/features/graph/hooks/graphRender/classes/Relationship'
 import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
+import { useWindowSize } from '@reactuses/core'
 import * as d3 from 'd3'
-import {useWindowSize} from "@reactuses/core";
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {
@@ -21,7 +21,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     state,
   } = useGraphContext()
 
-  const {  width, height} = useWindowSize()
+  const { width, height } = useWindowSize()
 
   const rendered = useRef(false)
   const scale = useRef(1)
@@ -36,7 +36,13 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     }
 
     const container = new Container(svg)
-    const simulation = new Simulation(nodes, relationships, rendered.current, width, height)
+    const simulation = new Simulation(
+      nodes,
+      relationships,
+      rendered.current,
+      width,
+      height,
+    )
     const group = new Group(container)
     const relationship = new Relationship(relationships, group)
     const node = new Node(nodes, labels, group, simulation)
@@ -73,8 +79,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     if (!rendered.current) {
       rendered.current = true
     }
-
-    return simulation
   }, [nodes, relationships])
 
   const onTick = (
@@ -166,53 +170,54 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
       switch (state.current) {
         case InteractionState.CREATE_RELATIONSHIP:
-          const sourceId = setTarget(currentNode.attr('data-element-id'))
-          const source = d3.selectAll('g').filter(function (d: any) {
-            return d3.select(this).attr('data-element-id') === sourceId
-          })
-          const sourcePosition = {
-            x: (source.data()[0] as { x: number }).x,
-            y: (source.data()[0] as { y: number }).y,
-          }
-
-          if (!isAnimation.current) {
-            setTimeout(() => {
-              currentNode.dispatch('click')
-            }, 100)
-            isAnimation.current = true
-            return
-          }
-
-          svg.current?.dispatchEvent(
-            new MouseEvent('click', { bubbles: false }),
-          )
-
-          return clickZoom(
-            container,
-            zoomHandler,
-            {
-              x: position.current.x,
-              y: position.current.y,
-              scale: scale.current,
-            },
-            {
-              x:
-                (sourcePosition.x +
-                  (currentNode.data()[0] as { x: number }).x) /
-                2,
-              y:
-                (sourcePosition.y +
-                  (currentNode.data()[0] as { y: number }).y) /
-                2,
-            },
-            undefined,
-            {
-              animation: isAnimation.current,
-              finishAnimation: () => {
-                isAnimation.current = false
-              },
-            },
-          )
+          setTarget(currentNode.attr('data-element-id'))
+          break
+        // const source = d3.selectAll('g').filter(function (d: any) {
+        //   return d3.select(this).attr('data-element-id') === sourceId
+        // })
+        // const sourcePosition = {
+        //   x: (source.data()[0] as { x: number }).x,
+        //   y: (source.data()[0] as { y: number }).y,
+        // }
+        //
+        // if (!isAnimation.current) {
+        //   setTimeout(() => {
+        //     currentNode.dispatch('click')
+        //   }, 100)
+        //   isAnimation.current = true
+        //   return
+        // }
+        //
+        // svg.current?.dispatchEvent(
+        //   new MouseEvent('click', { bubbles: false }),
+        // )
+        //
+        // return clickZoom(
+        //   container,
+        //   zoomHandler,
+        //   {
+        //     x: position.current.x,
+        //     y: position.current.y,
+        //     scale: scale.current,
+        //   },
+        //   {
+        //     x:
+        //       (sourcePosition.x +
+        //         (currentNode.data()[0] as { x: number }).x) /
+        //       2,
+        //     y:
+        //       (sourcePosition.y +
+        //         (currentNode.data()[0] as { y: number }).y) /
+        //       2,
+        //   },
+        //   undefined,
+        //   {
+        //     animation: isAnimation.current,
+        //     finishAnimation: () => {
+        //       isAnimation.current = false
+        //     },
+        //   },
+        // )
         default:
           if (optionsOpened.current) return
 

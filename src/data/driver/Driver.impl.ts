@@ -1,9 +1,9 @@
 import { Driver } from '@/data/driver/Driver.interface'
 import * as neo4j from 'neo4j-driver'
 
-const uri = 'bolt://localhost:7687'
-const user = 'neo4j'
-const password = 'qwerty12345'
+const uri = 'neo4j+s://demo.neo4jlabs.com'
+const user = 'movies'
+const password = 'movies'
 
 export class DriverImpl implements Driver {
   private driver: neo4j.Driver

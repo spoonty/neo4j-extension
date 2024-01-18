@@ -88,6 +88,11 @@ export class Node {
         .attr('stroke-width', 1.5)
         .style('stroke-opacity', 1)
     })
+
+    this.node.each(function (d: any) {
+      d.fx = d.x
+      d.fy = d.y
+    })
   }
 
   public closeButtons(

@@ -26,7 +26,7 @@ const View: FC<Props> = ({ relationship, onClose }) => {
   return (
     <Drawer open modal={false}>
       <Content>
-        <Header onClose={onClose}>NODE DETAILS</Header>
+        <Header onClose={onClose}>RELATIONSHIP DETAILS</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5 px-2">
           <ScrollArea.Root className="max-h-[90px]">
             <ScrollArea.Viewport className="h-full w-full">
