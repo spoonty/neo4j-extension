@@ -1,5 +1,7 @@
 import { createElement, FC, useRef } from 'react'
+import Filter from '@/assets/icons/FilterIcon'
 import PlusIcon from '@/assets/icons/PlusIcon'
+import Settings from '@/assets/icons/SettingsIcon'
 import { useGraphContext } from '@/features/graph/context'
 import { useRender } from '@/features/graph/hooks/graphRender/useRender'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
@@ -12,7 +14,11 @@ const View: FC = () => {
 
   const options = [
     {
-      icon: PlusIcon,
+      icon: Filter,
+      action: () => {},
+    },
+    {
+      icon: Settings,
       action: () => {},
     },
   ]

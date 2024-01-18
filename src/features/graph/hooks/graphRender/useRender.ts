@@ -340,5 +340,5 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   useEffect(() => {
     render()
-  }, [nodes.length, relationships.length])
+  }, [nodes, relationships])
 }

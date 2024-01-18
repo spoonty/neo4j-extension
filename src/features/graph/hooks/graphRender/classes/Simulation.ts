@@ -21,7 +21,7 @@ export class Simulation {
           .id((d: any) => d.elementId)
           .distance(300),
       )
-      .force('charge', d3.forceManyBody().strength(rendered ? 0 : -200))
+      .force('charge', d3.forceManyBody().strength(rendered ? 0 : -50))
 
     if (!rendered) {
       this.simulation.force('center', d3.forceCenter(width / 4, height / 2))

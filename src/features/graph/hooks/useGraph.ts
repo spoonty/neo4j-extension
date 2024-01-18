@@ -260,9 +260,11 @@ export const useGraph = (): IGraphContext => {
       if (prevType === DialogType.CREATE_RELATIONSHIP) {
         state.current = InteractionState.DEFAULT
         createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+        setRelationships(getRelationshipsWithoutTemplate())
       }
-      setNodes(getNodesWithoutTemplate())
-      setRelationships(getRelationshipsWithoutTemplate())
+      if (prevType === DialogType.CREATE_NODE) {
+        setNodes(getNodesWithoutTemplate())
+      }
     }
   }, [dialogType])
 

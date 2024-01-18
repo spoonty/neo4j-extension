@@ -34,7 +34,10 @@ const SpeedDial: FC<Props> = ({ options, className }) => {
               </IconButton>
             )
           })}
-        <IconButton variant="confirm" className="mt-2 h-[56px] w-[56px]">
+        <IconButton
+          variant="confirm"
+          className="mt-2 h-[56px] w-[56px] transition-all hover:rotate-45"
+        >
           <PlusIcon width="28" height="28" />
         </IconButton>
       </div>
