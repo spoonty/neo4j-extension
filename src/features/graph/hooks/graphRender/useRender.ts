@@ -8,6 +8,7 @@ import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
 import { Relationship } from '@/features/graph/hooks/graphRender/classes/Relationship'
 import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
+import {useWindowSize} from "@reactuses/core";
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {
@@ -20,6 +21,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     state,
   } = useGraphContext()
 
+  const {  width, height} = useWindowSize()
+
+  const rendered = useRef(false)
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
   const [clickedPosition, setClickedPosition] = useState({ x: 0, y: 0 })
@@ -27,12 +31,12 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    if (!nodes || !relationships) {
+    if (!nodes || !relationships || !nodes.length || !relationships.length) {
       return
     }
 
     const container = new Container(svg)
-    const simulation = new Simulation(nodes, relationships)
+    const simulation = new Simulation(nodes, relationships, rendered.current, width, height)
     const group = new Group(container)
     const relationship = new Relationship(relationships, group)
     const node = new Node(nodes, labels, group, simulation)
@@ -65,6 +69,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onContainerClick(container, node, zoomHandler)
 
     onTick(simulation, node, relationship)
+    rendered.current = true
 
     return simulation
   }, [nodes, relationships])
@@ -100,12 +105,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
   ) => {
     container.get.on('click', (event) => {
-      if (state.current === InteractionState.DEFAULT) return
-
       const target = event.target as HTMLElement
-
       switch (target.tagName.toLowerCase()) {
         case 'svg':
+          console.log('here')
           const handler = (x: number, y: number) => {
             clickHandler({ x, y })
             setClickedPosition({ x, y })

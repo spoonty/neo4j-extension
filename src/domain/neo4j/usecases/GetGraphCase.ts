@@ -42,6 +42,10 @@ export class GetGraphCaseImpl implements GetGraphCase {
           labels.push(label)
         }
       })
+
+      Object.keys(node.properties).map((key) => {
+        node.properties[key] = node.properties[key].low || node.properties[key]
+      })
     })
 
     return { nodesD3, labels }
@@ -57,6 +61,10 @@ export class GetGraphCaseImpl implements GetGraphCase {
       if (relation.type && !types.includes(relation.type)) {
         types.push(relation.type)
       }
+
+      Object.keys(relation.properties).map((key) => {
+        relation.properties[key] = relation.properties[key].low || relation.properties[key]
+      })
     })
 
     return { relationshipsD3, types }

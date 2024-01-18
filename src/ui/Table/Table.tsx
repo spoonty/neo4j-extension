@@ -4,7 +4,7 @@ import Head from '@/ui/Table/Head'
 import { cn } from '@/utils/dom'
 
 interface Props {
-  data: KeyValue<string, string[]>
+  data: KeyValue<string, string | number[]>
   className?: string
   deleteAction?: (i: number) => void
 }

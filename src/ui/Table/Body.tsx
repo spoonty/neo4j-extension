@@ -3,7 +3,7 @@ import ScrollArea from '@/ui/ScrollArea'
 import { cn } from '@/utils/dom'
 
 interface Props {
-  data: string[][],
+  data: any[][],
   deleteAction?: (i: number) => void
 }
 
