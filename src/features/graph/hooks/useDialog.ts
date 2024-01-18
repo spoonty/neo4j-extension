@@ -4,6 +4,7 @@ import CreateRelationship from '@/features/create-relation/View'
 import DeleteAlert from '@/features/delete-alert/View'
 import DetailsNode from '@/features/details-node/View'
 import RelationshipDetails from '@/features/relationship-details/View'
+import { usePrevious } from '@reactuses/core'
 
 export enum DialogType {
   NONE,
@@ -24,6 +25,8 @@ export const useDialog = () => {
   const [dialog, setDialog] = useState<DialogData | null>(null)
   const [type, setType] = useState(DialogType.NONE)
   const [props, setProps] = useState<KeyValue>({})
+
+  const prevType = usePrevious(type)
 
   useEffect(() => {
     const component = getComponent()
@@ -58,6 +61,7 @@ export const useDialog = () => {
   return {
     dialog,
     dialogType: type,
+    prevType,
     setDialogType: setType,
     setProps,
   }

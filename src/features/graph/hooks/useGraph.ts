@@ -37,7 +37,7 @@ const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
 export const useGraph = (): IGraphContext => {
   const { add } = useToast()
-  const { dialog, dialogType, setDialogType, setProps } = useDialog()
+  const { dialog, dialogType, prevType, setDialogType, setProps } = useDialog()
 
   const [nodes, setNodes] = useState<NodeD3[]>([])
   const [relationships, setRelationships] = useState<RelationshipD3[]>([])
@@ -175,6 +175,7 @@ export const useGraph = (): IGraphContext => {
       source: sourceId,
     }
 
+    setDialogType(DialogType.NONE)
     state.current = InteractionState.CREATE_RELATIONSHIP
   }
 
@@ -258,8 +259,10 @@ export const useGraph = (): IGraphContext => {
 
   useEffect(() => {
     if (dialogType === DialogType.NONE) {
-      createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
-      state.current = InteractionState.DEFAULT
+      if (prevType === DialogType.CREATE_RELATIONSHIP) {
+        state.current = InteractionState.DEFAULT
+        createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+      }
       setNodes(getNodesWithoutTemplate())
       setRelationships(getRelationshipsWithoutTemplate())
     }

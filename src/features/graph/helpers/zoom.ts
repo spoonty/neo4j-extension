@@ -18,6 +18,7 @@ export const clickZoom = (
   posClicked: { x: number; y: number },
   handler?: (x: number, y: number) => void,
   animation?: { animation: boolean; finishAnimation: () => void },
+  scaleFactor = 3,
 ) => {
   const distanceX = (posClicked.x - posCurrent.x) / posCurrent.scale
   const distanceY = (posClicked.y - posCurrent.y) / posCurrent.scale
@@ -27,7 +28,6 @@ export const clickZoom = (
     return
   }
 
-  const scaleFactor = 3
   const deltaX = -window.innerWidth / (4 * scaleFactor) - posClicked.x
   const deltaY = -posClicked.y
 

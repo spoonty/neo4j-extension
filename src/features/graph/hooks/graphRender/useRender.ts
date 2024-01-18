@@ -69,7 +69,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onRelationshipClick(relationship, container, zoomHandler)
 
     onDeleteButtonClick(node)
-    onRelationshipButtonClick(node)
+    onRelationshipButtonClick(node, container, zoomHandler)
     onNodeEditButtonClick(node)
 
     onContainerClick(container, node, zoomHandler)
@@ -294,15 +294,33 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     })
   }
 
-  const onRelationshipButtonClick = (node: Node) => {
+  const onRelationshipButtonClick = (
+    node: Node,
+    container: Container,
+    zoomHandler: d3.ZoomBehavior<Element, unknown>,
+  ) => {
     node.relationshipButton.get.on('click', function (event) {
       event.stopPropagation()
 
-      const nodeId = d3.select(this).attr('data-element-id')
+      const currentNode = d3.select(this)
+      const nodeId = currentNode.attr('data-element-id')
       setSource(nodeId)
       node.closeButtons()
 
       optionsOpened.current = false
+
+      clickZoom(
+        container,
+        zoomHandler,
+        { x: position.current.x, y: position.current.y, scale: scale.current },
+        {
+          x: (currentNode.data()[0] as { x: number }).x,
+          y: (currentNode.data()[0] as { y: number }).y,
+        },
+        undefined,
+        undefined,
+        1,
+      )
     })
   }
 
@@ -322,5 +340,5 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   useEffect(() => {
     render()
-  }, [nodes, relationships])
+  }, [nodes.length, relationships.length])
 }
