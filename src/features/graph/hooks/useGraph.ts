@@ -210,6 +210,7 @@ export const useGraph = (): IGraphContext => {
       new Relationship(
         '-1',
         { low: -1, high: -1 },
+        { low: -1, high: -1 },
         createRelationshipTargets.current.target,
         { low: -1, high: -1 },
         createRelationshipTargets.current.source,

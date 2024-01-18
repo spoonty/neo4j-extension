@@ -30,6 +30,10 @@ export class NodeD3 extends Node {
     public fx?: number | null,
     public fy?: number | null,
   ) {
+    Object.keys(node.properties).forEach((key) => {
+      node.properties[key] = node.properties[key].low || node.properties[key]
+    })
+
     super(node.elementId, node.identity, node.labels, node.properties)
   }
 

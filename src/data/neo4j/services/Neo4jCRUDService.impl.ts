@@ -35,10 +35,13 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
         }
         return false
       })
+      .map((node) => ({ ...node, elementId: `${node.identity.low}` }))
+
 
     const relationships = result
       .map((record) => record.r)
       .filter((record) => !!record)
+      .map((relationsip) => ({ ...relationsip, elementId: `${relationsip.identity.low}`, startNodeElementId: `${relationsip.start.low}`, endNodeElementId: `${relationsip.end.low}`  }))
 
     return new Graph(nodes, relationships)
   }

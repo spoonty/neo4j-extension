@@ -69,7 +69,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onContainerClick(container, node, zoomHandler)
 
     onTick(simulation, node, relationship)
-    rendered.current = true
+
+    if (!rendered.current) {
+      rendered.current = true
+    }
 
     return simulation
   }, [nodes, relationships])
@@ -108,7 +111,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       const target = event.target as HTMLElement
       switch (target.tagName.toLowerCase()) {
         case 'svg':
-          console.log('here')
           const handler = (x: number, y: number) => {
             clickHandler({ x, y })
             setClickedPosition({ x, y })
