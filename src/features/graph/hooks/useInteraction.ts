@@ -301,7 +301,7 @@ export const useInteraction = (): IGraphContext => {
         )
         setProps({ initialRelationship })
         break
-      default:
+      case InteractionState.CREATE_NODE:
         setDialogType(DialogType.CREATE_NODE)
         setAddNodePosition({ x: payload.x, y: payload.y })
     }
@@ -316,6 +316,10 @@ export const useInteraction = (): IGraphContext => {
       }
       if (prevType === DialogType.CREATE_NODE) {
         setNodes(getNodesWithoutTemplate())
+      }
+      if (prevType === DialogType.UPDATE_NODE) {
+        setNodes(getNodesWithoutTemplate())
+        setProps({})
       }
     }
   }, [dialogType])

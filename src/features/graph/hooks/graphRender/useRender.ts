@@ -1,13 +1,12 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
-import { InteractionState } from '@/features/graph/constants'
-import { useGraphContext } from '@/features/graph/context'
-import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
-import { Container } from '@/features/graph/hooks/graphRender/classes/Container'
-import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
-import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
-import { Relationship } from '@/features/graph/hooks/graphRender/classes/Relationship'
-import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
-import { useWindowSize } from '@reactuses/core'
+import {RefObject, useCallback, useEffect, useRef, useState} from 'react'
+import {InteractionState} from '@/features/graph/constants'
+import {useGraphContext} from '@/features/graph/context'
+import {clickZoom, zoom} from '@/features/graph/helpers/zoom'
+import {Container} from '@/features/graph/hooks/graphRender/classes/Container'
+import {Group} from '@/features/graph/hooks/graphRender/classes/Group'
+import {Node} from '@/features/graph/hooks/graphRender/classes/Node'
+import {Relationship} from '@/features/graph/hooks/graphRender/classes/Relationship'
+import {Simulation} from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
@@ -112,6 +111,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
   ) => {
     container.get.on('click', (event) => {
+      if (state.current === InteractionState.READ_NODE || state.current === InteractionState.READ_RELATIONSHIP) return
+
       const target = event.target as HTMLElement
       switch (target.tagName.toLowerCase()) {
         case 'svg':
@@ -221,9 +222,11 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
         default:
           if (optionsOpened.current) return
 
+          const nodeId = currentNode.attr('data-element-id')
+
           state.current = InteractionState.READ_NODE
           clickHandler({
-            nodeId: currentNode.attr('data-element-id'),
+            nodeId,
           })
 
           if (optionsOpened.current) {
@@ -231,6 +234,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
           } else {
             node.openButtons(currentNode)
           }
+
+          d3.selectAll('g').filter(function () {
+            return !!d3.select(this).attr('data-element-id') && d3.select(this).attr('data-element-id') !== nodeId
+          }).attr('pointer-events', 'none')
 
           optionsOpened.current = !optionsOpened.current
           event.stopPropagation()
@@ -260,10 +267,16 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     relationship.get.on('click', function () {
       const currentRelationship = d3.select(this)
 
+      const relationshipId = currentRelationship?.attr('data-element-id')
+
       state.current = InteractionState.READ_RELATIONSHIP
       clickHandler({
-        relationshipId: currentRelationship?.attr('data-element-id'),
+        relationshipId,
       })
+
+      d3.selectAll('g').filter(function () {
+        return !!d3.select(this).attr('data-element-id') && d3.select(this).attr('data-element-id') !== relationshipId
+      }).attr('pointer-events', 'none')
 
       const source = (
         currentRelationship.data()[0] as { source: { x: number; y: number } }
@@ -287,6 +300,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     node.deleteButton.get.on('click', function (event) {
       event.stopPropagation()
 
+      d3.selectAll('g').attr('pointer-events', 'all')
+
       const nodeId = d3.select(this).attr('data-element-id')
       state.current = InteractionState.DELETE_NODE
       clickHandler({ nodeId })
@@ -303,6 +318,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   ) => {
     node.relationshipButton.get.on('click', function (event) {
       event.stopPropagation()
+
+      d3.selectAll('g').attr('pointer-events', 'all')
 
       const currentNode = d3.select(this)
       const nodeId = currentNode.attr('data-element-id')
@@ -330,6 +347,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     node.editButton.get.on('click', function (event) {
       event.stopPropagation()
 
+      d3.selectAll('g').attr('pointer-events', 'all')
+
       const nodeId = d3.select(this).attr('data-element-id')
       state.current = InteractionState.UPDATE_NODE
       clickHandler({ nodeId })
@@ -343,6 +362,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const onRelationshipEditButtonClick = (relationship: Relationship) => {
     relationship.editButton.get.on('click', function (event) {
       event.stopPropagation()
+
+      d3.selectAll('g').attr('pointer-events', 'all')
 
       const currentRelationship = d3.select(this)
 
@@ -359,6 +380,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const onRelationshipDeleteButtonClick = (relationship: Relationship) => {
     relationship.deleteButton.get.on('click', async function (event) {
       event.stopPropagation()
+
+      d3.selectAll('g').attr('pointer-events', 'all')
 
       const relationshipId = d3.select(this).attr('data-element-id')
       await deleteRelationship(relationshipId)
