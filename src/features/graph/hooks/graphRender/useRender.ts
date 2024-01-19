@@ -22,8 +22,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     deleteRelationship,
   } = useGraphContext()
 
-  const { width, height } = useWindowSize()
-
   const rendered = useRef(false)
   const scale = useRef(1)
   const position = useRef({ x: 0, y: 0 })
@@ -41,8 +39,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       nodes,
       relationships,
       rendered.current,
-      width,
-      height,
     )
     const group = new Group(container)
     const relationship = new Relationship(relationships, group)
