@@ -22,7 +22,6 @@ export class DriverImpl implements Driver {
   }
 
   async execute<T>(query: string, payload?: any): Promise<T> {
-    console.log(query)
     const result = await this.session.run(query, payload)
     return result.records.map((record: any) => record.toObject()) as T
   }

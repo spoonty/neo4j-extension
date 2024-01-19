@@ -1,27 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
-import { DriverImpl } from '@/data/driver/Driver.impl'
-import { Neo4jRepositoryImpl } from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {
-  Node,
-  NodeCreateDTO,
-  NodeD3,
-  NodeUpdateDTO,
-} from '@/domain/neo4j/models/Node'
+import {useEffect, useRef, useState} from 'react'
+import {DriverImpl} from '@/data/driver/Driver.impl'
+import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/neo4j/models/Node'
 import {
   Relationship,
   RelationshipCreateDTO,
   RelationshipD3,
+  RelationshipUpdateDTO,
 } from '@/domain/neo4j/models/Relationship'
-import { CreateNodeCaseImpl } from '@/domain/neo4j/usecases/CreateNodeCase'
-import { CreateRelationshipCaseImpl } from '@/domain/neo4j/usecases/CreateRelationshipCase'
-import { DeleteNodeCaseImpl } from '@/domain/neo4j/usecases/DeleteNodeCase'
-import { GetGraphCaseImpl } from '@/domain/neo4j/usecases/GetGraphCase'
-import { UpdateNodeCaseImpl } from '@/domain/neo4j/usecases/UpdateNodeCase'
-import { InteractionState } from '@/features/graph/constants'
-import { IGraphContext } from '@/features/graph/context'
-import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
-import { useToast } from '@/ui/Toast/hooks/useToast'
+import {CreateNodeCaseImpl} from '@/domain/neo4j/usecases/CreateNodeCase'
+import {CreateRelationshipCaseImpl} from '@/domain/neo4j/usecases/CreateRelationshipCase'
+import {DeleteNodeCaseImpl} from '@/domain/neo4j/usecases/DeleteNodeCase'
+import {GetGraphCaseImpl} from '@/domain/neo4j/usecases/GetGraphCase'
+import {UpdateNodeCaseImpl} from '@/domain/neo4j/usecases/UpdateNodeCase'
+import {InteractionState} from '@/features/graph/constants'
+import {IGraphContext} from '@/features/graph/context'
+import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
+import {useToast} from '@/ui/Toast/hooks/useToast'
 import {DeleteRelationshipCaseImpl} from "@/domain/neo4j/usecases/DeleteRelationshipCase";
+import {UpdateRelationshipCaseImpl} from "@/domain/neo4j/usecases/UpdateRelationshipCase";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -33,6 +30,7 @@ const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
 const createRelationshipCase = new CreateRelationshipCaseImpl(
   repository.createRelationship,
 )
+const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
 const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
@@ -160,10 +158,32 @@ export const useInteraction = (): IGraphContext => {
 
       const relationshipD3 = await createRelationshipCase.execute(relationship)
 
+      if (relationshipD3.type && !types.includes(relationshipD3.type)) {
+        setTypes([...types, relationshipD3.type])
+      }
+
       setRelationships([...getRelationshipsWithoutTemplate(), relationshipD3])
       add('success', 'Relationship successfully created.')
 
       createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+    } catch (error: any) {
+      add('error', error.message)
+    } finally {
+      setDialogType(DialogType.NONE)
+    }
+  }
+
+  const updateRelationship = async (relationshipId: string, type: string, properties: KeyValue) => {
+    try {
+      const relationship = await updateRelationshipCase.execute(relationshipId, new RelationshipUpdateDTO(type, properties))
+
+      if (relationship.type && !types.includes(relationship.type)) {
+        setTypes([...types, relationship.type])
+      }
+
+      setRelationships([...relationships.filter((relationship) => relationship.elementId !== relationshipId), relationship])
+
+      add('success', 'Relationship successfully updated.')
     } catch (error: any) {
       add('error', error.message)
     } finally {
@@ -225,21 +245,25 @@ export const useInteraction = (): IGraphContext => {
     setNodes([...getNodesWithoutTemplate(), node])
   }
 
-  const updateRelationshipTemplate = (type: string, properties: KeyValue) => {
+  const updateRelationshipTemplate = (type: string, properties: KeyValue, initialRelationship?: RelationshipD3) => {
     const relationship = new RelationshipD3(
       new Relationship(
-        '-1',
-        { low: -1, high: -1 },
-        { low: -1, high: -1 },
-        createRelationshipTargets.current.target,
-        { low: -1, high: -1 },
-        createRelationshipTargets.current.source,
+        initialRelationship?.elementId || '-1',
+        initialRelationship?.identity || { low: -1, high: -1 },
+        initialRelationship?.end || { low: -1, high: -1 },
+        initialRelationship?.target || createRelationshipTargets.current.target,
+        initialRelationship?.start || { low: -1, high: -1 },
+        initialRelationship?.source || createRelationshipTargets.current.source,
         properties,
         type || '',
       ),
     )
 
-    setRelationships([...getRelationshipsWithoutTemplate(), relationship])
+    if (initialRelationship) {
+      setRelationships([...relationships.filter((relationship) => relationship.elementId !== initialRelationship.elementId), relationship])
+    } else {
+      setRelationships([...getRelationshipsWithoutTemplate(), relationship])
+    }
   }
 
   const clickHandler = (payload?: any) => {
@@ -269,6 +293,13 @@ export const useInteraction = (): IGraphContext => {
         )
         setProps({ relationship })
         setDialogType(DialogType.RELATIONSHIP_DETAILS)
+        break
+      case InteractionState.UPDATE_RELATIONSHIP:
+        setDialogType(DialogType.UPDATE_RELATIONSHIP)
+        const initialRelationship = relationships.find(
+          (relationship) => relationship.elementId === payload.relationshipId
+        )
+        setProps({ initialRelationship })
         break
       default:
         setDialogType(DialogType.CREATE_NODE)
@@ -310,6 +341,7 @@ export const useInteraction = (): IGraphContext => {
     updateNode,
     deleteNode,
     createRelationship,
+    updateRelationship,
     deleteRelationship,
     setSource,
     setTarget,

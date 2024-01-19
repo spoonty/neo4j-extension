@@ -7,12 +7,14 @@ import Button from '@/ui/Button/Button'
 import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Stepper from '@/ui/Stepper/Stepper'
 import { cn } from '@/utils/dom'
+import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
 
 interface Props {
+  initialRelationship: RelationshipD3,
   onClose: () => void
 }
 
-const View: FC<Props> = ({ onClose }) => {
+const View: FC<Props> = ({ initialRelationship, onClose }) => {
   const {
     type,
     setType,
@@ -20,7 +22,7 @@ const View: FC<Props> = ({ onClose }) => {
     addProperty,
     clearData,
     createRelationshipHandler,
-  } = useCreateRelationship()
+  } = useCreateRelationship(initialRelationship)
 
   const [step, setStep] = useState(Steps.SET_TYPE)
   const steps = [Steps.SET_TYPE, Steps.SET_PROPERTIES]
@@ -72,7 +74,7 @@ const View: FC<Props> = ({ onClose }) => {
             'h-[482px]',
         )}
       >
-        <Header onClose={closeHandler}>CREATE RELATIONSHIP</Header>
+        <Header onClose={closeHandler}>{initialRelationship ? 'UPDATE' : 'CREATE'} RELATIONSHIP</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">
           <Stepper steps={steps} current={step} />
           {renderStep()}
@@ -87,7 +89,11 @@ const View: FC<Props> = ({ onClose }) => {
             variant="confirm"
             onClick={step === Steps.SET_PROPERTIES ? handler : onNextStep}
           >
-            {step === Steps.SET_PROPERTIES ? 'Create' : 'Next'}
+            {step === Steps.SET_PROPERTIES
+              ? initialRelationship
+                ? 'Update'
+                : 'Create'
+              : 'Next'}
           </Button>
         </Footer>
       </Content>

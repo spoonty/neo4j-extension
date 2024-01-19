@@ -348,7 +348,12 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     relationship.editButton.get.on('click', function (event) {
       event.stopPropagation()
 
-      console.log('edit')
+      const currentRelationship = d3.select(this)
+
+      const relationshipId = currentRelationship.attr('data-element-id')
+      state.current = InteractionState.UPDATE_RELATIONSHIP
+
+      clickHandler({ relationshipId })
 
       relationship.closeButtons()
 

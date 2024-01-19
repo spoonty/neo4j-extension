@@ -1,12 +1,27 @@
-import { useEffect, useState } from 'react'
+import {useEffect, useRef, useState} from 'react'
 import { DEFAULT_PROPERTIES } from '@/features/create-relation/constants'
 import { useGraphContext } from '@/features/graph/context'
+import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
 
-export const useCreateRelationship = () => {
-  const { createRelationship, updateRelationshipTemplate } = useGraphContext()
+export const useCreateRelationship = (initialRelationship?: RelationshipD3) => {
+  const updated = useRef(false)
 
-  const [type, setType] = useState<string>('')
-  const [properties, setProperties] = useState<KeyValue>(DEFAULT_PROPERTIES)
+  const { createRelationship, updateRelationship, updateRelationshipTemplate } = useGraphContext()
+
+  const [type, setType] = useState<string>(initialRelationship?.type || '')
+  const [properties, setProperties] = useState<KeyValue<'key' | 'value', string[]>>(
+    initialRelationship
+      ? {
+        key: ['ID', ...Object.keys(initialRelationship.properties)],
+        value: [
+          initialRelationship.elementId,
+          ...Object.keys(initialRelationship.properties).map(
+            (key) => initialRelationship.properties[key],
+          ),
+        ],
+      }
+      : DEFAULT_PROPERTIES,
+  )
 
   const addProperty = (property: KeyValue) => {
     setProperties({
@@ -20,7 +35,9 @@ export const useCreateRelationship = () => {
 
     // @ts-ignore
     properties['key'].forEach((key, i) => {
-      convertedProperties[key] = properties['value'][i]
+      if (key !== 'ID') {
+        convertedProperties[key] = properties['value'][i]
+      }
     })
 
     return convertedProperties
@@ -32,11 +49,22 @@ export const useCreateRelationship = () => {
   }
 
   const createRelationshipHandler = async () => {
-    await createRelationship(type, convertProperties())
+    if (initialRelationship) {
+      updated.current = true
+      await updateRelationship(initialRelationship.elementId, type, convertProperties())
+    } else {
+      await createRelationship(type, convertProperties())
+    }
   }
 
   useEffect(() => {
-    updateRelationshipTemplate(type, convertProperties())
+    updateRelationshipTemplate(type, convertProperties(), initialRelationship)
+
+    return () => {
+      if (initialRelationship && !updated.current) {
+        updateRelationshipTemplate(initialRelationship.type!, initialRelationship.properties, initialRelationship)
+      }
+    }
   }, [type, properties])
 
   return {

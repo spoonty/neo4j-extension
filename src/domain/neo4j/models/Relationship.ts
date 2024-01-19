@@ -20,6 +20,13 @@ export class RelationshipCreateDTO {
   ) {}
 }
 
+export class RelationshipUpdateDTO {
+  constructor(
+    readonly type: string,
+    readonly properties: KeyValue,
+  ) {}
+}
+
 export class RelationshipD3 extends Relationship {
   source: string
   target: string

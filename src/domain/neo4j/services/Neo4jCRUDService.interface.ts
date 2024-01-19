@@ -2,7 +2,7 @@ import { Graph } from '@/domain/neo4j/models/Graph'
 import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/neo4j/models/Node'
 import {
   Relationship,
-  RelationshipCreateDTO,
+  RelationshipCreateDTO, RelationshipUpdateDTO,
 } from '@/domain/neo4j/models/Relationship'
 
 export interface Neo4jCRUDService {
@@ -11,5 +11,6 @@ export interface Neo4jCRUDService {
   updateNode(nodeId: string, node: NodeUpdateDTO): Promise<Node>
   deleteNode(nodeId: string): Promise<void>
   createRelationship(relationship: RelationshipCreateDTO): Promise<Relationship>
+  updateRelationship(relationshipId: string, relationship: RelationshipUpdateDTO): Promise<Relationship>
   deleteRelationship(relationshipId: string): Promise<void>
 }

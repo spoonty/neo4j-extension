@@ -14,6 +14,7 @@ export enum DialogType {
   DELETE_NODE,
   NODE_DETAILS,
   RELATIONSHIP_DETAILS,
+  UPDATE_RELATIONSHIP
 }
 
 export type DialogData = {
@@ -45,6 +46,7 @@ export const useDialog = () => {
       case DialogType.UPDATE_NODE:
       case DialogType.CREATE_NODE:
         return CreateNodeDialog
+      case DialogType.UPDATE_RELATIONSHIP:
       case DialogType.CREATE_RELATIONSHIP:
         return CreateRelationship
       case DialogType.DELETE_NODE:

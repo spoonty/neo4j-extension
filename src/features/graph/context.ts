@@ -19,6 +19,7 @@ export interface IGraphContext {
   ) => Promise<void>
   deleteNode: () => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
+  updateRelationship: (relationshipId: string, type: string, properties: KeyValue) => Promise<void>
   deleteRelationship: (relationshipId: string) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void | string
@@ -27,7 +28,7 @@ export interface IGraphContext {
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => void
-  updateRelationshipTemplate: (type: string, properties: KeyValue) => void
+  updateRelationshipTemplate: (type: string, properties: KeyValue, initialRelationship?: RelationshipD3) => void
   clickHandler: (payload: any) => void
 }
 
@@ -42,6 +43,7 @@ export const GraphContext = createContext<IGraphContext>({
   updateNode: async () => {},
   deleteNode: async () => {},
   createRelationship: async () => {},
+  updateRelationship: async () => {},
   deleteRelationship: async () => {},
   setSource: () => {},
   setTarget: () => {},
