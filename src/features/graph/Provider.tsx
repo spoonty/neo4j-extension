@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { GraphContext } from '@/features/graph/context'
-import { useGraph } from '@/features/graph/hooks/useGraph'
+import { useInteraction } from '@/features/graph/hooks/useInteraction'
 import View from '@/features/graph/View'
 
 const Provider: FC = () => {
-  const value = useGraph()
+  const value = useInteraction()
 
   return (
     <GraphContext.Provider value={value}>

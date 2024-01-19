@@ -5,7 +5,7 @@ import {
   getPropertyToDisplay,
 } from '@/features/graph/helpers/labels'
 import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
-import { NodeControlElement } from '@/features/graph/hooks/graphRender/classes/NodeControlElement'
+import { ControlElement } from '@/features/graph/hooks/graphRender/classes/ControlElement'
 import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
 import { BaseType } from 'd3'
@@ -13,13 +13,13 @@ import { BaseType } from 'd3'
 export class Node {
   private readonly node: d3.Selection<
     d3.BaseType | SVGGElement,
-    NodeD3,
+    any,
     SVGGElement,
     unknown
   >
-  private readonly _deleteButton: NodeControlElement
-  private readonly _editButton: NodeControlElement
-  private readonly _relationshipButton: NodeControlElement
+  private readonly _deleteButton: ControlElement
+  private readonly _editButton: ControlElement
+  private readonly _relationshipButton: ControlElement
 
   constructor(
     nodes: NodeD3[],
@@ -34,13 +34,13 @@ export class Node {
       .join('g')
       .attr('data-element-id', (d: any) => d.elementId)
 
-    this._deleteButton = new NodeControlElement(this, 'delete-button')
+    this._deleteButton = new ControlElement(this, 'delete-button')
     this._deleteButton.position = { x: -55, y: 0 }
 
-    this._relationshipButton = new NodeControlElement(this, 'relation-button')
+    this._relationshipButton = new ControlElement(this, 'relation-button')
     this._relationshipButton.position = { x: -33, y: -45 }
 
-    this._editButton = new NodeControlElement(this, 'edit-button')
+    this._editButton = new ControlElement(this, 'edit-button')
     this._editButton.position = { x: -49, y: -25 }
 
     this.node
@@ -99,7 +99,7 @@ export class Node {
     node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
     ;[this._editButton, this._relationshipButton, this._deleteButton].forEach(
-      (button: NodeControlElement) => button.closeElement(node),
+      (button: ControlElement) => button.closeElement(node),
     )
   }
 

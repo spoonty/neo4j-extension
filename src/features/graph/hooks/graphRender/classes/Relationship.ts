@@ -1,14 +1,17 @@
 import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
 import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
 import * as d3 from 'd3'
+import {ControlElement} from "@/features/graph/hooks/graphRender/classes/ControlElement";
 
 export class Relationship {
   private readonly relationship: d3.Selection<
     d3.BaseType | SVGGElement,
-    RelationshipD3,
+    any,
     SVGGElement,
     unknown
   >
+  private readonly _deleteButton: ControlElement
+  private readonly _editButton: ControlElement
 
   constructor(relationships: RelationshipD3[], group: Group) {
     const arrowMaker = group.get
@@ -49,9 +52,40 @@ export class Relationship {
       .attr('dominant-baseline', 'middle')
       .style('user-select', 'none')
       .attr('fill', '#edeef0')
+
+    this._deleteButton = new ControlElement(this, 'delete-button')
+    this._editButton = new ControlElement(this, 'edit-button')
+  }
+
+  public closeButtons(
+    relationship?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+  ) {
+    ;[this._editButton, this._deleteButton].forEach(
+      (button: ControlElement) => button.closeElement(relationship),
+    )
+  }
+
+  public openButtons(
+    relationship: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+  ) {
+    const x = Number(relationship.select('text').attr('x'))
+    const y = Number(relationship.select('text').attr('y'))
+    this._deleteButton.position = { x: x + 15, y: y + 18 }
+    this._editButton.position = { x: x - 15, y: y + 18 }
+
+    this._editButton.openElement(relationship)
+    this._deleteButton.openElement(relationship)
   }
 
   public get get() {
     return this.relationship
+  }
+
+  public get editButton() {
+    return this._editButton
+  }
+
+  public get deleteButton() {
+    return this._deleteButton
   }
 }

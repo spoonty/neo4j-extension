@@ -1,8 +1,9 @@
 import { NodeD3 } from '@/domain/neo4j/models/Node'
 import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
 import * as d3 from 'd3'
+import {Relationship} from "@/features/graph/hooks/graphRender/classes/Relationship";
 
-export class NodeControlElement {
+export class ControlElement {
   private readonly element: d3.Selection<
     SVGGElement,
     NodeD3,
@@ -12,13 +13,14 @@ export class NodeControlElement {
   private _position: { x: number; y: number } = { x: 0, y: 0 }
 
   constructor(
-    node: Node,
+    controller: Node | Relationship,
     private readonly className: string,
   ) {
-    this.element = node.get
+    this.element = controller.get
       .append('g')
       .attr('class', className)
       .attr('data-element-id', (d: any) => d.elementId)
+      .attr('opacity', 0)
 
     this.element
       .append('circle')
@@ -58,30 +60,24 @@ export class NodeControlElement {
   }
 
   public openElement(
-    node: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+    controller: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
-    node
+    controller
       .select(`.${this.className}`)
-      .transition()
-      .duration(500)
       .attr('transform', `translate(${this._position.x},${this._position.y})`)
       .style('opacity', 1)
   }
 
   public closeElement(
-    node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
+    controller?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
-    if (node) {
-      node
+    if (controller) {
+      controller
         .select(this.className)
-        .transition()
-        .duration(500)
         .attr('transform', `translate(0,0)`)
         .style('opacity', 0)
     } else {
       this.element
-        .transition()
-        .duration(500)
         .attr('transform', `translate(0,0)`)
         .style('opacity', 0)
     }

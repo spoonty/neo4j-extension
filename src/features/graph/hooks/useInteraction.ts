@@ -35,7 +35,7 @@ const createRelationshipCase = new CreateRelationshipCaseImpl(
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
-export const useGraph = (): IGraphContext => {
+export const useInteraction = (): IGraphContext => {
   const { add } = useToast()
   const { dialog, dialogType, prevType, setDialogType, setProps } = useDialog()
 

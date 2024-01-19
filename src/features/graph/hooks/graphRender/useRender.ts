@@ -68,9 +68,12 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onNodeClick(node, container, zoomHandler)
     onRelationshipClick(relationship, container, zoomHandler)
 
-    onDeleteButtonClick(node)
-    onRelationshipButtonClick(node, container, zoomHandler)
+    onNodeDeleteButtonClick(node)
+    onNodeRelationshipButtonClick(node, container, zoomHandler)
     onNodeEditButtonClick(node)
+
+    onRelationshipEditButtonClick(relationship)
+    onRelationshipDeleteButtonClick(relationship)
 
     onContainerClick(container, node, zoomHandler)
 
@@ -272,6 +275,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
         currentRelationship.data()[0] as { target: { x: number; y: number } }
       ).target
 
+      relationship.openButtons(currentRelationship)
+
       return clickZoom(
         container,
         zoomHandler,
@@ -281,7 +286,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     })
   }
 
-  const onDeleteButtonClick = (node: Node) => {
+  const onNodeDeleteButtonClick = (node: Node) => {
     node.deleteButton.get.on('click', function (event) {
       event.stopPropagation()
 
@@ -294,7 +299,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     })
   }
 
-  const onRelationshipButtonClick = (
+  const onNodeRelationshipButtonClick = (
     node: Node,
     container: Container,
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
@@ -337,6 +342,30 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       optionsOpened.current = false
     })
   }
+
+  const onRelationshipEditButtonClick = (relationship: Relationship) => {
+    relationship.editButton.get.on('click', function (event) {
+      event.stopPropagation()
+
+      console.log('edit')
+
+      relationship.closeButtons()
+
+      optionsOpened.current = false
+    })
+  }
+  const onRelationshipDeleteButtonClick = (relationship: Relationship) => {
+    relationship.deleteButton.get.on('click', function (event) {
+      event.stopPropagation()
+
+      console.log('delete')
+
+      relationship.closeButtons()
+
+      optionsOpened.current = false
+    })
+  }
+
 
   useEffect(() => {
     render()
