@@ -19,7 +19,7 @@ export class Simulation {
         d3
           .forceLink(relationships)
           .id((d: any) => d.elementId)
-          .distance(300),
+          .distance(250),
       )
       .force('charge', d3.forceManyBody().strength(rendered ? 0 : -50))
 

@@ -11,4 +11,5 @@ export interface Neo4jCRUDService {
   updateNode(nodeId: string, node: NodeUpdateDTO): Promise<Node>
   deleteNode(nodeId: string): Promise<void>
   createRelationship(relationship: RelationshipCreateDTO): Promise<Relationship>
+  deleteRelationship(relationshipId: string): Promise<void>
 }

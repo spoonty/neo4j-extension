@@ -21,6 +21,7 @@ import { InteractionState } from '@/features/graph/constants'
 import { IGraphContext } from '@/features/graph/context'
 import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
 import { useToast } from '@/ui/Toast/hooks/useToast'
+import {DeleteRelationshipCaseImpl} from "@/domain/neo4j/usecases/DeleteRelationshipCase";
 
 const driver = new DriverImpl()
 const repository = new Neo4jRepositoryImpl(driver)
@@ -32,6 +33,7 @@ const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
 const createRelationshipCase = new CreateRelationshipCaseImpl(
   repository.createRelationship,
 )
+const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
@@ -169,6 +171,25 @@ export const useInteraction = (): IGraphContext => {
     }
   }
 
+  const deleteRelationship = async (relationshipId: string) => {
+    try {
+      await deleteRelationshipCase.execute(relationshipId)
+
+      setRelationships(
+        relationships.filter(
+          (relationship) =>
+            relationship.elementId !== relationshipId,
+        ),
+      )
+
+      add('success', 'Relationship successfully deleted.')
+    } catch (error: any) {
+      add('error', error.message)
+    } finally {
+      setDialogType(DialogType.NONE)
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -289,6 +310,7 @@ export const useInteraction = (): IGraphContext => {
     updateNode,
     deleteNode,
     createRelationship,
+    deleteRelationship,
     setSource,
     setTarget,
     updateNodeTemplate,

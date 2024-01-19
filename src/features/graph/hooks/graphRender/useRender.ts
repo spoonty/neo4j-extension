@@ -19,6 +19,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     setSource,
     setTarget,
     state,
+    deleteRelationship,
   } = useGraphContext()
 
   const { width, height } = useWindowSize()
@@ -355,17 +356,17 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     })
   }
   const onRelationshipDeleteButtonClick = (relationship: Relationship) => {
-    relationship.deleteButton.get.on('click', function (event) {
+    relationship.deleteButton.get.on('click', async function (event) {
       event.stopPropagation()
 
-      console.log('delete')
+      const relationshipId = d3.select(this).attr('data-element-id')
+      await deleteRelationship(relationshipId)
 
       relationship.closeButtons()
 
       optionsOpened.current = false
     })
   }
-
 
   useEffect(() => {
     render()

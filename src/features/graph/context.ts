@@ -19,6 +19,7 @@ export interface IGraphContext {
   ) => Promise<void>
   deleteNode: () => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
+  deleteRelationship: (relationshipId: string) => Promise<void>
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void | string
   updateNodeTemplate: (
@@ -41,6 +42,7 @@ export const GraphContext = createContext<IGraphContext>({
   updateNode: async () => {},
   deleteNode: async () => {},
   createRelationship: async () => {},
+  deleteRelationship: async () => {},
   setSource: () => {},
   setTarget: () => {},
   updateNodeTemplate: () => {},

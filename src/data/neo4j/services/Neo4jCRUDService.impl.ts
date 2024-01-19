@@ -61,7 +61,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
 
   updateNode = async (nodeId: string, node: NodeUpdateDTO) => {
     const query = `
-      MATCH (n) WHERE ID(n)=${nodeId.split(':').reverse()[0]}
+      MATCH (n) WHERE ID(n)=${nodeId}
       REMOVE n:${node.labels.join(':')}
       SET n:${node.newLabels.join(':')}
       SET n += $properties
@@ -77,7 +77,7 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
 
   deleteNode = async (nodeId: string): Promise<void> => {
     const query = `
-      MATCH (n) where ID(n)=${nodeId.split(':').reverse()[0]}
+      MATCH (n) where ID(n)=${nodeId}
       DETACH DELETE n
     `
 
@@ -90,8 +90,8 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     const query = `
       MATCH (node1), (node2)
       WHERE id(node1) = ${
-        relationship.startNodeElementId.split(':').reverse()[0]
-      } AND id(node2) = ${relationship.endNodeElementId.split(':').reverse()[0]}
+        relationship.startNodeElementId
+      } AND id(node2) = ${relationship.endNodeElementId}
       CREATE (node1)-[r:${relationship.type}]->(node2)
       SET r += $properties
       RETURN r
@@ -105,5 +105,13 @@ export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
     )
 
     return result[0].r
+  }
+
+  deleteRelationship = async (relationshipId: string): Promise<void> => {
+    const query = `
+      MATCH ()-[r]-() WHERE id(r)=${relationshipId} DELETE r
+    `
+
+    return await this.driver.execute(query)
   }
 }
