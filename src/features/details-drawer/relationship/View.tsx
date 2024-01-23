@@ -15,7 +15,7 @@ const View: FC<Props> = ({ relationship, onClose }) => {
     title='RELATIONSHIP DETAILS'
     elementId={relationship.elementId}
     properties={relationship.properties}
-    className='h-[230px]'
+    className='h-[250px]'
     onClose={onClose}
   >
     <Badge style={{ backgroundColor: '#bdbdbd' }}>

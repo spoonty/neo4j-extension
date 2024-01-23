@@ -8,6 +8,8 @@ import {Node} from '@/features/graph/hooks/graphRender/classes/Node'
 import {Relationship} from '@/features/graph/hooks/graphRender/classes/Relationship'
 import {Simulation} from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
+import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
+import {NodeD3} from "@/domain/neo4j/models/Node";
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {
@@ -20,6 +22,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     state,
     deleteRelationship,
   } = useGraphContext()
+
+  const [node, setNode] = useState<Node>()
+  const [relationship, setRelationship] = useState<Relationship>()
 
   const rendered = useRef(false)
   const scale = useRef(1)
@@ -74,6 +79,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onContainerClick(container, node, zoomHandler)
 
     onTick(simulation, node, relationship)
+
+    setNode(node)
+    setRelationship(relationship)
 
     if (!rendered.current) {
       rendered.current = true
@@ -274,6 +282,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
         relationshipId,
       })
 
+      optionsOpened.current = true
+
       d3.selectAll('g').filter(function () {
         return !!d3.select(this).attr('data-element-id') && d3.select(this).attr('data-element-id') !== relationshipId
       }).attr('pointer-events', 'none')
@@ -377,6 +387,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       optionsOpened.current = false
     })
   }
+
   const onRelationshipDeleteButtonClick = (relationship: Relationship) => {
     relationship.deleteButton.get.on('click', async function (event) {
       event.stopPropagation()
@@ -391,6 +402,14 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       optionsOpened.current = false
     })
   }
+
+  useEffect(() => {
+    if (![InteractionState.READ_NODE, InteractionState.READ_RELATIONSHIP].includes(state.current) && optionsOpened.current) {
+      node?.closeButtons()
+      relationship?.closeButtons()
+      optionsOpened.current = false
+    }
+  }, [state.current]);
 
   useEffect(() => {
     render()

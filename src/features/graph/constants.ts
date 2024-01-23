@@ -1,11 +1,10 @@
 export enum InteractionState {
-  DEFAULT,
-  CREATE_NODE,
-  READ_NODE,
-  UPDATE_NODE,
-  DELETE_NODE,
-  CREATE_RELATIONSHIP,
-  READ_RELATIONSHIP,
-  UPDATE_RELATIONSHIP,
-  DELETE_RELATIONSHIP
+  DEFAULT = 'default',
+  CREATE_NODE = 'create node',
+  READ_NODE = 'read node',
+  UPDATE_NODE = 'update node',
+  DELETE_NODE = 'delete node',
+  CREATE_RELATIONSHIP = 'create relationship',
+  READ_RELATIONSHIP = 'read relationship',
+  UPDATE_RELATIONSHIP = 'update relationship',
 }

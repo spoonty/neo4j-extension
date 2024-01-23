@@ -309,17 +309,35 @@ export const useInteraction = (): IGraphContext => {
 
   useEffect(() => {
     if (dialogType === DialogType.NONE) {
-      if (prevType === DialogType.CREATE_RELATIONSHIP) {
-        state.current = InteractionState.DEFAULT
-        createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
-        setRelationships(getRelationshipsWithoutTemplate())
+      if (prevType === DialogType.NODE_DETAILS && state.current === InteractionState.CREATE_RELATIONSHIP) {
+        return
       }
-      if (prevType === DialogType.CREATE_NODE) {
-        setNodes(getNodesWithoutTemplate())
-      }
-      if (prevType === DialogType.UPDATE_NODE) {
-        setNodes(getNodesWithoutTemplate())
-        setProps({})
+
+      switch (prevType) {
+        case DialogType.CREATE_NODE:
+          setNodes(getNodesWithoutTemplate())
+          state.current = InteractionState.DEFAULT
+          break
+        case DialogType.NODE_DETAILS:
+        case DialogType.RELATIONSHIP_DETAILS:
+        case DialogType.DELETE_NODE:
+          state.current = InteractionState.DEFAULT
+          break
+        case DialogType.CREATE_RELATIONSHIP:
+          createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+          setRelationships(getRelationshipsWithoutTemplate())
+          state.current = InteractionState.DEFAULT
+          break
+        case DialogType.UPDATE_NODE:
+          setNodes(getNodesWithoutTemplate())
+          setProps({})
+          state.current = InteractionState.DEFAULT
+          break
+        case DialogType.UPDATE_RELATIONSHIP:
+          setRelationships(getRelationshipsWithoutTemplate())
+          setProps({})
+          state.current = InteractionState.DEFAULT
+          break
       }
     }
   }, [dialogType])
