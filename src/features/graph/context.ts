@@ -17,7 +17,7 @@ export interface IGraphContext {
     labels: string[],
     properties: KeyValue,
   ) => Promise<void>
-  deleteNode: () => Promise<void>
+  deleteNode: (nodeId: string) => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
   updateRelationship: (relationshipId: string, type: string, properties: KeyValue) => Promise<void>
   deleteRelationship: (relationshipId: string) => Promise<void>

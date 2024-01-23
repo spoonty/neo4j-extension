@@ -45,7 +45,6 @@ export const useInteraction = (): IGraphContext => {
   const [types, setTypes] = useState<string[]>([])
 
   const [addNodePosition, setAddNodePosition] = useState({ x: 0, y: 0 })
-  const [focusedNode, setFocusedNode] = useState('-1')
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
@@ -126,16 +125,16 @@ export const useInteraction = (): IGraphContext => {
     }
   }
 
-  const deleteNode = async () => {
+  const deleteNode = async (nodeId: string) => {
     try {
-      await deleteNodeCase.execute(focusedNode)
+      await deleteNodeCase.execute(nodeId)
 
-      setNodes(nodes.filter((node) => node.elementId !== focusedNode))
+      setNodes(nodes.filter((node) => node.elementId !== nodeId))
       setRelationships(
         relationships.filter(
           (relationship) =>
-            relationship.endNodeElementId !== focusedNode &&
-            relationship.startNodeElementId !== focusedNode,
+            relationship.endNodeElementId !== nodeId &&
+            relationship.startNodeElementId !== nodeId,
         ),
       )
 
@@ -269,8 +268,16 @@ export const useInteraction = (): IGraphContext => {
   const clickHandler = (payload?: any) => {
     switch (state.current) {
       case InteractionState.DELETE_NODE:
+        const nodeRelationships = relationships.filter((relationship) => relationship.startNodeElementId === payload?.nodeId || relationship.endNodeElementId === payload?.nodeId)
+        const amount = nodeRelationships.length
+
+        if (!amount) {
+          deleteNode(payload?.nodeId)
+          return
+        }
+
         setDialogType(DialogType.DELETE_NODE)
-        setFocusedNode(payload?.nodeId)
+        setProps({ nodeId: payload?.nodeId, relationshipsAmount: amount })
         break
       case InteractionState.UPDATE_NODE:
         setDialogType(DialogType.UPDATE_NODE)
@@ -283,7 +290,6 @@ export const useInteraction = (): IGraphContext => {
         const nodeId = payload.nodeId
         const node = nodes.find((node) => node.elementId === nodeId)
         setProps({ node })
-        setFocusedNode(nodeId)
         setDialogType(DialogType.NODE_DETAILS)
         break
       case InteractionState.READ_RELATIONSHIP:
@@ -320,7 +326,6 @@ export const useInteraction = (): IGraphContext => {
           break
         case DialogType.NODE_DETAILS:
         case DialogType.RELATIONSHIP_DETAILS:
-        case DialogType.DELETE_NODE:
           state.current = InteractionState.DEFAULT
           break
         case DialogType.CREATE_RELATIONSHIP:
@@ -337,6 +342,10 @@ export const useInteraction = (): IGraphContext => {
           setRelationships(getRelationshipsWithoutTemplate())
           setProps({})
           state.current = InteractionState.DEFAULT
+          break
+        case DialogType.DELETE_NODE:
+          state.current = InteractionState.DEFAULT
+          setProps({})
           break
       }
     }

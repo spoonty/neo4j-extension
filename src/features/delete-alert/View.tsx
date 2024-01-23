@@ -5,11 +5,15 @@ import { Alert, Content, Footer } from '@/ui/Alert'
 import Button from '@/ui/Button/Button'
 
 interface Props {
+  nodeId?: string
+  relationshipsAmount?: number
   onClose: () => void
 }
 
-const View: FC<Props> = ({ onClose }) => {
+const View: FC<Props> = ({ nodeId, relationshipsAmount, onClose }) => {
   const { deleteNode } = useGraphContext()
+
+  const alertAmount = `relationship${relationshipsAmount === 1 ? '' : 's'}`
 
   return (
     <Alert open>
@@ -20,10 +24,14 @@ const View: FC<Props> = ({ onClose }) => {
           className="mx-auto my-0 text-red-alert"
         />
         <div className="mb-4 text-center text-main-gray">
-          Are you sure you want to delete this node?
+          {
+            `This node has ${relationshipsAmount} ${alertAmount}.
+            If you delete this node, relationships will also be deleted.
+            Are you sure you want to delete this node?`
+          }
         </div>
         <Footer className="flex justify-between">
-          <Button variant={'cancel'} onClick={deleteNode}>
+          <Button variant={'cancel'} onClick={() => deleteNode(nodeId!)}>
             Delete
           </Button>
           <Button onClick={onClose}>Cancel</Button>
