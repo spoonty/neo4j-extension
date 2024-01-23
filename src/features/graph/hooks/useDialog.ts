@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import CreateNodeDialog from '@/features/create-node/View'
-import CreateRelationship from '@/features/create-relation/View'
+import ModifyNodeDialog from '@/features/modify-drawer/node/View'
+import ModifyRelationshipDialog from '@/features/modify-drawer/relationship/View'
 import DeleteAlert from '@/features/delete-alert/View'
 import DetailsNode from '@/features/details-node/View'
 import RelationshipDetails from '@/features/relationship-details/View'
@@ -45,10 +45,10 @@ export const useDialog = () => {
     switch (type) {
       case DialogType.UPDATE_NODE:
       case DialogType.CREATE_NODE:
-        return CreateNodeDialog
+        return ModifyNodeDialog
       case DialogType.UPDATE_RELATIONSHIP:
       case DialogType.CREATE_RELATIONSHIP:
-        return CreateRelationship
+        return ModifyRelationshipDialog
       case DialogType.DELETE_NODE:
         return DeleteAlert
       case DialogType.NODE_DETAILS:

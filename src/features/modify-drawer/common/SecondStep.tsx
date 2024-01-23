@@ -9,16 +9,16 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   properties: KeyValue
-  addProperty: (value: KeyValue) => void
-  deleteHandler: (i: number) => void
+  add: (value: KeyValue) => void
+  remove: (i: number) => void
 }
 
-const PropertiesStep: FC<Props> = ({ properties, addProperty, deleteHandler }) => {
+const SecondStep: FC<Props> = ({ properties, add, remove }) => {
   const [key, setKey] = useState('')
   const [value, setValue] = useState('')
 
   const addHandler = () => {
-    addProperty({ key, value })
+    add({ key, value })
     setKey('')
     setValue('')
   }
@@ -48,7 +48,7 @@ const PropertiesStep: FC<Props> = ({ properties, addProperty, deleteHandler }) =
           )}
         >
           <ScrollArea.Viewport className="h-full w-full">
-            <Table data={properties} deleteAction={deleteHandler} />
+            <Table data={properties} deleteAction={remove} />
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar
             orientation="vertical"
@@ -60,4 +60,4 @@ const PropertiesStep: FC<Props> = ({ properties, addProperty, deleteHandler }) =
   )
 }
 
-export default PropertiesStep
+export default SecondStep
