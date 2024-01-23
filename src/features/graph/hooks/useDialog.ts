@@ -2,8 +2,8 @@ import { FunctionComponent, useEffect, useState } from 'react'
 import ModifyNodeDialog from '@/features/modify-drawer/node/View'
 import ModifyRelationshipDialog from '@/features/modify-drawer/relationship/View'
 import DeleteAlert from '@/features/delete-alert/View'
-import DetailsNode from '@/features/details-node/View'
-import RelationshipDetails from '@/features/relationship-details/View'
+import DetailsNode from '@/features/details-drawer/node/View'
+import RelationshipDetails from '@/features/details-drawer/relationship/View'
 import { usePrevious } from '@reactuses/core'
 
 export enum DialogType {

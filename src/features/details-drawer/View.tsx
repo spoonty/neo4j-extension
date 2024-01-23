@@ -1,24 +1,24 @@
-import { FC } from 'react'
-import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
-import Badge from '@/ui/Badge'
-import { Content, Drawer, Header } from '@/ui/Drawer'
-import ScrollArea from '@/ui/ScrollArea'
-import Table from '@/ui/Table/Table'
+import {FC, PropsWithChildren} from "react";
+import {Content, Drawer, Header} from "@/ui/Drawer";
+import ScrollArea from "@/ui/ScrollArea";
+import Table from "@/ui/Table/Table";
+import {cn} from "@/utils/dom";
 
-interface Props {
-  relationship?: RelationshipD3
+export interface DetailsDrawerProps extends PropsWithChildren {
+  title: string
+  elementId: string
+  properties: KeyValue
+  className?: string
   onClose: () => void
 }
 
-const View: FC<Props> = ({ relationship, onClose }) => {
-  if (!relationship) return null
-
-  const properties = {
-    key: ['ID', ...Object.keys(relationship.properties)],
+const View: FC<DetailsDrawerProps> = ({ children, title, elementId, properties, className, onClose }) => {
+  const convertedProperties = {
+    key: ['ID', ...Object.keys(properties)],
     value: [
-      relationship.elementId,
-      ...Object.keys(relationship.properties).map(
-        (key) => relationship.properties[key],
+      elementId,
+      ...Object.keys(properties).map(
+        (key) => properties[key],
       ),
     ],
   }
@@ -26,14 +26,12 @@ const View: FC<Props> = ({ relationship, onClose }) => {
   return (
     <Drawer open modal={false}>
       <Content>
-        <Header onClose={onClose}>RELATIONSHIP DETAILS</Header>
+        <Header onClose={onClose}>{title}</Header>
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5 px-2">
           <ScrollArea.Root className="max-h-[90px]">
             <ScrollArea.Viewport className="h-full w-full">
               <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
-                <Badge style={{ backgroundColor: '#bdbdbd' }}>
-                  {relationship.type}
-                </Badge>
+                {children}
               </div>
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar
@@ -42,9 +40,9 @@ const View: FC<Props> = ({ relationship, onClose }) => {
             />
           </ScrollArea.Root>
 
-          <ScrollArea.Root className="h-[250px] pe-3">
+          <ScrollArea.Root className={cn("pe-3", className)}>
             <ScrollArea.Viewport className="h-full w-full">
-              <Table data={properties} />
+              <Table data={convertedProperties} />
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar
               orientation="vertical"
