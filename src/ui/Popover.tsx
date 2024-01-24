@@ -8,6 +8,7 @@ interface Props extends PopoverPrimitive.PopoverProps {
   className?: string
   value?: string
   onValueChange?: (value: string) => void
+  popoverWidth?: string
   children: React.ReactElement
 }
 
@@ -18,6 +19,7 @@ const Popover: FC<Props> = ({
   className,
   value,
   onValueChange,
+  popoverWidth
 }) => {
   return (
     <PopoverPrimitive.Root open={open} modal={false}>
@@ -29,6 +31,7 @@ const Popover: FC<Props> = ({
           className={cn(
             'relative z-[1000] mt-[1px] min-w-[414px] rounded-b-md bg-light-dark',
             className,
+            popoverWidth,
           )}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >

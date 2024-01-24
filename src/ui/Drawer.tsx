@@ -33,6 +33,7 @@ export const Content: FC<
       onOpenAutoFocus={(e) => e.preventDefault()}
       onCloseAutoFocus={(e) => e.preventDefault()}
       autoFocus={false}
+      {...props}
     >
       {children}
     </DialogPrimitive.Content>
@@ -40,7 +41,7 @@ export const Content: FC<
 )
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClose: () => void
+  onClose?: () => void
 }
 
 export const Header: FC<HeaderProps> = ({
@@ -54,9 +55,11 @@ export const Header: FC<HeaderProps> = ({
       <div className="cursor-default text-2xl font-bold leading-6">
         {children}
       </div>
-      <DialogPrimitive.DialogClose>
-        <Close width="20" height="20" onClick={onClose} />
-      </DialogPrimitive.DialogClose>
+      {
+        onClose && <DialogPrimitive.DialogClose>
+              <Close width="20" height="20" onClick={onClose} />
+          </DialogPrimitive.DialogClose>
+      }
     </div>
   </div>
 )

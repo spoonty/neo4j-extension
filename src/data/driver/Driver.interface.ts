@@ -1,5 +1,6 @@
 export interface Driver {
-  connect(): void
-  disconnect(): void
+  isConnected(): boolean
+  connect(uri: string, user: string, password: string): Promise<void>
+  disconnect(): Promise<void>
   execute<T>(query: string, payload?: any): Promise<T>
 }

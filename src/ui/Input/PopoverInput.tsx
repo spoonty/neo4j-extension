@@ -5,6 +5,7 @@ import Popover from '@/ui/Popover'
 interface Props extends InputProps {
   popoverItems: any[]
   onValueSelected: (value: string) => void
+  popoverWidth?: string
 }
 
 const PopoverInput: FC<Props> = ({
@@ -13,6 +14,7 @@ const PopoverInput: FC<Props> = ({
   onValueChange,
   onValueSelected,
   placeholder,
+  popoverWidth,
 }) => {
   const [focus, setFocus] = useState(false)
 
@@ -25,6 +27,7 @@ const PopoverInput: FC<Props> = ({
       items={popoverItems}
       open={!!popoverItems.length && focus}
       onValueChange={onValueSelected}
+      popoverWidth={popoverWidth}
     >
       <Input
         placeholder={placeholder}

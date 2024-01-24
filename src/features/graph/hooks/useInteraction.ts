@@ -19,19 +19,8 @@ import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
 import {useToast} from '@/ui/Toast/hooks/useToast'
 import {DeleteRelationshipCaseImpl} from "@/domain/neo4j/usecases/DeleteRelationshipCase";
 import {UpdateRelationshipCaseImpl} from "@/domain/neo4j/usecases/UpdateRelationshipCase";
-
-const driver = new DriverImpl()
-const repository = new Neo4jRepositoryImpl(driver)
-
-const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
-const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
-const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
-const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
-const createRelationshipCase = new CreateRelationshipCaseImpl(
-  repository.createRelationship,
-)
-const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
-const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
+import {Neo4jCRUDServiceImpl} from "@/data/neo4j/services/Neo4jCRUDService.impl";
+import {useSessionContext} from "@/features/session/context";
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
@@ -48,6 +37,21 @@ export const useInteraction = (): IGraphContext => {
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
+
+  const { driver } = useSessionContext()
+  const crudService = new Neo4jCRUDServiceImpl(driver)
+
+  const repository = new Neo4jRepositoryImpl(crudService)
+
+  const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
+  const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
+  const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
+  const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
+  const createRelationshipCase = new CreateRelationshipCaseImpl(
+    repository.createRelationship,
+  )
+  const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
+  const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
 
   const getNodes = async () => {
     try {
