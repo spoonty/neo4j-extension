@@ -2,6 +2,7 @@ import { UseCase } from '@/utils/domain'
 import {SessionRepository} from "@/domain/session/repository/SessionRepository.interface";
 import {DriverError} from "@/domain/errors/DriverError";
 import {Storage} from "@/data/storage/Storage.interface";
+import {localStorageKeys} from "@/features/session/static/keys";
 
 type Func = SessionRepository['connect']
 
@@ -16,12 +17,14 @@ export class ConnectCaseImpl implements ConnectCase {
     try {
       await this.connect(url, username, password)
 
-      this.storage.set('connection', {
+      this.storage.set(localStorageKeys.connection, {
         url,
         username,
         password
       })
     } catch {
+      this.storage.delete(localStorageKeys.connection)
+
       throw new DriverError()
     }
   }

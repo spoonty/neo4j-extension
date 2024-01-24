@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react'
 import {DriverImpl} from '@/data/driver/Driver.impl'
-import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
+import {GraphRepositoryImpl} from '@/data/graph/repository/GraphRepository.impl'
 import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/graph/models/Node'
 import {
   Relationship,
@@ -19,7 +19,7 @@ import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
 import {useToast} from '@/ui/Toast/hooks/useToast'
 import {DeleteRelationshipCaseImpl} from "@/domain/graph/usecases/DeleteRelationshipCase";
 import {UpdateRelationshipCaseImpl} from "@/domain/graph/usecases/UpdateRelationshipCase";
-import {Neo4jCRUDServiceImpl} from "@/data/neo4j/services/Neo4jCRUDService.impl";
+import {CRUDServiceImpl} from "@/data/graph/services/CRUDService.impl";
 import {useSessionContext} from "@/features/session/context";
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
@@ -39,22 +39,13 @@ export const useInteraction = (): IGraphContext => {
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
 
   const { driver } = useSessionContext()
-  const crudService = new Neo4jCRUDServiceImpl(driver)
-
-  const repository = new Neo4jRepositoryImpl(crudService)
-
-  const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
-  const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
-  const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
-  const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
-  const createRelationshipCase = new CreateRelationshipCaseImpl(
-    repository.createRelationship,
-  )
-  const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
-  const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
+  const crudService = new CRUDServiceImpl(driver)
+  const repository = new GraphRepositoryImpl(crudService)
 
   const getNodes = async () => {
     try {
+      const getGraphCase = new GetGraphCaseImpl(repository.getGraph)
+
       const { nodes, labels, relationships, types } =
         await getGraphCase.execute()
 
@@ -70,6 +61,8 @@ export const useInteraction = (): IGraphContext => {
 
   const createNode = async (labels: string[], properties: KeyValue) => {
     try {
+      const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
+
       const node = new NodeCreateDTO(labels, properties)
 
       const nodeD3 = await createNodeCase.execute(node)
@@ -100,6 +93,8 @@ export const useInteraction = (): IGraphContext => {
     properties: KeyValue,
   ) => {
     try {
+      const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
+
       const node = nodes.find((node) => node.elementId === nodeId)!
       const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
 
@@ -131,6 +126,8 @@ export const useInteraction = (): IGraphContext => {
 
   const deleteNode = async (nodeId: string) => {
     try {
+      const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
+
       await deleteNodeCase.execute(nodeId)
 
       setNodes(nodes.filter((node) => node.elementId !== nodeId))
@@ -152,6 +149,10 @@ export const useInteraction = (): IGraphContext => {
 
   const createRelationship = async (type: string, properties: KeyValue) => {
     try {
+      const createRelationshipCase = new CreateRelationshipCaseImpl(
+        repository.createRelationship,
+      )
+
       const relationship = new RelationshipCreateDTO(
         createRelationshipTargets.current.source,
         createRelationshipTargets.current.target,
@@ -178,6 +179,8 @@ export const useInteraction = (): IGraphContext => {
 
   const updateRelationship = async (relationshipId: string, type: string, properties: KeyValue) => {
     try {
+      const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
+
       const relationship = await updateRelationshipCase.execute(relationshipId, new RelationshipUpdateDTO(type, properties))
 
       if (relationship.type && !types.includes(relationship.type)) {
@@ -196,6 +199,8 @@ export const useInteraction = (): IGraphContext => {
 
   const deleteRelationship = async (relationshipId: string) => {
     try {
+      const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
+
       await deleteRelationshipCase.execute(relationshipId)
 
       setRelationships(

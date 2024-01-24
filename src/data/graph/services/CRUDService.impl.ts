@@ -12,7 +12,7 @@ type NodeRelationship = {
   r: Relationship
 }
 
-export class Neo4jCRUDServiceImpl implements CRUDService {
+export class CRUDServiceImpl implements CRUDService {
   constructor(private driver: Driver) {}
 
   getGraph = async () => {

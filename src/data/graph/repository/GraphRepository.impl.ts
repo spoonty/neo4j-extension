@@ -3,7 +3,7 @@ import {RelationshipCreateDTO, RelationshipUpdateDTO} from '@/domain/graph/model
 import { GraphRepository } from '@/domain/graph/repository/GraphRepository.interface'
 import { CRUDService } from '@/domain/graph/services/CRUDService.interface'
 
-export class Neo4jRepositoryImpl implements GraphRepository {
+export class GraphRepositoryImpl implements GraphRepository {
   constructor(private crudService: CRUDService) {}
 
   getGraph = async () => {
