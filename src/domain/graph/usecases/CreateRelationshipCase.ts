@@ -2,11 +2,11 @@ import { CreateRelationshipError } from '@/domain/errors/CreateRelationshipError
 import {
   RelationshipCreateDTO,
   RelationshipD3,
-} from '@/domain/neo4j/models/Relationship'
-import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
+} from '@/domain/graph/models/Relationship'
+import { GraphRepository } from '@/domain/graph/repository/GraphRepository.interface'
 import { UseCase } from '@/utils/domain'
 
-type Func = Neo4jRepository['createRelationship']
+type Func = GraphRepository['createRelationship']
 
 export abstract class CreateRelationshipCase
   implements UseCase<Promise<RelationshipD3>>

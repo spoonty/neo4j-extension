@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {DetailsDrawerProps} from "@/features/details-drawer/View";
-import {NodeD3} from "@/domain/neo4j/models/Node";
+import {NodeD3} from "@/domain/graph/models/Node";
 import DetailsDrawer from '@/features/details-drawer/View'
 import {useGraphContext} from "@/features/graph/context";
 import Badge from "@/ui/Badge";

@@ -1,7 +1,12 @@
 import {ISessionContext} from "@/features/session/context";
 import {DriverImpl} from "@/data/driver/Driver.impl";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useToast} from "@/ui/Toast/hooks/useToast";
+import {StorageImpl} from "@/data/storage/Storage.impl";
+import {SessionRepositoryImpl} from "@/data/session/SessionRepository.impl";
+import {ConnectCaseImpl} from "@/domain/session/usecases/ConnectCase";
+
+const storage = new StorageImpl()
 
 export const useSession = (): ISessionContext => {
   const { add } = useToast()
@@ -10,14 +15,27 @@ export const useSession = (): ISessionContext => {
 
   const [isConnected, setIsConnected] = useState(driver.isConnected())
 
-  const connect = async (url: string, username: string, password: string) => {
+  const sessionRepository = new SessionRepositoryImpl(driver)
+  const connectCase = new ConnectCaseImpl(sessionRepository.connect, storage)
+
+  const connect = async (url: string, username: string, password: string, displayError = false) => {
     try {
-      await driver.connect(url, username, password)
+      await connectCase.execute(url, username, password)
       setIsConnected(driver.isConnected())
     } catch (e: any) {
-      add('error', e.message)
+      if (displayError) {
+        add('error', e.message)
+      }
     }
   }
+
+  useEffect(() => {
+    const { url, username, password } = storage.get('connection')
+
+    if (url && username && password) {
+      connect(url, username, password, true)
+    }
+  }, []);
 
   return {
     driver,

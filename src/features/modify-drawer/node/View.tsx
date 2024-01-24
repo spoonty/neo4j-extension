@@ -1,6 +1,6 @@
 import {FC} from "react";
 import ModifyDrawer, {ModifyDrawerProps} from '@/features/modify-drawer/View'
-import {NodeD3} from "@/domain/neo4j/models/Node";
+import {NodeD3} from "@/domain/graph/models/Node";
 import {useNodeModification} from "@/features/modify-drawer/node/hooks/useNodeModification";
 import FirstStep from "@/features/modify-drawer/common/FirstStep";
 import {useGraphContext} from "@/features/graph/context";

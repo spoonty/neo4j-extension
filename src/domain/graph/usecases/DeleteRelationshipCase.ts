@@ -1,8 +1,8 @@
 import { DeleteNodeError } from '@/domain/errors/DeleteNodeError'
-import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
+import { GraphRepository } from '@/domain/graph/repository/GraphRepository.interface'
 import { UseCase } from '@/utils/domain'
 
-type Func = Neo4jRepository['deleteRelationship']
+type Func = GraphRepository['deleteRelationship']
 
 export abstract class DeleteRelationshipCase implements UseCase<Promise<void>> {
   abstract execute(relationshipId: string): Promise<void>

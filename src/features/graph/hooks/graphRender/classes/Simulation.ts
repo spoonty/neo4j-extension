@@ -1,5 +1,5 @@
-import { NodeD3 } from '@/domain/neo4j/models/Node'
-import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
+import { NodeD3 } from '@/domain/graph/models/Node'
+import { RelationshipD3 } from '@/domain/graph/models/Relationship'
 import * as d3 from 'd3'
 
 export class Simulation {

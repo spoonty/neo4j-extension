@@ -6,7 +6,7 @@ import Button from "@/ui/Button/Button";
 import Clue from "@/ui/Clue";
 import {useSessionContext} from "@/features/session/context";
 
-const schemes = ['neo4j://', 'bolt://']
+const schemes = ['graph://', 'bolt://']
 
 const View: FC = () => {
   const { connect } = useSessionContext()
@@ -14,7 +14,7 @@ const View: FC = () => {
   const [host, setHost] = useState('localhost')
   const [port, setPort] = useState('7687')
   const [username, setUsername] = useState('neo4j')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('qwerty12345')
   const [scheme, setScheme] = useState(schemes[1])
   const [url, setUrl] = useState(host.concat(':').concat(port))
 

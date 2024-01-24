@@ -1,10 +1,10 @@
-import { NodeCreateDTO, NodeUpdateDTO } from '@/domain/neo4j/models/Node'
-import {RelationshipCreateDTO, RelationshipUpdateDTO} from '@/domain/neo4j/models/Relationship'
-import { Neo4jRepository } from '@/domain/neo4j/repository/Neo4jRepository.interface'
-import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
+import { NodeCreateDTO, NodeUpdateDTO } from '@/domain/graph/models/Node'
+import {RelationshipCreateDTO, RelationshipUpdateDTO} from '@/domain/graph/models/Relationship'
+import { GraphRepository } from '@/domain/graph/repository/GraphRepository.interface'
+import { CRUDService } from '@/domain/graph/services/CRUDService.interface'
 
-export class Neo4jRepositoryImpl implements Neo4jRepository {
-  constructor(private crudService: Neo4jCRUDService) {}
+export class Neo4jRepositoryImpl implements GraphRepository {
+  constructor(private crudService: CRUDService) {}
 
   getGraph = async () => {
     return await this.crudService.getGraph()

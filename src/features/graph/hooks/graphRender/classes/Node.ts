@@ -1,4 +1,4 @@
-import { NodeD3 } from '@/domain/neo4j/models/Node'
+import { NodeD3 } from '@/domain/graph/models/Node'
 import { drag } from '@/features/graph/helpers/drag'
 import {
   defineLabelColor,

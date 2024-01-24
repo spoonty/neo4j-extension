@@ -8,8 +8,8 @@ import {Node} from '@/features/graph/hooks/graphRender/classes/Node'
 import {Relationship} from '@/features/graph/hooks/graphRender/classes/Relationship'
 import {Simulation} from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
-import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
-import {NodeD3} from "@/domain/neo4j/models/Node";
+import {RelationshipD3} from "@/domain/graph/models/Relationship";
+import {NodeD3} from "@/domain/graph/models/Node";
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {

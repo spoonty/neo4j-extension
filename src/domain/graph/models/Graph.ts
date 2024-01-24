@@ -1,8 +1,8 @@
-import { Node, NodeD3 } from '@/domain/neo4j/models/Node'
+import { Node, NodeD3 } from '@/domain/graph/models/Node'
 import {
   Relationship,
   RelationshipD3,
-} from '@/domain/neo4j/models/Relationship'
+} from '@/domain/graph/models/Relationship'
 
 export class Graph {
   constructor(

@@ -1,4 +1,4 @@
-import {NodeD3} from "@/domain/neo4j/models/Node";
+import {NodeD3} from "@/domain/graph/models/Node";
 import {useGraphContext} from "@/features/graph/context";
 import {useEffect, useState} from "react";
 import {DEFAULT_PROPERTIES} from "@/features/modify-drawer/constants";

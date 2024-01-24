@@ -1,24 +1,24 @@
 import {useEffect, useRef, useState} from 'react'
 import {DriverImpl} from '@/data/driver/Driver.impl'
 import {Neo4jRepositoryImpl} from '@/data/neo4j/repository/Neo4jRepository.impl'
-import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/neo4j/models/Node'
+import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/graph/models/Node'
 import {
   Relationship,
   RelationshipCreateDTO,
   RelationshipD3,
   RelationshipUpdateDTO,
-} from '@/domain/neo4j/models/Relationship'
-import {CreateNodeCaseImpl} from '@/domain/neo4j/usecases/CreateNodeCase'
-import {CreateRelationshipCaseImpl} from '@/domain/neo4j/usecases/CreateRelationshipCase'
-import {DeleteNodeCaseImpl} from '@/domain/neo4j/usecases/DeleteNodeCase'
-import {GetGraphCaseImpl} from '@/domain/neo4j/usecases/GetGraphCase'
-import {UpdateNodeCaseImpl} from '@/domain/neo4j/usecases/UpdateNodeCase'
+} from '@/domain/graph/models/Relationship'
+import {CreateNodeCaseImpl} from '@/domain/graph/usecases/CreateNodeCase'
+import {CreateRelationshipCaseImpl} from '@/domain/graph/usecases/CreateRelationshipCase'
+import {DeleteNodeCaseImpl} from '@/domain/graph/usecases/DeleteNodeCase'
+import {GetGraphCaseImpl} from '@/domain/graph/usecases/GetGraphCase'
+import {UpdateNodeCaseImpl} from '@/domain/graph/usecases/UpdateNodeCase'
 import {InteractionState} from '@/features/graph/constants'
 import {IGraphContext} from '@/features/graph/context'
 import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
 import {useToast} from '@/ui/Toast/hooks/useToast'
-import {DeleteRelationshipCaseImpl} from "@/domain/neo4j/usecases/DeleteRelationshipCase";
-import {UpdateRelationshipCaseImpl} from "@/domain/neo4j/usecases/UpdateRelationshipCase";
+import {DeleteRelationshipCaseImpl} from "@/domain/graph/usecases/DeleteRelationshipCase";
+import {UpdateRelationshipCaseImpl} from "@/domain/graph/usecases/UpdateRelationshipCase";
 import {Neo4jCRUDServiceImpl} from "@/data/neo4j/services/Neo4jCRUDService.impl";
 import {useSessionContext} from "@/features/session/context";
 

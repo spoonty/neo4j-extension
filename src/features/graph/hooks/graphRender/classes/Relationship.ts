@@ -1,4 +1,4 @@
-import { RelationshipD3 } from '@/domain/neo4j/models/Relationship'
+import { RelationshipD3 } from '@/domain/graph/models/Relationship'
 import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
 import * as d3 from 'd3'
 import {ControlElement} from "@/features/graph/hooks/graphRender/classes/ControlElement";

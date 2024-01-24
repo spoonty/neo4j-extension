@@ -1,5 +1,5 @@
-import {NodeD3} from "@/domain/neo4j/models/Node";
-import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
+import {NodeD3} from "@/domain/graph/models/Node";
+import {RelationshipD3} from "@/domain/graph/models/Relationship";
 
 export const parseInitialProperties = (initialValue: NodeD3 | RelationshipD3) =>
   ({

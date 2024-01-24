@@ -1,5 +1,5 @@
 import ModifyDrawer, {ModifyDrawerProps} from '@/features/modify-drawer/View'
-import {RelationshipD3} from "@/domain/neo4j/models/Relationship";
+import {RelationshipD3} from "@/domain/graph/models/Relationship";
 import {FC} from "react";
 import {useGraphContext} from "@/features/graph/context";
 import {useRelationshipModification} from "@/features/modify-drawer/relationship/hooks/useRelationshipModification";

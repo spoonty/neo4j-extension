@@ -1,11 +1,11 @@
-import { Graph } from '@/domain/neo4j/models/Graph'
-import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/neo4j/models/Node'
+import { Graph } from '@/domain/graph/models/Graph'
+import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/graph/models/Node'
 import {
   Relationship,
   RelationshipCreateDTO, RelationshipUpdateDTO,
-} from '@/domain/neo4j/models/Relationship'
+} from '@/domain/graph/models/Relationship'
 
-export interface Neo4jCRUDService {
+export interface CRUDService {
   getGraph(): Promise<Graph>
   createNode(node: NodeCreateDTO): Promise<Node>
   updateNode(nodeId: string, node: NodeUpdateDTO): Promise<Node>

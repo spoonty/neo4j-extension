@@ -1,18 +1,18 @@
 import { Driver } from '@/data/driver/Driver.interface'
-import { Graph } from '@/domain/neo4j/models/Graph'
-import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/neo4j/models/Node'
+import { Graph } from '@/domain/graph/models/Graph'
+import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/graph/models/Node'
 import {
   Relationship,
   RelationshipCreateDTO, RelationshipUpdateDTO,
-} from '@/domain/neo4j/models/Relationship'
-import { Neo4jCRUDService } from '@/domain/neo4j/services/Neo4jCRUDService.interface'
+} from '@/domain/graph/models/Relationship'
+import { CRUDService } from '@/domain/graph/services/CRUDService.interface'
 
 type NodeRelationship = {
   n: Node
   r: Relationship
 }
 
-export class Neo4jCRUDServiceImpl implements Neo4jCRUDService {
+export class Neo4jCRUDServiceImpl implements CRUDService {
   constructor(private driver: Driver) {}
 
   getGraph = async () => {
