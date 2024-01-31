@@ -4,11 +4,6 @@ import {Node, NodeCreateDTO, NodeUpdateDTO} from '@/domain/entities/Node'
 import {Relationship, RelationshipCreateDTO, RelationshipUpdateDTO,} from '@/domain/entities/Relationship'
 import {Neo4jCRUDDatasource} from '@/data/interfaces/datasources/Neo4jCRUDDatasource.interface'
 
-type NodeRelationship = {
-    n: Node
-    r: Relationship
-}
-
 export class Neo4jCRUDDatasourceImpl implements Neo4jCRUDDatasource {
     constructor(private driver: Driver) {
     }
@@ -20,7 +15,7 @@ export class Neo4jCRUDDatasourceImpl implements Neo4jCRUDDatasource {
             RETURN n, r
         `
 
-        const result = await this.driver.execute<Array<NodeRelationship>>(query)
+        const result = await this.driver.execute<Array<{ n: Node, r: Relationship }>>(query)
 
         const uniqueNodes = new Set()
 

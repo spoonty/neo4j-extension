@@ -19,7 +19,7 @@ import {DeleteRelationshipCase} from "@/domain/interfaces/usecases/DeleteRelatio
 export class GraphFactory {
     private graphRepository: GraphRepository
 
-    constructor(private driver: Driver) {
+    constructor(driver: Driver) {
         const crudDatasource = new Neo4jCRUDDatasourceImpl(driver)
 
         this.graphRepository = new GraphRepositoryImpl(crudDatasource)
