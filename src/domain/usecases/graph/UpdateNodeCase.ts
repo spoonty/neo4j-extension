@@ -19,20 +19,4 @@ export class UpdateNodeCaseImpl implements UpdateNodeCase {
             throw new UpdateNodeError()
         }
     }
-
-    // private parseRelationships(node: NodeD3, relationships: RelationshipD3[]) {
-    //     const parsedRelationships: RelationshipD3[] = []
-    //
-    //     relationships.forEach((relationship) => {
-    //         if (relationship.endNodeElementId === node.elementId) {
-    //             relationship.target = node.elementId
-    //         } else if (relationship.startNodeElementId === node.elementId) {
-    //             relationship.source = node.elementId
-    //         }
-    //
-    //         parsedRelationships.push(relationship)
-    //     })
-    //
-    //     return parsedRelationships
-    // }
 }

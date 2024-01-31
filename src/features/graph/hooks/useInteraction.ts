@@ -1,6 +1,11 @@
 import {useEffect, useRef, useState} from 'react'
-import {Node, NodeD3,} from '@/domain/entities/Node'
-import {Relationship, RelationshipD3,} from '@/domain/entities/Relationship'
+import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO,} from '@/domain/entities/Node'
+import {
+    Relationship,
+    RelationshipCreateDTO,
+    RelationshipD3,
+    RelationshipUpdateDTO,
+} from '@/domain/entities/Relationship'
 import {InteractionState} from '@/features/graph/constants'
 import {IGraphContext} from '@/features/graph/context'
 import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
@@ -39,31 +44,29 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
 
     const createNode = async (labels: string[], properties: KeyValue) => {
-        // try {
-        //     const createNodeCase = new CreateNodeCaseImpl(repository.createNode)
-        //
-        //     const node = new NodeCreateDTO(labels, properties)
-        //
-        //     const nodeD3 = await createNodeCase.execute(node)
-        //     nodeD3.setPosition(addNodePosition.x, addNodePosition.y)
-        //
-        //     const nodeLabels: string[] = []
-        //     nodeD3.labels.forEach((label) => {
-        //         if (!labels.includes(label)) {
-        //             nodeLabels.push(label)
-        //         }
-        //     })
-        //
-        //     setNodes([...getNodesWithoutTemplate(), nodeD3])
-        //     setLabels([...labels, ...nodeLabels])
-        //
-        //     state.current = InteractionState.DEFAULT
-        //     add('success', 'Node successfully created.')
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            const node = new NodeCreateDTO(labels, properties)
+
+            const nodeD3 = await viewModel.createNode(node)
+            nodeD3.setPosition(addNodePosition.x, addNodePosition.y)
+
+            const nodeLabels: string[] = []
+            nodeD3.labels.forEach((label) => {
+                if (!labels.includes(label)) {
+                    nodeLabels.push(label)
+                }
+            })
+
+            setNodes([...getNodesWithoutTemplate(), nodeD3])
+            setLabels([...labels, ...nodeLabels])
+
+            state.current = InteractionState.DEFAULT
+            add('success', 'Node successfully created.')
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const updateNode = async (
@@ -71,130 +74,118 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         labels: string[],
         properties: KeyValue,
     ) => {
-        // try {
-        //     const updateNodeCase = new UpdateNodeCaseImpl(repository.updateNode)
-        //
-        //     const node = nodes.find((node) => node.elementId === nodeId)!
-        //     const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
-        //
-        //     const {node: nodeD3, relationships: updatedRelationships} =
-        //         await updateNodeCase.execute(node, updatedNode, relationships)
-        //
-        //     const nodeLabels: string[] = []
-        //     nodeD3.labels.forEach((label) => {
-        //         if (!labels.includes(label)) {
-        //             nodeLabels.push(label)
-        //         }
-        //     })
-        //
-        //     setNodes([
-        //         ...getNodesWithoutTemplate().filter(
-        //             (node) => node.elementId !== nodeId,
-        //         ),
-        //         nodeD3,
-        //     ])
-        //     setRelationships(updatedRelationships)
-        //
-        //     add('success', 'Node successfully updated.')
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            const node = nodes.find((node) => node.elementId === nodeId)!
+            const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
+
+            const {node: nodeD3, relationships: updatedRelationships} =
+                await viewModel.updateNode(node, updatedNode, relationships, {x: node.x, y: node.y})
+
+            const nodeLabels: string[] = []
+            nodeD3.labels.forEach((label) => {
+                if (!labels.includes(label)) {
+                    nodeLabels.push(label)
+                }
+            })
+
+            setNodes([
+                ...getNodesWithoutTemplate().filter(
+                    (node) => node.elementId !== nodeId,
+                ),
+                nodeD3,
+            ])
+            setRelationships(updatedRelationships)
+
+            add('success', 'Node successfully updated.')
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const deleteNode = async (nodeId: string) => {
-        // try {
-        //     const deleteNodeCase = new DeleteNodeCaseImpl(repository.deleteNode)
-        //
-        //     await deleteNodeCase.execute(nodeId)
-        //
-        //     setNodes(nodes.filter((node) => node.elementId !== nodeId))
-        //     setRelationships(
-        //         relationships.filter(
-        //             (relationship) =>
-        //                 relationship.endNodeElementId !== nodeId &&
-        //                 relationship.startNodeElementId !== nodeId,
-        //         ),
-        //     )
-        //
-        //     add('success', 'Node successfully deleted.')
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            await viewModel.deleteNode(nodeId)
+
+            setNodes(nodes.filter((node) => node.elementId !== nodeId))
+            setRelationships(
+                relationships.filter(
+                    (relationship) =>
+                        relationship.endNodeElementId !== nodeId &&
+                        relationship.startNodeElementId !== nodeId,
+                ),
+            )
+
+            add('success', 'Node successfully deleted.')
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const createRelationship = async (type: string, properties: KeyValue) => {
-        // try {
-        //     const createRelationshipCase = new CreateRelationshipCaseImpl(
-        //         repository.createRelationship,
-        //     )
-        //
-        //     const relationship = new RelationshipCreateDTO(
-        //         createRelationshipTargets.current.source,
-        //         createRelationshipTargets.current.target,
-        //         type,
-        //         properties,
-        //     )
-        //
-        //     const relationshipD3 = await createRelationshipCase.execute(relationship)
-        //
-        //     if (relationshipD3.type && !types.includes(relationshipD3.type)) {
-        //         setTypes([...types, relationshipD3.type])
-        //     }
-        //
-        //     setRelationships([...getRelationshipsWithoutTemplate(), relationshipD3])
-        //     add('success', 'Relationship successfully created.')
-        //
-        //     createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            const relationship = new RelationshipCreateDTO(
+                createRelationshipTargets.current.source,
+                createRelationshipTargets.current.target,
+                type,
+                properties,
+            )
+
+            const relationshipD3 = await viewModel.createRelationship(relationship)
+
+            if (relationshipD3.type && !types.includes(relationshipD3.type)) {
+                setTypes([...types, relationshipD3.type])
+            }
+
+            setRelationships([...getRelationshipsWithoutTemplate(), relationshipD3])
+            add('success', 'Relationship successfully created.')
+
+            createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const updateRelationship = async (relationshipId: string, type: string, properties: KeyValue) => {
-        // try {
-        //     const updateRelationshipCase = new UpdateRelationshipCaseImpl(repository.updateRelationship)
-        //
-        //     const relationship = await updateRelationshipCase.execute(relationshipId, new RelationshipUpdateDTO(type, properties))
-        //
-        //     if (relationship.type && !types.includes(relationship.type)) {
-        //         setTypes([...types, relationship.type])
-        //     }
-        //
-        //     setRelationships([...relationships.filter((relationship) => relationship.elementId !== relationshipId), relationship])
-        //
-        //     add('success', 'Relationship successfully updated.')
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            const relationship = await viewModel.updateRelationship(relationshipId, new RelationshipUpdateDTO(type, properties))
+
+            if (relationship.type && !types.includes(relationship.type)) {
+                setTypes([...types, relationship.type])
+            }
+
+            setRelationships([...relationships.filter((relationship) => relationship.elementId !== relationshipId), relationship])
+
+            add('success', 'Relationship successfully updated.')
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const deleteRelationship = async (relationshipId: string) => {
-        // try {
-        //     const deleteRelationshipCase = new DeleteRelationshipCaseImpl(repository.deleteRelationship)
-        //
-        //     await deleteRelationshipCase.execute(relationshipId)
-        //
-        //     setRelationships(
-        //         relationships.filter(
-        //             (relationship) =>
-        //                 relationship.elementId !== relationshipId,
-        //         ),
-        //     )
-        //
-        //     add('success', 'Relationship successfully deleted.')
-        // } catch (error: any) {
-        //     add('error', error.message)
-        // } finally {
-        //     setDialogType(DialogType.NONE)
-        // }
+        try {
+            await viewModel.deleteRelationship(relationshipId)
+
+            setRelationships(
+                relationships.filter(
+                    (relationship) =>
+                        relationship.elementId !== relationshipId,
+                ),
+            )
+
+            add('success', 'Relationship successfully deleted.')
+        } catch (error: any) {
+            add('error', error.message)
+        } finally {
+            setDialogType(DialogType.NONE)
+        }
     }
 
     const setSource = (sourceId: string) => {
