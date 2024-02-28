@@ -15,3 +15,5 @@ export class StorageImpl implements Storage {
     }
 
 }
+
+export const storageImpl = new StorageImpl();

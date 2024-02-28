@@ -11,6 +11,7 @@ import {IGraphContext} from '@/features/graph/context'
 import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
 import {useToast} from '@/ui/Toast/hooks/useToast'
 import {ViewModel} from "@/features/graph/ViewModel";
+import {addLabelToStorage, removeLabelFromStorage} from "@/features/graph/helpers/labels";
 
 const DEFAULT_RELATIONSHIP_TARGETS = {source: '-1', target: '-1'}
 
@@ -33,6 +34,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             const {nodes, labels, relationships, types} =
                 await viewModel.getGraph()
 
+            labels.forEach((label) => {
+                addLabelToStorage(label);
+            })
+
             setNodes(nodes)
             setLabels(labels)
 
@@ -54,6 +59,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             nodeD3.labels.forEach((label) => {
                 if (!labels.includes(label)) {
                     nodeLabels.push(label)
+                    addLabelToStorage(label)
                 }
             })
 
@@ -85,6 +91,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             nodeD3.labels.forEach((label) => {
                 if (!labels.includes(label)) {
                     nodeLabels.push(label)
+                    addLabelToStorage(label)
                 }
             })
 
@@ -108,7 +115,26 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         try {
             await viewModel.deleteNode(nodeId)
 
-            setNodes(nodes.filter((node) => node.elementId !== nodeId))
+            const nodeToDelete = nodes.find((node) => node.elementId === nodeId);
+            const newNodesList = nodes.filter((node) => node.elementId !== nodeId);
+            const labelsToStay: string[] = [];
+
+            newNodesList.forEach((node) => {
+                node.labels.forEach((label) => {
+                    if (!labelsToStay.includes(label)) {
+                        labelsToStay.push(label)
+                    }
+                })
+            })
+
+            const labelsToRemove = nodeToDelete?.labels.filter((label) => !labelsToStay.includes(label));
+            labelsToRemove?.forEach((label) => {
+                removeLabelFromStorage(label);
+            })
+
+
+            setLabels(labelsToStay);
+            setNodes(newNodesList)
             setRelationships(
                 relationships.filter(
                     (relationship) =>

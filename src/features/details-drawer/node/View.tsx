@@ -1,7 +1,6 @@
 import {FC} from "react";
 import DetailsDrawer, {DetailsDrawerProps} from "@/features/details-drawer/View";
 import {NodeD3} from "@/domain/entities/Node";
-import {useGraphContext} from "@/features/graph/context";
 import Badge from "@/ui/Badge";
 import {defineLabelColor} from "@/features/graph/helpers/labels";
 
@@ -10,8 +9,6 @@ interface Props extends Pick<DetailsDrawerProps, 'onClose'> {
 }
 
 const View: FC<Props> = ({node, onClose}) => {
-    const {labels} = useGraphContext()
-
     if (!node) return null
 
     return <DetailsDrawer
@@ -23,7 +20,7 @@ const View: FC<Props> = ({node, onClose}) => {
     >
         {node.labels.map((label) => (
             <Badge
-                style={{backgroundColor: defineLabelColor(labels, label)}}
+                style={{backgroundColor: defineLabelColor(label)}}
             >
                 {label}
             </Badge>

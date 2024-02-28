@@ -45,7 +45,7 @@ export class Node {
             .attr('stroke', '#edeef0')
             .attr('stroke-width', 1.5)
             .attr('r', 40)
-            .attr('fill', (d: any) => defineLabelColor(labels, d.labels[0]))
+            .attr('fill', (d: any) => defineLabelColor(d.labels[0]))
             .attr('class', 'node-circle')
 
         this.node

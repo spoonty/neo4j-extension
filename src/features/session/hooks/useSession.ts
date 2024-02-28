@@ -2,12 +2,10 @@ import {ISessionContext} from "@/features/session/context";
 import {DriverImpl} from "@/data/services/Driver.impl";
 import {useEffect, useState} from "react";
 import {useToast} from "@/ui/Toast/hooks/useToast";
-import {StorageImpl} from "@/data/services/Storage.impl";
+import {storageImpl} from "@/data/services/Storage.impl";
 import {SessionRepositoryImpl} from "@/domain/repositories/SessionRepository.impl";
 import {ConnectCaseImpl} from "@/domain/usecases/session/ConnectCase";
 import {localStorageKeys} from "@/features/session/static/keys";
-
-const storage = new StorageImpl()
 
 export const useSession = (): ISessionContext => {
     const {add} = useToast()
@@ -20,7 +18,7 @@ export const useSession = (): ISessionContext => {
 
     const connect = async (url: string, username: string, password: string, displayError = true) => {
         try {
-            const connectCase = new ConnectCaseImpl(sessionRepository.connect, storage)
+            const connectCase = new ConnectCaseImpl(sessionRepository.connect, storageImpl)
 
             await connectCase.execute(url, username, password)
             setIsConnected(driver.isConnected())
@@ -32,7 +30,7 @@ export const useSession = (): ISessionContext => {
     }
 
     useEffect(() => {
-        const {url, username, password} = storage.get(localStorageKeys.connection)
+        const {url, username, password} = storageImpl.get(localStorageKeys.connection)
 
         if (url && username && password) {
             connect(url, username, password, false)

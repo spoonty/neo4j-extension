@@ -59,7 +59,7 @@ const FirstStep: FC<Props> = ({currentValues, values, add, remove}) => {
                         {currentValues.map((val, index) => (
                             <Badge
                                 onRemove={() => remove(index)}
-                                style={{backgroundColor: defineLabelColor(values, val)}}
+                                style={{backgroundColor: defineLabelColor(val)}}
                             >
                                 {val}
                             </Badge>

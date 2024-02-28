@@ -3,9 +3,10 @@ import {useGraphContext} from "@/features/graph/context";
 import {useEffect, useState} from "react";
 import {DEFAULT_PROPERTIES} from "@/features/modify-drawer/constants";
 import {convertProperties, parseInitialProperties} from "@/features/modify-drawer/helpers";
+import {addLabelToStorage, removeLabelFromStorage} from "@/features/graph/helpers/labels";
 
 export const useNodeModification = (initialNode?: NodeD3) => {
-    const {createNode, updateNode, updateNodeTemplate} = useGraphContext()
+    const {createNode, updateNode, updateNodeTemplate, labels: currentLabels} = useGraphContext()
 
     const [labels, setLabels] = useState<string[]>(
         initialNode?.labels || []
@@ -22,10 +23,12 @@ export const useNodeModification = (initialNode?: NodeD3) => {
     }
 
     const addLabel = (label: string) => {
+        addLabelToStorage(label)
         setLabels([...labels, label])
     }
 
     const removeLabel = (i: number) => {
+        removeLabelFromStorage(labels[i])
         setLabels([...labels.slice(0, i), ...labels.slice(i + 1)])
     }
 
@@ -46,6 +49,12 @@ export const useNodeModification = (initialNode?: NodeD3) => {
     }
 
     const clearData = () => {
+        // labels.forEach((label) => {
+        //     if (!currentLabels.includes(label)) {
+        //         removeLabelFromStorage(label)
+        //     }
+        // })
+
         setLabels([])
         setProperties(DEFAULT_PROPERTIES)
     }
