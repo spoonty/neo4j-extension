@@ -40,10 +40,15 @@ const View: FC<Props> = ({initialNode, onClose}) => {
         }
     }
 
+    const nextStepDisabled = (step: number) => {
+        return step === 0 && !labels.length
+    }
+
     return <ModifyDrawer
         title={initialNode ? 'UPDATE NODE' : 'CREATE NODE'}
         confirmText={initialNode ? 'Update' : 'Create'}
         steps={steps}
+        nextStepDisabled={nextStepDisabled}
         properties={properties}
         renderStep={renderStep}
         modifyHandler={modifyHandler}

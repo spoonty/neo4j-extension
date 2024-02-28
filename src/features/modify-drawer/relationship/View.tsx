@@ -39,10 +39,15 @@ const View: FC<Props> = ({initialRelationship, onClose}) => {
         }
     }
 
+    const nextStepDisabled = (step: number) => {
+        return step === 0 && !type.length
+    }
+
     return <ModifyDrawer
         title={initialRelationship ? 'UPDATE RELATIONSHIP' : 'CREATE RELATIONSHIP'}
         confirmText={initialRelationship ? 'Update' : 'Create'}
         steps={steps}
+        nextStepDisabled={nextStepDisabled}
         properties={properties}
         renderStep={renderStep}
         modifyHandler={modifyHandler}
