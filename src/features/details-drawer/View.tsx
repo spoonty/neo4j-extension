@@ -1,8 +1,8 @@
-import {FC, PropsWithChildren} from "react";
-import {Content, Drawer, Header} from "@/ui/Drawer";
-import ScrollArea from "@/ui/ScrollArea";
-import Table from "@/ui/Table/Table";
-import {cn} from "@/utils/dom";
+import { FC, PropsWithChildren } from 'react'
+import { Content, Drawer, Header } from '@/ui/Drawer'
+import ScrollArea from '@/ui/ScrollArea'
+import Table from '@/ui/Table/Table'
+import { cn } from '@/utils/dom'
 
 export interface DetailsDrawerProps extends PropsWithChildren {
   title: string
@@ -12,14 +12,19 @@ export interface DetailsDrawerProps extends PropsWithChildren {
   onClose: () => void
 }
 
-const View: FC<DetailsDrawerProps> = ({ children, title, elementId, properties, className, onClose }) => {
+const View: FC<DetailsDrawerProps> = ({
+  children,
+  title,
+  elementId,
+  properties,
+  className,
+  onClose,
+}) => {
   const convertedProperties = {
     key: ['ID', ...Object.keys(properties)],
     value: [
       elementId,
-      ...Object.keys(properties).map(
-        (key) => properties[key],
-      ),
+      ...Object.keys(properties).map((key) => properties[key]),
     ],
   }
 
@@ -40,7 +45,7 @@ const View: FC<DetailsDrawerProps> = ({ children, title, elementId, properties, 
             />
           </ScrollArea.Root>
 
-          <ScrollArea.Root className={cn("pe-3", className)}>
+          <ScrollArea.Root className={cn('pe-3', className)}>
             <ScrollArea.Viewport className="h-full w-full">
               <Table data={convertedProperties} />
             </ScrollArea.Viewport>

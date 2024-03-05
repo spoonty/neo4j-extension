@@ -1,110 +1,131 @@
-import {GraphFactory} from "@/domain/factories/Graph.factory";
-import {Node, NodeCreateDTO, NodeD3, NodeUpdateDTO} from "@/domain/entities/Node";
+import { GraphD3 } from '@/domain/entities/Graph'
 import {
-    Relationship,
-    RelationshipCreateDTO,
-    RelationshipD3,
-    RelationshipUpdateDTO
-} from "@/domain/entities/Relationship";
-import {GraphD3} from "@/domain/entities/Graph";
+  Node,
+  NodeCreateDTO,
+  NodeD3,
+  NodeUpdateDTO,
+} from '@/domain/entities/Node'
+import {
+  Relationship,
+  RelationshipCreateDTO,
+  RelationshipD3,
+  RelationshipUpdateDTO,
+} from '@/domain/entities/Relationship'
+import { GraphFactory } from '@/domain/factories/Graph.factory'
 
 export class ViewModel {
-    constructor(private graphFactory: GraphFactory) {
+  constructor(private graphFactory: GraphFactory) {}
+
+  async getGraph() {
+    const usecase = this.graphFactory.getGraphCase()
+    const { nodes, relationships } = await usecase.execute()
+
+    const { nodesD3, labels } = this.parseNodes(nodes)
+    const { relationshipsD3, types } = this.parseRelationships(relationships)
+
+    return new GraphD3(nodesD3, relationshipsD3, labels, types)
+  }
+
+  async createNode(node: NodeCreateDTO) {
+    const usecase = this.graphFactory.createNodeCase()
+    return new NodeD3(await usecase.execute(node))
+  }
+
+  async createRelationship(relationship: RelationshipCreateDTO) {
+    const usecase = this.graphFactory.createRelationshipCase()
+    return new RelationshipD3(await usecase.execute(relationship))
+  }
+
+  async updateNode(
+    node: Node,
+    updatedNode: NodeUpdateDTO,
+    relationships: RelationshipD3[],
+    position: {
+      x: number
+      y: number
+    },
+  ) {
+    const usecase = this.graphFactory.updateNodeCase()
+    const result = new NodeD3(
+      await usecase.execute(node, updatedNode),
+      position.x,
+      position.y,
+    )
+
+    return {
+      node: result,
+      relationships: this.updateRelationshipsConnections(result, relationships),
     }
+  }
 
-    async getGraph() {
-        const usecase = this.graphFactory.getGraphCase()
-        const {nodes, relationships} = await usecase.execute()
+  async updateRelationship(
+    relationshipId: string,
+    relationship: RelationshipUpdateDTO,
+  ) {
+    const usecase = this.graphFactory.updateRelationshipCase()
+    return new RelationshipD3(
+      await usecase.execute(relationshipId, relationship),
+    )
+  }
 
-        const {nodesD3, labels} = this.parseNodes(nodes)
-        const {relationshipsD3, types} = this.parseRelationships(relationships)
+  async deleteNode(nodeId: string) {
+    const usecase = this.graphFactory.deleteNodeCase()
+    return usecase.execute(nodeId)
+  }
 
-        return new GraphD3(nodesD3, relationshipsD3, labels, types)
-    }
+  async deleteRelationship(relationshipId: string) {
+    const usecase = this.graphFactory.deleteRelationshipCase()
+    return usecase.execute(relationshipId)
+  }
 
-    async createNode(node: NodeCreateDTO) {
-        const usecase = this.graphFactory.createNodeCase()
-        return new NodeD3(await usecase.execute(node))
-    }
+  private parseNodes = (nodes: Node[]) => {
+    const nodesD3: NodeD3[] = []
+    const labels: string[] = []
 
-    async createRelationship(relationship: RelationshipCreateDTO) {
-        const usecase = this.graphFactory.createRelationshipCase()
-        return new RelationshipD3(await usecase.execute(relationship))
-    }
+    nodes.forEach((node: Node) => {
+      nodesD3.push(new NodeD3(node))
 
-    async updateNode(node: Node, updatedNode: NodeUpdateDTO, relationships: RelationshipD3[], position: {
-        x: number,
-        y: number
-    }) {
-        const usecase = this.graphFactory.updateNodeCase()
-        const result = new NodeD3(await usecase.execute(node, updatedNode), position.x, position.y)
-
-        return {
-            node: result,
-            relationships: this.updateRelationshipsConnections(result, relationships)
+      node.labels.forEach((label) => {
+        if (!labels.includes(label)) {
+          labels.push(label)
         }
-    }
+      })
+    })
 
-    async updateRelationship(relationshipId: string, relationship: RelationshipUpdateDTO) {
-        const usecase = this.graphFactory.updateRelationshipCase()
-        return new RelationshipD3(await usecase.execute(relationshipId, relationship))
-    }
+    return { nodesD3, labels }
+  }
 
-    async deleteNode(nodeId: string) {
-        const usecase = this.graphFactory.deleteNodeCase()
-        return usecase.execute(nodeId)
-    }
+  private parseRelationships = (relationships: Relationship[]) => {
+    const relationshipsD3: RelationshipD3[] = []
+    const types: string[] = []
 
-    async deleteRelationship(relationshipId: string) {
-        const usecase = this.graphFactory.deleteRelationshipCase()
-        return usecase.execute(relationshipId)
-    }
+    relationships.forEach((relation: Relationship) => {
+      relationshipsD3.push(new RelationshipD3(relation))
 
-    private parseNodes = (nodes: Node[]) => {
-        const nodesD3: NodeD3[] = []
-        const labels: string[] = []
+      if (relation.type && !types.includes(relation.type)) {
+        types.push(relation.type)
+      }
+    })
 
-        nodes.forEach((node: Node) => {
-            nodesD3.push(new NodeD3(node))
+    return { relationshipsD3, types }
+  }
 
-            node.labels.forEach((label) => {
-                if (!labels.includes(label)) {
-                    labels.push(label)
-                }
-            })
-        })
+  private updateRelationshipsConnections(
+    node: NodeD3,
+    relationships: RelationshipD3[],
+  ) {
+    const parsedRelationships: RelationshipD3[] = []
 
-        return {nodesD3, labels}
-    }
+    relationships.forEach((relationship) => {
+      if (relationship.endNodeElementId === node.elementId) {
+        relationship.target = node.elementId
+      } else if (relationship.startNodeElementId === node.elementId) {
+        relationship.source = node.elementId
+      }
 
-    private parseRelationships = (relationships: Relationship[]) => {
-        const relationshipsD3: RelationshipD3[] = []
-        const types: string[] = []
+      parsedRelationships.push(relationship)
+    })
 
-        relationships.forEach((relation: Relationship) => {
-            relationshipsD3.push(new RelationshipD3(relation))
-
-            if (relation.type && !types.includes(relation.type)) {
-                types.push(relation.type)
-            }
-        })
-
-        return {relationshipsD3, types}
-    }
-
-    private updateRelationshipsConnections(node: NodeD3, relationships: RelationshipD3[]) {
-        const parsedRelationships: RelationshipD3[] = []
-
-        relationships.forEach((relationship) => {
-            if (relationship.endNodeElementId === node.elementId) {
-                relationship.target = node.elementId
-            } else if (relationship.startNodeElementId === node.elementId) {
-                relationship.source = node.elementId
-            }
-
-            parsedRelationships.push(relationship)
-        })
-
-        return parsedRelationships
-    }
+    return parsedRelationships
+  }
 }

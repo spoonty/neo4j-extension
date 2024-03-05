@@ -24,7 +24,10 @@ const Table: FC<Props> = ({ data, deleteAction, className }) => {
     <div className={cn('relative overflow-x-auto rounded-lg', className)}>
       <table className="w-full text-left text-sm text-main-gray">
         <Head labels={header} />
-        <Body data={Object.keys(data).map((key) => data[key])} deleteAction={deleteAction} />
+        <Body
+          data={Object.keys(data).map((key) => data[key])}
+          deleteAction={deleteAction}
+        />
       </table>
     </div>
   )

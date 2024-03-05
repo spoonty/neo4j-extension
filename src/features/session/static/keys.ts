@@ -1,3 +1,3 @@
 export const localStorageKeys = {
-  connection: 'connection'
+  connection: 'connection',
 }

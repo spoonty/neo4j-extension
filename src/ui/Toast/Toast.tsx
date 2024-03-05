@@ -12,7 +12,7 @@ const Toast: FC<Props> = ({ toast, ...props }) => (
   <ToastPrimitive.Root
     className={cn(
       'mb-4 flex w-full max-w-xs items-center rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md',
-      'data-[state=open]:animate-toast-in data-[state=closed]:animate-toast-out',
+      'data-[state=closed]:animate-toast-out data-[state=open]:animate-toast-in',
     )}
     {...props}
   >

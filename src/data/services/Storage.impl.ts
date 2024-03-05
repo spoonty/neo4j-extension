@@ -1,19 +1,26 @@
-import {Storage} from '@/data/interfaces/services/Storage.interface'
+import { Storage } from '@/data/interfaces/services/Storage.interface'
 
 export class StorageImpl implements Storage {
-    set(key: string, value: string | number | boolean | KeyValue<string, any> | (string | number | boolean | KeyValue<string, any>)[]) {
-        localStorage.setItem(key, JSON.stringify(value))
-    }
+  set(
+    key: string,
+    value:
+      | string
+      | number
+      | boolean
+      | KeyValue<string, any>
+      | (string | number | boolean | KeyValue<string, any>)[],
+  ) {
+    localStorage.setItem(key, JSON.stringify(value))
+  }
 
-    get(key: string) {
-        const item = localStorage.getItem(key) || '""'
-        return JSON.parse(item)
-    }
+  get(key: string) {
+    const item = localStorage.getItem(key) || '""'
+    return JSON.parse(item)
+  }
 
-    delete(key: string) {
-        localStorage.removeItem(key)
-    }
-
+  delete(key: string) {
+    localStorage.removeItem(key)
+  }
 }
 
-export const storageImpl = new StorageImpl();
+export const storageImpl = new StorageImpl()

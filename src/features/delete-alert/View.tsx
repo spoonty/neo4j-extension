@@ -24,11 +24,9 @@ const View: FC<Props> = ({ nodeId, relationshipsAmount, onClose }) => {
           className="mx-auto my-0 text-red-alert"
         />
         <div className="mb-4 text-center text-main-gray">
-          {
-            `This node has ${relationshipsAmount} ${alertAmount}.
+          {`This node has ${relationshipsAmount} ${alertAmount}.
             If you delete this node, relationships will also be deleted.
-            Are you sure you want to delete this node?`
-          }
+            Are you sure you want to delete this node?`}
         </div>
         <Footer className="flex justify-between">
           <Button variant={'cancel'} onClick={() => deleteNode(nodeId!)}>

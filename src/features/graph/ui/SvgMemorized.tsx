@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 
 type TProps = {
-    svgRef: React.RefObject<SVGSVGElement>
+  svgRef: React.RefObject<SVGSVGElement>
 }
 
-const SvgMemorized = React.memo(({svgRef}: TProps) => {
-    return <svg ref={svgRef}/>
+const SvgMemorized = React.memo(({ svgRef }: TProps) => {
+  return <svg ref={svgRef} />
 })
 
 export default SvgMemorized

@@ -55,11 +55,11 @@ export const Header: FC<HeaderProps> = ({
       <div className="cursor-default text-2xl font-bold leading-6">
         {children}
       </div>
-      {
-        onClose && <DialogPrimitive.DialogClose>
-              <Close width="20" height="20" onClick={onClose} />
-          </DialogPrimitive.DialogClose>
-      }
+      {onClose && (
+        <DialogPrimitive.DialogClose>
+          <Close width="20" height="20" onClick={onClose} />
+        </DialogPrimitive.DialogClose>
+      )}
     </div>
   </div>
 )

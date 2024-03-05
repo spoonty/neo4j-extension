@@ -33,7 +33,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "prettier": "prettier --write ."
   },
   "eslintConfig": {
     "extends": [
