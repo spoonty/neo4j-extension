@@ -1,11 +1,11 @@
 import {NodeD3} from '@/domain/entities/Node'
 import {drag} from '@/features/graph/helpers/drag'
-import {defineLabelColor, getPropertyToDisplay,} from '@/features/graph/helpers/labels'
 import {Group} from '@/features/graph/hooks/graphRender/classes/Group'
 import {ControlElement} from '@/features/graph/hooks/graphRender/classes/ControlElement'
 import {Simulation} from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
 import {BaseType} from 'd3'
+import {labelManager} from "@/features/labels/LabelManager";
 
 export class Node {
     private readonly node: d3.Selection<
@@ -45,12 +45,12 @@ export class Node {
             .attr('stroke', '#edeef0')
             .attr('stroke-width', 1.5)
             .attr('r', 40)
-            .attr('fill', (d: any) => defineLabelColor(d.labels[0]))
+            .attr('fill', (d: any) => labelManager.getColor(d.labels[0]))
             .attr('class', 'node-circle')
 
         this.node
             .append('text')
-            .text((d: any) => getPropertyToDisplay(d))
+            .text((d: any) => labelManager.getPropertyToDisplay(d))
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .attr('font-family', 'sans-serif')

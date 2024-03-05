@@ -3,8 +3,7 @@ import {useGraphContext} from "@/features/graph/context";
 import {useEffect, useState} from "react";
 import {DEFAULT_PROPERTIES} from "@/features/modify-drawer/constants";
 import {convertProperties, parseInitialProperties} from "@/features/modify-drawer/helpers";
-import {addLabelToStorage, removeLabelFromStorage} from "@/features/graph/helpers/labels";
-import {storageImpl} from "@/data/services/Storage.impl";
+import {labelManager} from "@/features/labels/LabelManager";
 
 export const useNodeModification = (initialNode?: NodeD3) => {
     const {createNode, updateNode, updateNodeTemplate, labels: currentLabels} = useGraphContext()
@@ -24,12 +23,12 @@ export const useNodeModification = (initialNode?: NodeD3) => {
     }
 
     const addLabel = (label: string) => {
-        addLabelToStorage(label)
+        labelManager.addLabel(label)
         setLabels([...labels, label])
     }
 
     const removeLabel = (i: number) => {
-        removeLabelFromStorage(labels[i])
+        labelManager.removeLabel(labels[i])
         setLabels([...labels.slice(0, i), ...labels.slice(i + 1)])
     }
 
@@ -57,14 +56,14 @@ export const useNodeModification = (initialNode?: NodeD3) => {
     const cancel = () => {
         labels.forEach((label) => {
             if (!currentLabels.includes(label)) {
-                removeLabelFromStorage(label)
+                labelManager.removeLabel(label)
             }
         })
 
-        const storageLabels = storageImpl.get('labels');
+        const storageLabels = labelManager.getLabels();
         currentLabels.forEach((label) => {
             if (!Object.keys(storageLabels).includes(label)) {
-                addLabelToStorage(label);
+                labelManager.addLabel(label);
             }
         })
 

@@ -11,7 +11,7 @@ import {IGraphContext} from '@/features/graph/context'
 import {DialogType, useDialog} from '@/features/graph/hooks/useDialog'
 import {useToast} from '@/ui/Toast/hooks/useToast'
 import {ViewModel} from "@/features/graph/ViewModel";
-import {addLabelToStorage, removeLabelFromStorage} from "@/features/graph/helpers/labels";
+import {labelManager} from "@/features/labels/LabelManager";
 
 const DEFAULT_RELATIONSHIP_TARGETS = {source: '-1', target: '-1'}
 
@@ -35,7 +35,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 await viewModel.getGraph()
 
             labels.forEach((label) => {
-                addLabelToStorage(label);
+                labelManager.addLabel(label);
             })
 
             setNodes(() => nodes)
@@ -59,7 +59,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             nodeD3.labels.forEach((label) => {
                 if (!labels.includes(label)) {
                     nodeLabels.push(label)
-                    addLabelToStorage(label)
+                    labelManager.addLabel(label)
                 }
             })
 
@@ -91,7 +91,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             nodeD3.labels.forEach((label) => {
                 if (!labels.includes(label)) {
                     nodeLabels.push(label)
-                    addLabelToStorage(label)
+                    labelManager.addLabel(label)
                 }
             })
 
@@ -130,7 +130,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
             const labelsToRemove = nodeToDelete?.labels.filter((label) => !labelsToStay.includes(label));
             labelsToRemove?.forEach((label) => {
-                removeLabelFromStorage(label);
+                labelManager.removeLabel(label);
             })
 
 

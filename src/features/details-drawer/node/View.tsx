@@ -2,7 +2,7 @@ import {FC} from "react";
 import DetailsDrawer, {DetailsDrawerProps} from "@/features/details-drawer/View";
 import {NodeD3} from "@/domain/entities/Node";
 import Badge from "@/ui/Badge";
-import {defineLabelColor} from "@/features/graph/helpers/labels";
+import {labelManager} from "@/features/labels/LabelManager";
 
 interface Props extends Pick<DetailsDrawerProps, 'onClose'> {
     node?: NodeD3
@@ -20,7 +20,7 @@ const View: FC<Props> = ({node, onClose}) => {
     >
         {node.labels.map((label) => (
             <Badge
-                style={{backgroundColor: defineLabelColor(label)}}
+                style={{backgroundColor: labelManager.getColor(label)}}
             >
                 {label}
             </Badge>

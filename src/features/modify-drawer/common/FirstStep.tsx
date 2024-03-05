@@ -5,7 +5,7 @@ import PlusIcon from "@/assets/icons/PlusIcon";
 import Clue from "@/ui/Clue";
 import ScrollArea from "@/ui/ScrollArea";
 import Badge from "@/ui/Badge";
-import {defineLabelColor} from "@/features/graph/helpers/labels";
+import {labelManager} from "@/features/labels/LabelManager";
 
 interface Props {
     currentValues: string[]
@@ -59,7 +59,7 @@ const FirstStep: FC<Props> = ({currentValues, values, add, remove}) => {
                         {currentValues.map((val, index) => (
                             <Badge
                                 onRemove={() => remove(index)}
-                                style={{backgroundColor: defineLabelColor(val)}}
+                                style={{backgroundColor: labelManager.getColor(val)}}
                             >
                                 {val}
                             </Badge>
