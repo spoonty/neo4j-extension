@@ -1,10 +1,11 @@
 import { Neo4jCRUDDatasource } from '@/data/interfaces/datasources/Neo4jCRUDDatasource.interface'
-import { NodeCreateDTO, NodeUpdateDTO } from '@/domain/entities/Node'
+import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/entities/Node'
 import {
   RelationshipCreateDTO,
   RelationshipUpdateDTO,
 } from '@/domain/entities/Relationship'
 import { GraphRepository } from '@/domain/interfaces/repositories/GraphRepository.interface'
+import { Graph } from '../entities/Graph'
 
 export class GraphRepositoryImpl implements GraphRepository {
   constructor(private crudService: Neo4jCRUDDatasource) {}
@@ -41,5 +42,33 @@ export class GraphRepositoryImpl implements GraphRepository {
 
   deleteRelationship = async (relationshipId: string) => {
     return await this.crudService.deleteRelationship(relationshipId)
+  }
+
+  getByRange(rangeNumber: number): Promise<Graph> {
+    throw new Error('Method not implemented.')
+  }
+
+  getByLabels(labels: string[]): Promise<Node> {
+    throw new Error('Method not implemented.')
+  }
+
+  getByTypes(types: string[]): Promise<Graph> {
+    throw new Error('Method not implemented.')
+  }
+
+  searchNodes(properties: KeyValue<string, string>): Promise<Node> {
+    throw new Error('Method not implemented.')
+  }
+
+  getByDegree(degree: number): Promise<Graph> {
+    throw new Error('Method not implemented.')
+  }
+
+  getByDistance(distance: number): Promise<Graph> {
+    throw new Error('Method not implemented.')
+  }
+
+  getByPatters(labelsTypeSequence: string[]): Promise<Graph> {
+    throw new Error('Method not implemented.')
   }
 }
