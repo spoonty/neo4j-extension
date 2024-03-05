@@ -38,11 +38,11 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 addLabelToStorage(label);
             })
 
-            setNodes(nodes)
-            setLabels(labels)
+            setNodes(() => nodes)
+            setLabels(() => labels)
 
-            setRelationships(relationships)
-            setTypes(types)
+            setRelationships(() => relationships)
+            setTypes(() => types)
         } catch (error: any) {
             add('error', error.message)
         }
@@ -63,26 +63,26 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 }
             })
 
-            setNodes([...getNodesWithoutTemplate(), nodeD3])
-            setLabels([...labels, ...nodeLabels])
+            setNodes(() => [...getNodesWithoutTemplate(), nodeD3])
+            setLabels(() => [...labels, ...nodeLabels])
 
             state.current = InteractionState.DEFAULT
             add('success', 'Node successfully created.')
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
     const updateNode = async (
         nodeId: string,
-        labels: string[],
+        updatedLabels: string[],
         properties: KeyValue,
     ) => {
         try {
             const node = nodes.find((node) => node.elementId === nodeId)!
-            const updatedNode = new NodeUpdateDTO(node?.labels, labels, properties)
+            const updatedNode = new NodeUpdateDTO(node?.labels, updatedLabels, properties)
 
             const {node: nodeD3, relationships: updatedRelationships} =
                 await viewModel.updateNode(node, updatedNode, relationships, {x: node.x, y: node.y})
@@ -95,19 +95,20 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 }
             })
 
-            setNodes([
+            setNodes(() => [
                 ...getNodesWithoutTemplate().filter(
                     (node) => node.elementId !== nodeId,
                 ),
                 nodeD3,
             ])
-            setRelationships(updatedRelationships)
+            setRelationships(() => updatedRelationships)
+            setLabels(() => [...labels, ...nodeLabels])
 
             add('success', 'Node successfully updated.')
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
@@ -133,9 +134,9 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             })
 
 
-            setLabels(labelsToStay);
-            setNodes(newNodesList)
-            setRelationships(
+            setLabels(() => labelsToStay);
+            setNodes(() => newNodesList)
+            setRelationships(() =>
                 relationships.filter(
                     (relationship) =>
                         relationship.endNodeElementId !== nodeId &&
@@ -147,7 +148,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
@@ -166,14 +167,14 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 setTypes([...types, relationshipD3.type])
             }
 
-            setRelationships([...getRelationshipsWithoutTemplate(), relationshipD3])
+            setRelationships(() => [...getRelationshipsWithoutTemplate(), relationshipD3])
             add('success', 'Relationship successfully created.')
 
             createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
@@ -185,13 +186,13 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 setTypes([...types, relationship.type])
             }
 
-            setRelationships([...relationships.filter((relationship) => relationship.elementId !== relationshipId), relationship])
+            setRelationships(() => [...relationships.filter((relationship) => relationship.elementId !== relationshipId), relationship])
 
             add('success', 'Relationship successfully updated.')
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
@@ -199,7 +200,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         try {
             await viewModel.deleteRelationship(relationshipId)
 
-            setRelationships(
+            setRelationships(() =>
                 relationships.filter(
                     (relationship) =>
                         relationship.elementId !== relationshipId,
@@ -210,7 +211,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         } catch (error: any) {
             add('error', error.message)
         } finally {
-            setDialogType(DialogType.NONE)
+            setDialogType(() => DialogType.NONE)
         }
     }
 
@@ -220,7 +221,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             source: sourceId,
         }
 
-        setDialogType(DialogType.NONE)
+        setDialogType(() => DialogType.NONE)
         state.current = InteractionState.CREATE_RELATIONSHIP
     }
 
@@ -230,7 +231,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             target: targetId,
         }
 
-        setDialogType(DialogType.CREATE_RELATIONSHIP)
+        setDialogType(() => DialogType.CREATE_RELATIONSHIP)
 
         return createRelationshipTargets.current.source
     }
@@ -246,7 +247,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             initialNode?.y || addNodePosition.y,
         )
 
-        setNodes([...getNodesWithoutTemplate(), node])
+        setNodes(() => [...getNodesWithoutTemplate(), node])
     }
 
     const updateRelationshipTemplate = (type: string, properties: KeyValue, initialRelationship?: RelationshipD3) => {
@@ -264,9 +265,9 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         )
 
         if (initialRelationship) {
-            setRelationships([...relationships.filter((relationship) => relationship.elementId !== initialRelationship.elementId), relationship])
+            setRelationships(() => [...relationships.filter((relationship) => relationship.elementId !== initialRelationship.elementId), relationship])
         } else {
-            setRelationships([...getRelationshipsWithoutTemplate(), relationship])
+            setRelationships(() => [...getRelationshipsWithoutTemplate(), relationship])
         }
     }
 
@@ -281,11 +282,11 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                     return
                 }
 
-                setDialogType(DialogType.DELETE_NODE)
+                setDialogType(() => DialogType.DELETE_NODE)
                 setProps({nodeId: payload?.nodeId, relationshipsAmount: amount})
                 break
             case InteractionState.UPDATE_NODE:
-                setDialogType(DialogType.UPDATE_NODE)
+                setDialogType(() => DialogType.UPDATE_NODE)
                 const initialNode = nodes.find(
                     (node) => node.elementId === payload.nodeId,
                 )
@@ -295,7 +296,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                 const nodeId = payload.nodeId
                 const node = nodes.find((node) => node.elementId === nodeId)
                 setProps({node})
-                setDialogType(DialogType.NODE_DETAILS)
+                setDialogType(() => DialogType.NODE_DETAILS)
                 break
             case InteractionState.READ_RELATIONSHIP:
                 const relationshipId = payload.relationshipId
@@ -303,17 +304,17 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                     (relationship) => relationship.elementId === relationshipId,
                 )
                 setProps({relationship})
-                setDialogType(DialogType.RELATIONSHIP_DETAILS)
+                setDialogType(() => DialogType.RELATIONSHIP_DETAILS)
                 break
             case InteractionState.UPDATE_RELATIONSHIP:
-                setDialogType(DialogType.UPDATE_RELATIONSHIP)
+                setDialogType(() => DialogType.UPDATE_RELATIONSHIP)
                 const initialRelationship = relationships.find(
                     (relationship) => relationship.elementId === payload.relationshipId
                 )
                 setProps({initialRelationship})
                 break
             case InteractionState.CREATE_NODE:
-                setDialogType(DialogType.CREATE_NODE)
+                setDialogType(() => DialogType.CREATE_NODE)
                 setAddNodePosition({x: payload.x, y: payload.y})
         }
     }
@@ -326,7 +327,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
             switch (prevType) {
                 case DialogType.CREATE_NODE:
-                    setNodes(getNodesWithoutTemplate())
+                    setNodes(() => getNodesWithoutTemplate())
                     state.current = InteractionState.DEFAULT
                     break
                 case DialogType.NODE_DETAILS:
@@ -335,16 +336,16 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
                     break
                 case DialogType.CREATE_RELATIONSHIP:
                     createRelationshipTargets.current = DEFAULT_RELATIONSHIP_TARGETS
-                    setRelationships(getRelationshipsWithoutTemplate())
+                    setRelationships(() => getRelationshipsWithoutTemplate())
                     state.current = InteractionState.DEFAULT
                     break
                 case DialogType.UPDATE_NODE:
-                    setNodes(getNodesWithoutTemplate())
+                    setNodes(() => getNodesWithoutTemplate())
                     setProps({})
                     state.current = InteractionState.DEFAULT
                     break
                 case DialogType.UPDATE_RELATIONSHIP:
-                    setRelationships(getRelationshipsWithoutTemplate())
+                    setRelationships(() => getRelationshipsWithoutTemplate())
                     setProps({})
                     state.current = InteractionState.DEFAULT
                     break

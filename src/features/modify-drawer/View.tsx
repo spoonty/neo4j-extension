@@ -14,6 +14,7 @@ export interface ModifyDrawerProps {
     modifyHandler: () => Promise<void>
     onClose: () => void
     clearData: () => void
+    cancel?: () => void
 }
 
 const View: FC<ModifyDrawerProps> = ({
@@ -25,7 +26,8 @@ const View: FC<ModifyDrawerProps> = ({
                                          renderStep,
                                          modifyHandler,
                                          clearData,
-                                         onClose
+                                         onClose,
+                                         cancel,
                                      }) => {
     const [step, setStep] = useState(0)
 
@@ -51,6 +53,11 @@ const View: FC<ModifyDrawerProps> = ({
         closeHandler()
     }
 
+    const cancelHandler = () => {
+        closeHandler();
+        cancel?.();
+    }
+
     const disabled = useMemo(() => {
         return nextStepDisabled?.(step) || false
     }, [step, nextStepDisabled])
@@ -64,7 +71,7 @@ const View: FC<ModifyDrawerProps> = ({
                     'h-[482px]',
                 )}
             >
-                <Header onClose={closeHandler}>
+                <Header onClose={cancelHandler}>
                     {title}
                 </Header>
                 <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5">

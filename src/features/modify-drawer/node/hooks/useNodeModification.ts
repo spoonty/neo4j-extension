@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {DEFAULT_PROPERTIES} from "@/features/modify-drawer/constants";
 import {convertProperties, parseInitialProperties} from "@/features/modify-drawer/helpers";
 import {addLabelToStorage, removeLabelFromStorage} from "@/features/graph/helpers/labels";
+import {storageImpl} from "@/data/services/Storage.impl";
 
 export const useNodeModification = (initialNode?: NodeD3) => {
     const {createNode, updateNode, updateNodeTemplate, labels: currentLabels} = useGraphContext()
@@ -49,11 +50,23 @@ export const useNodeModification = (initialNode?: NodeD3) => {
     }
 
     const clearData = () => {
-        // labels.forEach((label) => {
-        //     if (!currentLabels.includes(label)) {
-        //         removeLabelFromStorage(label)
-        //     }
-        // })
+        setLabels([])
+        setProperties(DEFAULT_PROPERTIES)
+    }
+
+    const cancel = () => {
+        labels.forEach((label) => {
+            if (!currentLabels.includes(label)) {
+                removeLabelFromStorage(label)
+            }
+        })
+
+        const storageLabels = storageImpl.get('labels');
+        currentLabels.forEach((label) => {
+            if (!Object.keys(storageLabels).includes(label)) {
+                addLabelToStorage(label);
+            }
+        })
 
         setLabels([])
         setProperties(DEFAULT_PROPERTIES)
@@ -72,5 +85,6 @@ export const useNodeModification = (initialNode?: NodeD3) => {
         addProperty,
         deleteProperty,
         clearData,
+        cancel,
     }
 }

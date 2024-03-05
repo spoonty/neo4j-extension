@@ -21,7 +21,8 @@ const View: FC<Props> = ({initialNode, onClose}) => {
         addProperty,
         deleteProperty,
         modifyHandler,
-        clearData
+        clearData,
+        cancel,
     } = useNodeModification(initialNode)
 
     const steps = [Steps.SET_LABELS, Steps.SET_PROPERTIES]
@@ -54,6 +55,7 @@ const View: FC<Props> = ({initialNode, onClose}) => {
         modifyHandler={modifyHandler}
         onClose={onClose}
         clearData={clearData}
+        cancel={cancel}
     />
 }
 
