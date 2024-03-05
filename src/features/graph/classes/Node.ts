@@ -1,26 +1,26 @@
 import { NodeD3 } from '@/domain/entities/Node'
+import { ControlElement } from '@/features/graph/classes/ControlElement'
+import { Group } from '@/features/graph/classes/Group'
+import { Selection } from '@/features/graph/classes/Selection'
+import { Simulation } from '@/features/graph/classes/Simulation'
 import { drag } from '@/features/graph/helpers/drag'
-import { ControlElement } from '@/features/graph/hooks/graphRender/classes/ControlElement'
-import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
-import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
 import { labelManager } from '@/features/labels/LabelManager'
 import * as d3 from 'd3'
 import { BaseType } from 'd3'
 
-export class Node {
-  private readonly node: d3.Selection<
-    d3.BaseType | SVGGElement,
-    any,
-    SVGGElement,
-    unknown
-  >
+export class Node extends Selection<
+  d3.BaseType | SVGGElement,
+  any,
+  SVGGElement,
+  unknown
+> {
   private readonly _deleteButton: ControlElement
   private readonly _editButton: ControlElement
   private readonly _relationshipButton: ControlElement
   private pressed = false
 
   constructor(nodes: NodeD3[], group: Group, simulation: Simulation) {
-    this.node = group.get
+    const node = group.get
       .append('g')
       .selectAll('g')
       .data(nodes)
@@ -28,16 +28,9 @@ export class Node {
       .attr('data-element-id', (d: any) => d.elementId)
       .attr('class', 'node')
 
-    this._deleteButton = new ControlElement(this, 'delete-button')
-    this._deleteButton.position = { x: -55, y: 0 }
+    super(node)
 
-    this._relationshipButton = new ControlElement(this, 'relation-button')
-    this._relationshipButton.position = { x: -33, y: -45 }
-
-    this._editButton = new ControlElement(this, 'edit-button')
-    this._editButton.position = { x: -49, y: -25 }
-
-    this.node
+    this.selection
       .append('circle')
       .attr('stroke', '#edeef0')
       .attr('stroke-width', 1.5)
@@ -45,7 +38,7 @@ export class Node {
       .attr('fill', (d: any) => labelManager.getColor(d.labels[0]))
       .attr('class', 'node-circle')
 
-    this.node
+    this.selection
       .append('text')
       .text((d: any) => labelManager.getPropertyToDisplay(d))
       .attr('text-anchor', 'middle')
@@ -57,7 +50,7 @@ export class Node {
       .style('white-space', 'pre')
       .call(this.wrap, 70)
 
-    this.node.call(
+    this.selection.call(
       drag(this, simulation) as (
         selection: d3.Selection<
           BaseType | SVGGElement,
@@ -68,7 +61,7 @@ export class Node {
       ) => void,
     )
 
-    this.node.on('mouseover', function () {
+    this.selection.on('mouseover', function () {
       const elementId = (d3.select(this).data()[0] as { elementId: string })
         .elementId
 
@@ -109,7 +102,7 @@ export class Node {
         .attr('class', 'hover-circle')
     })
 
-    this.node.on('mouseleave', function (event: any) {
+    this.selection.on('mouseleave', function (event: any) {
       const elementId = (d3.select(this).data()[0] as { elementId: string })
         .elementId
 
@@ -124,14 +117,19 @@ export class Node {
       d3.selectAll('.hover-circle').remove()
     })
 
-    this.node.each(function (d: any) {
+    this.selection.each(function (d: any) {
       d.fx = d.x
       d.fy = d.y
     })
-  }
 
-  public get get() {
-    return this.node
+    this._deleteButton = new ControlElement(this, 'delete-button')
+    this._deleteButton.position = { x: -55, y: 0 }
+
+    this._relationshipButton = new ControlElement(this, 'relation-button')
+    this._relationshipButton.position = { x: -33, y: -45 }
+
+    this._editButton = new ControlElement(this, 'edit-button')
+    this._editButton.position = { x: -49, y: -25 }
   }
 
   public get relationshipButton() {

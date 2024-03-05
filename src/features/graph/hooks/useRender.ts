@@ -1,12 +1,12 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { Container } from '@/features/graph/classes/Container'
+import { Group } from '@/features/graph/classes/Group'
+import { Node } from '@/features/graph/classes/Node'
+import { Relationship } from '@/features/graph/classes/Relationship'
+import { Simulation } from '@/features/graph/classes/Simulation'
 import { InteractionState } from '@/features/graph/constants'
 import { useGraphContext } from '@/features/graph/context'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
-import { Container } from '@/features/graph/hooks/graphRender/classes/Container'
-import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
-import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
-import { Relationship } from '@/features/graph/hooks/graphRender/classes/Relationship'
-import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
 import * as d3 from 'd3'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {

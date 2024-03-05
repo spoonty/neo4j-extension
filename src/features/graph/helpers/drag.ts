@@ -1,6 +1,6 @@
 import { NodeD3 } from '@/domain/entities/Node'
-import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
-import { Simulation } from '@/features/graph/hooks/graphRender/classes/Simulation'
+import { Node } from '@/features/graph/classes/Node'
+import { Simulation } from '@/features/graph/classes/Simulation'
 import * as d3 from 'd3'
 
 export const drag = (

@@ -1,15 +1,15 @@
 import { RelationshipD3 } from '@/domain/entities/Relationship'
-import { ControlElement } from '@/features/graph/hooks/graphRender/classes/ControlElement'
-import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
+import { ControlElement } from '@/features/graph/classes/ControlElement'
+import { Group } from '@/features/graph/classes/Group'
+import { Selection } from '@/features/graph/classes/Selection'
 import * as d3 from 'd3'
 
-export class Relationship {
-  private readonly relationship: d3.Selection<
-    d3.BaseType | SVGGElement,
-    any,
-    SVGGElement,
-    unknown
-  >
+export class Relationship extends Selection<
+  d3.BaseType | SVGGElement,
+  any,
+  SVGGElement,
+  unknown
+> {
   private readonly _deleteButton: ControlElement
   private readonly _editButton: ControlElement
 
@@ -30,7 +30,7 @@ export class Relationship {
       .attr('class', 'arrow-head')
       .attr('fill', '#edeef0')
 
-    this.relationship = group.get
+    const relationship = group.get
       .append('g')
       .selectAll('g')
       .data(relationships)
@@ -39,14 +39,14 @@ export class Relationship {
       .attr('cursor', 'pointer')
       .attr('class', 'relationship')
 
-    this.relationship
+    relationship
       .append('line')
       .attr('stroke', '#edeef0')
       .attr('stroke-opacity', 0.5)
       .attr('stroke-width', (d: any) => Math.sqrt(d.value))
       .attr('marker-end', 'url(#arrow)')
 
-    this.relationship
+    relationship
       .append('text')
       .text((d: any) => d.type)
       .attr('text-anchor', 'middle')
@@ -54,12 +54,10 @@ export class Relationship {
       .style('user-select', 'none')
       .attr('fill', '#edeef0')
 
+    super(relationship)
+
     this._deleteButton = new ControlElement(this, 'delete-button')
     this._editButton = new ControlElement(this, 'edit-button')
-  }
-
-  public get get() {
-    return this.relationship
   }
 
   public get editButton() {

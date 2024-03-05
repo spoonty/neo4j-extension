@@ -1,27 +1,28 @@
 import { NodeD3 } from '@/domain/entities/Node'
-import { Node } from '@/features/graph/hooks/graphRender/classes/Node'
-import { Relationship } from '@/features/graph/hooks/graphRender/classes/Relationship'
+import { Node } from '@/features/graph/classes/Node'
+import { Relationship } from '@/features/graph/classes/Relationship'
+import { Selection } from '@/features/graph/classes/Selection'
 import * as d3 from 'd3'
 
-export class ControlElement {
-  private readonly element: d3.Selection<
-    SVGGElement,
-    NodeD3,
-    SVGGElement,
-    unknown
-  >
-
+export class ControlElement extends Selection<
+  SVGGElement,
+  NodeD3,
+  SVGGElement,
+  unknown
+> {
   constructor(
     controller: Node | Relationship,
     private readonly className: string,
   ) {
-    this.element = controller.get
+    const element = controller.get
       .append('g')
       .attr('class', className)
       .attr('data-element-id', (d: any) => d.elementId)
       .attr('opacity', 0)
 
-    this.element
+    super(element)
+
+    this.selection
       .append('circle')
       .attr('r', 10)
       .attr('fill', 'white')
@@ -29,7 +30,7 @@ export class ControlElement {
       .attr('cx', 0)
       .attr('opacity', 0.05)
 
-    this.element
+    this.selection
       .append('text')
       .attr('class', 'fa')
       .text(() => {
@@ -64,10 +65,6 @@ export class ControlElement {
     this._position = { x, y }
   }
 
-  public get get() {
-    return this.element
-  }
-
   public openElement(
     controller: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
@@ -91,7 +88,7 @@ export class ControlElement {
         .attr('transform', `translate(0,0)`)
         .style('opacity', 0)
     } else {
-      this.element.attr('transform', `translate(0,0)`).style('opacity', 0)
+      this.selection.attr('transform', `translate(0,0)`).style('opacity', 0)
     }
   }
 }

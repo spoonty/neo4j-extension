@@ -1,5 +1,5 @@
-import { Container } from '@/features/graph/hooks/graphRender/classes/Container'
-import { Group } from '@/features/graph/hooks/graphRender/classes/Group'
+import { Container } from '@/features/graph/classes/Container'
+import { Group } from '@/features/graph/classes/Group'
 import * as d3 from 'd3'
 
 export const zoom = (group: Group) => {
