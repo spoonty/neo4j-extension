@@ -13,6 +13,12 @@ const classesByVariant = {
   none: 'bg-red-500',
 }
 
+const textByVariant = {
+  full: 'Connection with full rights',
+  partial: 'Connection with read-only rights',
+  none: 'Not connected',
+}
+
 const Indicator: FC<Props> = ({ variant = 'full', className }) => (
   <span className={cn('relative flex h-3 w-3', className)}>
     <Tooltip.TooltipProvider delayDuration={0}>
@@ -35,7 +41,7 @@ const Indicator: FC<Props> = ({ variant = 'full', className }) => (
             ></span>
           </div>
         </Tooltip.Trigger>
-        <Tooltip.Content side="right">{variant}</Tooltip.Content>
+        <Tooltip.Content side="right">{textByVariant[variant]}</Tooltip.Content>
       </Tooltip.Tooltip>
     </Tooltip.TooltipProvider>
   </span>
