@@ -1,9 +1,10 @@
-import {createElement, FC, useRef} from 'react'
+import React, {createElement, FC, useRef} from 'react'
 import Filter from '@/assets/icons/FilterIcon'
 import Settings from '@/assets/icons/SettingsIcon'
 import {useGraphContext} from '@/features/graph/context'
 import {useRender} from '@/features/graph/hooks/graphRender/useRender'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
+import SvgMemorized from "@/features/graph/ui/SvgMemorized";
 
 const View: FC = () => {
     const svgRef = useRef<SVGSVGElement>(null)
@@ -26,7 +27,7 @@ const View: FC = () => {
 
     return (
         <div>
-            <svg ref={svgRef}/>
+            <SvgMemorized svgRef={svgRef}/>
 
             {dialog?.component && createElement(dialog.component, dialog.props)}
 

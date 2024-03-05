@@ -13,7 +13,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     const {
         nodes,
         relationships,
-        labels,
         clickHandler,
         setSource,
         setTarget,
@@ -44,7 +43,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
         )
         const group = new Group(container)
         const relationship = new Relationship(relationships, group)
-        const node = new Node(nodes, labels, group, simulation)
+        const node = new Node(nodes, group, simulation)
 
         // @ts-ignore
         const zoomHandler = zoom(group).on('zoom', (event) => {

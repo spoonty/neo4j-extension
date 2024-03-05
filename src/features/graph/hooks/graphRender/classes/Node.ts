@@ -20,7 +20,6 @@ export class Node {
 
     constructor(
         nodes: NodeD3[],
-        labels: string[],
         group: Group,
         simulation: Simulation,
     ) {
@@ -30,6 +29,7 @@ export class Node {
             .data(nodes)
             .join('g')
             .attr('data-element-id', (d: any) => d.elementId)
+            .attr('class', 'node')
 
         this._deleteButton = new ControlElement(this, 'delete-button')
         this._deleteButton.position = {x: -55, y: 0}
@@ -72,18 +72,40 @@ export class Node {
         )
 
         this.node.on('mouseover', function () {
+            const elementId = (d3.select(this).data()[0] as { elementId: string }).elementId
+
             d3.select(this)
                 .attr('cursor', 'pointer')
                 .select('.node-circle')
                 .attr('stroke-width', 5)
                 .style('stroke-opacity', 0.8)
+
+            d3.selectAll('.relationship').filter((d: any) => d.source.elementId !== elementId).attr('opacity', 0.3)
+
+            const connectedNodes = d3.selectAll('.relationship').filter((d: any) => d.source.elementId === elementId).data().map((d: any) => d.target.elementId);
+
+            const anotherNodes = d3.selectAll('.node').filter((d: any) => !connectedNodes.includes(d.elementId) && d.elementId !== elementId)
+
+            if (d3.selectAll('.hover-circle').nodes().length === anotherNodes.nodes().length) {
+                return
+            }
+
+            anotherNodes.append('circle')
+                .attr('r', 40)
+                .attr('fill', () => 'rgba(0, 0, 0, .5)')
+                .attr('class', 'hover-circle')
         })
 
         this.node.on('mouseleave', function () {
+            const elementId = (d3.select(this).data()[0] as { elementId: string }).elementId
+
             d3.select(this)
                 .select('.node-circle')
                 .attr('stroke-width', 1.5)
                 .style('stroke-opacity', 1)
+
+            d3.selectAll('.relationship').filter((d: any) => d.source.elementId !== elementId).attr('opacity', 1)
+            d3.selectAll('.hover-circle').remove()
         })
 
         this.node.each(function (d: any) {

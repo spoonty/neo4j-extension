@@ -37,6 +37,7 @@ export class Relationship {
             .join('g')
             .attr('data-element-id', (d: any) => d.elementId)
             .attr('cursor', 'pointer')
+            .attr('class', 'relationship')
 
         this.relationship
             .append('line')

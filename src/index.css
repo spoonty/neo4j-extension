@@ -3,37 +3,43 @@
 @import 'tailwindcss/utilities';
 
 html, body, #root {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 @layer {
-  :root {
-    --background-dark: #111113;
-    --main-dark: #17191b;
-    --main-dark-opacity: rgba(23, 25, 27, 0.95);
-    --light-dark: #1e2123;
-    --border-dark: #21252e;
+    :root {
+        --background-dark: #111113;
+        --main-dark: #17191b;
+        --main-dark-opacity: rgba(23, 25, 27, 0.95);
+        --light-dark: #1e2123;
+        --border-dark: #21252e;
 
-    --dark-gray: #616161;
-    --main-gray: #edeef0;
-    --light-gray: #f5f5f5;
+        --dark-gray: #616161;
+        --main-gray: #edeef0;
+        --light-gray: #f5f5f5;
 
-    --light-blue: #1E88E5;
-    --red-alert: #F44336;
-  }
+        --light-blue: #1E88E5;
+        --red-alert: #F44336;
+    }
 }
 
 .scroll-none {
-  scrollbar-width: none;
+    scrollbar-width: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
