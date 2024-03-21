@@ -6,12 +6,14 @@ import { createContext, useContext } from 'react'
 export interface ISessionContext {
   driver: Driver
   connection: Connection
+  loading: boolean
   connect: (url: string, username: string, password: string) => void
 }
 
 export const SessionContext = createContext<ISessionContext>({
   driver: new DriverImpl(),
   connection: Connection.NONE,
+  loading: false,
   connect: () => {},
 })
 
