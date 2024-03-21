@@ -1,4 +1,3 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Container } from '@/features/graph/classes/Container'
 import { Group } from '@/features/graph/classes/Group'
 import { Node } from '@/features/graph/classes/Node'
@@ -7,7 +6,10 @@ import { Simulation } from '@/features/graph/classes/Simulation'
 import { InteractionState } from '@/features/graph/constants'
 import { useGraphContext } from '@/features/graph/context'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
+import { useSessionContext } from '@/features/session/context'
+import { Connection } from '@/features/session/static/const'
 import * as d3 from 'd3'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {
@@ -19,6 +21,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     state,
     deleteRelationship,
   } = useGraphContext()
+
+  const { connection } = useSessionContext()
 
   const [node, setNode] = useState<Node>()
   const [relationship, setRelationship] = useState<Relationship>()
@@ -35,11 +39,13 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       return
     }
 
+    const fullConnection = connection === Connection.FULL
+
     const container = new Container(svg)
     const simulation = new Simulation(nodes, relationships, rendered.current)
     const group = new Group(container)
-    const relationship = new Relationship(relationships, group)
-    const node = new Node(nodes, group, simulation)
+    const relationship = new Relationship(relationships, group, fullConnection)
+    const node = new Node(nodes, group, simulation, fullConnection)
 
     // @ts-ignore
     const zoomHandler = zoom(group).on('zoom', (event) => {
@@ -62,14 +68,16 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onNodeClick(node, container, zoomHandler)
     onRelationshipClick(relationship, container, zoomHandler)
 
-    onNodeDeleteButtonClick(node)
-    onNodeRelationshipButtonClick(node, container, zoomHandler)
-    onNodeEditButtonClick(node)
-
-    onRelationshipEditButtonClick(relationship)
-    onRelationshipDeleteButtonClick(relationship)
-
-    onContainerClick(container, node, zoomHandler)
+    if (fullConnection) {
+      onNodeDeleteButtonClick(node)
+      onNodeRelationshipButtonClick(node, container, zoomHandler)
+      onNodeEditButtonClick(node)
+  
+      onRelationshipEditButtonClick(relationship)
+      onRelationshipDeleteButtonClick(relationship)
+    
+      onContainerClick(container, node, zoomHandler)
+    }
 
     onTick(simulation, node, relationship)
 
@@ -314,7 +322,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   }
 
   const onNodeDeleteButtonClick = (node: Node) => {
-    node.deleteButton.get.on('click', function (event) {
+    node.deleteButton?.get.on('click', function (event) {
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -333,7 +341,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     container: Container,
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
   ) => {
-    node.relationshipButton.get.on('click', function (event) {
+    node.relationshipButton?.get.on('click', function (event) {
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -361,7 +369,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   }
 
   const onNodeEditButtonClick = (node: Node) => {
-    node.editButton.get.on('click', function (event) {
+    node.editButton?.get.on('click', function (event) {
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -377,7 +385,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   }
 
   const onRelationshipEditButtonClick = (relationship: Relationship) => {
-    relationship.editButton.get.on('click', function (event) {
+    relationship.editButton?.get.on('click', function (event) {
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -396,7 +404,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   }
 
   const onRelationshipDeleteButtonClick = (relationship: Relationship) => {
-    relationship.deleteButton.get.on('click', async function (event) {
+    relationship.deleteButton?.get.on('click', async function (event) {
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -421,6 +429,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       node?.closeButtons()
       relationship?.closeButtons()
       optionsOpened.current = false
+      d3.selectAll('g').attr('pointer-events', 'all')
     }
   }, [state.current])
 

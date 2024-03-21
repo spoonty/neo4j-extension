@@ -14,12 +14,11 @@ export class Node extends Selection<
   SVGGElement,
   unknown
 > {
-  private readonly _deleteButton: ControlElement
-  private readonly _editButton: ControlElement
-  private readonly _relationshipButton: ControlElement
-  private pressed = false
+  private readonly _deleteButton: ControlElement | null = null
+  private readonly _editButton: ControlElement | null = null
+  private readonly _relationshipButton: ControlElement | null = null
 
-  constructor(nodes: NodeD3[], group: Group, simulation: Simulation) {
+  constructor(nodes: NodeD3[], group: Group, simulation: Simulation, withControl = true) {
     const node = group.get
       .append('g')
       .selectAll('g')
@@ -122,14 +121,16 @@ export class Node extends Selection<
       d.fy = d.y
     })
 
-    this._deleteButton = new ControlElement(this, 'delete-button')
-    this._deleteButton.position = { x: -55, y: 0 }
-
-    this._relationshipButton = new ControlElement(this, 'relation-button')
-    this._relationshipButton.position = { x: -33, y: -45 }
-
-    this._editButton = new ControlElement(this, 'edit-button')
-    this._editButton.position = { x: -49, y: -25 }
+    if (withControl) {
+      this._deleteButton = new ControlElement(this, 'delete-button')
+      this._deleteButton.position = { x: -55, y: 0 }
+  
+      this._relationshipButton = new ControlElement(this, 'relation-button')
+      this._relationshipButton.position = { x: -33, y: -45 }
+  
+      this._editButton = new ControlElement(this, 'edit-button')
+      this._editButton.position = { x: -49, y: -25 }
+    }
   }
 
   public get relationshipButton() {
@@ -147,17 +148,21 @@ export class Node extends Selection<
   public closeButtons(
     node?: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
-    ;[this._editButton, this._relationshipButton, this._deleteButton].forEach(
-      (button: ControlElement) => button.closeElement(node),
-    )
+    if (this._editButton && this._relationshipButton && this._deleteButton) {
+      ;[this._editButton, this._relationshipButton, this._deleteButton].forEach(
+        (button: ControlElement) => button.closeElement(node),
+      )
+    }
   }
 
   public openButtons(
     node: d3.Selection<d3.BaseType | SVGGElement, unknown, null, unknown>,
   ) {
-    this._editButton.openElement(node)
-    this._relationshipButton.openElement(node)
-    this._deleteButton.openElement(node)
+    if (this._editButton && this._relationshipButton && this._deleteButton) {
+      this._editButton.openElement(node)
+      this._relationshipButton.openElement(node)
+      this._deleteButton.openElement(node)
+    }
   }
 
   private wrap(text: any, width: number) {

@@ -10,10 +10,10 @@ export class Relationship extends Selection<
   SVGGElement,
   unknown
 > {
-  private readonly _deleteButton: ControlElement
-  private readonly _editButton: ControlElement
+  private readonly _deleteButton: ControlElement | null = null
+  private readonly _editButton: ControlElement | null = null
 
-  constructor(relationships: RelationshipD3[], group: Group) {
+  constructor(relationships: RelationshipD3[], group: Group, withControl = true) {
     const arrowMaker = group.get
       .append('defs')
       .append('marker')
@@ -56,8 +56,10 @@ export class Relationship extends Selection<
 
     super(relationship)
 
-    this._deleteButton = new ControlElement(this, 'delete-button')
-    this._editButton = new ControlElement(this, 'edit-button')
+    if (withControl) {
+      this._deleteButton = new ControlElement(this, 'delete-button')
+      this._editButton = new ControlElement(this, 'edit-button')
+    }
   }
 
   public get editButton() {
@@ -76,9 +78,11 @@ export class Relationship extends Selection<
       unknown
     >,
   ) {
-    ;[this._editButton, this._deleteButton].forEach((button: ControlElement) =>
-      button.closeElement(relationship),
-    )
+    if (this._editButton && this._deleteButton) {
+      [this._editButton, this._deleteButton].forEach((button: ControlElement) =>
+        button.closeElement(relationship),
+      )
+    }
   }
 
   public openButtons(
@@ -89,12 +93,14 @@ export class Relationship extends Selection<
       unknown
     >,
   ) {
-    const x = Number(relationship.select('text').attr('x'))
-    const y = Number(relationship.select('text').attr('y'))
-    this._deleteButton.position = { x: x + 15, y: y + 18 }
-    this._editButton.position = { x: x - 15, y: y + 18 }
-
-    this._editButton.openElement(relationship)
-    this._deleteButton.openElement(relationship)
+    if (this._editButton && this._deleteButton) {
+      const x = Number(relationship.select('text').attr('x'))
+      const y = Number(relationship.select('text').attr('y'))
+      this._deleteButton.position = { x: x + 15, y: y + 18 }
+      this._editButton.position = { x: x - 15, y: y + 18 }
+  
+      this._editButton.openElement(relationship)
+      this._deleteButton.openElement(relationship)
+    }
   }
 }

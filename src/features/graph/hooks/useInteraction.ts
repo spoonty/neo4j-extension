@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
 import {
   Node,
   NodeCreateDTO,
@@ -11,12 +10,13 @@ import {
   RelationshipD3,
   RelationshipUpdateDTO,
 } from '@/domain/entities/Relationship'
+import { ViewModel } from '@/features/graph/ViewModel'
 import { InteractionState } from '@/features/graph/constants'
 import { IGraphContext } from '@/features/graph/context'
 import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
-import { ViewModel } from '@/features/graph/ViewModel'
 import { labelManager } from '@/features/labels/LabelManager'
 import { useToast } from '@/ui/Toast/hooks/useToast'
+import { useEffect, useRef, useState } from 'react'
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
@@ -33,6 +33,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
+
+  console.log(state)
 
   const getNodes = async () => {
     try {
