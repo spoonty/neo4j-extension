@@ -1,13 +1,19 @@
 import { Driver } from '@/data/interfaces/services/Driver.interface'
 import { DriverError } from '@/domain/errors/DriverError'
+import { Connection } from '@/features/session/static/const'
 import * as neo4j from 'neo4j-driver'
 
 export class DriverImpl implements Driver {
   private driver: ValueOrNull<neo4j.Driver> = null
   private session: ValueOrNull<neo4j.Session> = null
+  private canEdit = false
 
-  isConnected(): boolean {
-    return !!this.session
+  getConnection(): Connection {
+    if (!this.session) {
+      return Connection.NONE
+    }
+
+    return this.canEdit ? Connection.FULL : Connection.READ_ONLY
   }
 
   async connect(uri: string, user: string, password: string) {
@@ -17,6 +23,8 @@ export class DriverImpl implements Driver {
       if (await this.driver.getServerInfo()) {
         this.session = this.driver.session()
       }
+
+      await this.checkAccess()
     } catch {
       throw new DriverError()
     }
@@ -37,6 +45,14 @@ export class DriverImpl implements Driver {
       return result.records.map((record: any) => record.toObject()) as T
     } else {
       throw new DriverError()
+    }
+  }
+
+  private checkAccess = async () => {
+    const currentUser = await this.execute('CALL dbms.showCurrentUser()');
+
+    if (currentUser) {
+      this.canEdit = currentUser[0].roles.includes('admin')
     }
   }
 }

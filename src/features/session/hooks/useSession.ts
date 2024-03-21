@@ -12,7 +12,7 @@ export const useSession = (): ISessionContext => {
 
   const [driver] = useState(new DriverImpl())
 
-  const [isConnected, setIsConnected] = useState(driver.isConnected())
+  const [connection, setConnection] = useState(driver.getConnection())
 
   const sessionRepository = new SessionRepositoryImpl(driver)
 
@@ -29,7 +29,7 @@ export const useSession = (): ISessionContext => {
       )
 
       await connectCase.execute(url, username, password)
-      setIsConnected(driver.isConnected())
+      setConnection(driver.getConnection())
     } catch (e: any) {
       if (displayError) {
         add('error', e.message)
@@ -49,7 +49,7 @@ export const useSession = (): ISessionContext => {
 
   return {
     driver,
-    isConnected,
+    connection,
     connect,
   }
 }

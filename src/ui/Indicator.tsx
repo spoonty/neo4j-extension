@@ -1,22 +1,23 @@
 import { FC } from 'react'
 import Tooltip from '@/ui/Tooltip'
 import { cn } from '@/utils/dom'
+import { Connection } from '@/features/session/static/const'
 
 interface Props {
-  variant?: 'full' | 'partial' | 'none'
+  variant?: Connection
   className?: string
 }
 
 const classesByVariant = {
-  full: 'bg-green-500',
-  partial: 'bg-yellow-300',
-  none: 'bg-red-500',
+  [Connection.FULL]: 'bg-green-500',
+  [Connection.READ_ONLY]: 'bg-yellow-300',
+  [Connection.NONE]: 'bg-red-500',
 }
 
 const textByVariant = {
-  full: 'Connection with full rights',
-  partial: 'Connection with read-only rights',
-  none: 'Not connected',
+  [Connection.FULL]: 'Connection with full rights',
+  [Connection.READ_ONLY]: 'Connection with read-only rights',
+  [Connection.NONE]: 'Not connected',
 }
 
 const Indicator: FC<Props> = ({ variant = 'full', className }) => (
