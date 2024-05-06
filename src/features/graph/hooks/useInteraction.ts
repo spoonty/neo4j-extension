@@ -34,8 +34,6 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
 
-  console.log(state)
-
   const getNodes = async () => {
     try {
       const { nodes, labels, relationships, types } = await viewModel.getGraph()

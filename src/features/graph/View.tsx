@@ -1,12 +1,15 @@
-import React, { createElement, FC, useRef } from 'react'
+import { createElement, FC, useRef, useState } from 'react'
 import Filter from '@/assets/icons/FilterIcon'
 import Settings from '@/assets/icons/SettingsIcon'
+import ConfigurationDrawer from '@/features/configuration-drawer/View'
 import { useGraphContext } from '@/features/graph/context'
 import { useRender } from '@/features/graph/hooks/useRender'
 import SvgMemorized from '@/features/graph/ui/SvgMemorized'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
 
 const View: FC = () => {
+  const [settingsOpened, setSettingsOpened] = useState(false)
+
   const svgRef = useRef<SVGSVGElement>(null)
   useRender(svgRef)
 
@@ -19,7 +22,7 @@ const View: FC = () => {
     },
     {
       icon: Settings,
-      action: () => {},
+      action: () => setSettingsOpened(true),
     },
   ]
 
@@ -30,6 +33,10 @@ const View: FC = () => {
       {dialog?.component && createElement(dialog.component, dialog.props)}
 
       <SpeedDial options={options} />
+
+      {settingsOpened && (
+        <ConfigurationDrawer onClose={() => setSettingsOpened(false)} />
+      )}
     </div>
   )
 }

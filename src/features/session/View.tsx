@@ -37,7 +37,7 @@ const View: FC = () => {
   }
 
   return (
-    <Drawer open modal>
+    <Drawer open modal={false}>
       <Content className="right-[50%] translate-x-[50%]">
         <Header>Connect to Data Base</Header>
         <div className="flex h-[calc(100%-72px)] flex-col gap-5 px-2 py-4">

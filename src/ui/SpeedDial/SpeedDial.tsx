@@ -32,6 +32,7 @@ const SpeedDial: FC<Props> = ({ options, className }) => {
               <IconButton
                 className="mt-2 h-[56px] w-[56px]"
                 key={option.icon.name}
+                onClick={option.action}
               >
                 {createElement(option.icon, { width: '28', height: '28' })}
               </IconButton>

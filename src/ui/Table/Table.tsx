@@ -14,7 +14,7 @@ const Table: FC<Props> = ({ data, deleteAction, className }) => {
     const header = Object.keys(data)
 
     if (!!deleteAction) {
-      header.push('Action')
+      header.push('')
     }
 
     return header

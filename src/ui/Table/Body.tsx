@@ -25,8 +25,11 @@ const Body: FC<Props> = ({ data, deleteAction }) => {
             <td className="px-6 py-1.5">{value}</td>
           ))}
           {!!deleteAction && (
-            <td className="px-6 py-1.5" onClick={() => deleteAction(i)}>
-              delete
+            <td
+              className="cursor-pointer px-6 py-1.5 text-red-500"
+              onClick={() => deleteAction(i)}
+            >
+              DELETE
             </td>
           )}
         </tr>

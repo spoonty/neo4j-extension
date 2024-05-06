@@ -35,9 +35,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    if (!nodes || !relationships || !nodes.length || !relationships.length) {
-      return
-    }
+    console.log('')
+    // if (!nodes || !relationships || !nodes.length || !relationships.length) {
+    //   return
+    // }
 
     const fullConnection = connection === Connection.FULL
 
@@ -84,6 +85,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     setNode(node)
     setRelationship(relationship)
 
+    if (!nodes || !nodes.length) {
+      return
+    }
     if (!rendered.current) {
       rendered.current = true
     }
