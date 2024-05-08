@@ -17,6 +17,7 @@ export const useNodeModification = (initialNode?: NodeD3) => {
   } = useGraphContext()
 
   const [labels, setLabels] = useState<string[]>(initialNode?.labels || [])
+  const [activeLabel, setActiveLabel] = useState(0)
 
   const [properties, setProperties] = useState<KeyValue<'key' | 'value', any>>(
     initialNode ? parseInitialProperties(initialNode) : DEFAULT_PROPERTIES,
@@ -27,9 +28,10 @@ export const useNodeModification = (initialNode?: NodeD3) => {
       ? await updateNode(
           initialNode.elementId,
           labels,
+          activeLabel,
           convertProperties(properties),
         )
-      : await createNode(labels, convertProperties(properties))
+      : await createNode(labels, activeLabel, convertProperties(properties))
   }
 
   const addLabel = (label: string) => {
@@ -82,11 +84,18 @@ export const useNodeModification = (initialNode?: NodeD3) => {
   }
 
   useEffect(() => {
-    updateNodeTemplate(labels, convertProperties(properties), initialNode)
-  }, [labels.length, properties])
+    updateNodeTemplate(
+      labels,
+      activeLabel,
+      convertProperties(properties),
+      initialNode,
+    )
+  }, [labels.length, activeLabel, properties])
 
   return {
     labels,
+    activeLabel,
+    setActiveLabel,
     properties,
     modifyHandler,
     addLabel,

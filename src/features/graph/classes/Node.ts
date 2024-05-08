@@ -18,7 +18,12 @@ export class Node extends Selection<
   private readonly _editButton: ControlElement | null = null
   private readonly _relationshipButton: ControlElement | null = null
 
-  constructor(nodes: NodeD3[], group: Group, simulation: Simulation, withControl = true) {
+  constructor(
+    nodes: NodeD3[],
+    group: Group,
+    simulation: Simulation,
+    withControl = true,
+  ) {
     const node = group.get
       .append('g')
       .selectAll('g')
@@ -34,7 +39,9 @@ export class Node extends Selection<
       .attr('stroke', '#edeef0')
       .attr('stroke-width', 1.5)
       .attr('r', 40)
-      .attr('fill', (d: any) => labelManager.getColor(d.labels[0]))
+      .attr('fill', (d: any) =>
+        labelManager.getColor(d.settings.labelToDisplay),
+      )
       .attr('class', 'node-circle')
 
     this.selection
@@ -124,10 +131,10 @@ export class Node extends Selection<
     if (withControl) {
       this._deleteButton = new ControlElement(this, 'delete-button')
       this._deleteButton.position = { x: -55, y: 0 }
-  
+
       this._relationshipButton = new ControlElement(this, 'relation-button')
       this._relationshipButton.position = { x: -33, y: -45 }
-  
+
       this._editButton = new ControlElement(this, 'edit-button')
       this._editButton.position = { x: -49, y: -25 }
     }

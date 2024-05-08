@@ -9,12 +9,21 @@ import ScrollArea from '@/ui/ScrollArea'
 
 interface Props {
   currentValues: string[]
+  activeLabel?: number
+  setActiveLabel?: (idx: number) => void
   values: string[]
   add: (value: string) => void
   remove: (i: number) => void
 }
 
-const FirstStep: FC<Props> = ({ currentValues, values, add, remove }) => {
+const FirstStep: FC<Props> = ({
+  currentValues,
+  values,
+  activeLabel,
+  setActiveLabel,
+  add,
+  remove,
+}) => {
   const [value, setValue] = useState('')
 
   const search = useMemo(() => {
@@ -55,11 +64,18 @@ const FirstStep: FC<Props> = ({ currentValues, values, add, remove }) => {
 
       <ScrollArea.Root className="mt-3 h-[90px]">
         <ScrollArea.Viewport className="h-full w-full">
-          <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
+          <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 p-2">
             {currentValues.map((val, index) => (
               <Badge
                 onRemove={() => remove(index)}
-                style={{ backgroundColor: labelManager.getColor(val) }}
+                style={{
+                  backgroundColor: labelManager.getColor(val),
+                  outline: `1px solid ${
+                    activeLabel === index ? labelManager.getColor(val) : ''
+                  }`,
+                  border: '2px solid',
+                }}
+                onClick={() => setActiveLabel?.(index)}
               >
                 {val}
               </Badge>

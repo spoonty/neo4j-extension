@@ -35,7 +35,7 @@ const View: FC<DetailsDrawerProps> = ({
         <div className="mt-4 flex h-[calc(100%-88px)] flex-col gap-5 px-2">
           <ScrollArea.Root className="max-h-[90px]">
             <ScrollArea.Viewport className="h-full w-full">
-              <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 pe-3">
+              <div className="grid grid-cols-[repeat(auto-fill,_minmax(86px,_1fr))] gap-x-3.5 gap-y-3 p-2">
                 {children}
               </div>
             </ScrollArea.Viewport>

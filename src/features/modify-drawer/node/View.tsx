@@ -15,6 +15,8 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
   const { labels: globalLabels } = useGraphContext()
   const {
     labels,
+    activeLabel,
+    setActiveLabel,
     properties,
     addLabel,
     removeLabel,
@@ -34,6 +36,8 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
           <FirstStep
             currentValues={labels}
             values={globalLabels}
+            activeLabel={activeLabel}
+            setActiveLabel={setActiveLabel}
             add={addLabel}
             remove={removeLabel}
           />

@@ -21,11 +21,23 @@ const View: FC<Props> = ({ node, onClose }) => {
       className="h-[230px]"
       onClose={onClose}
     >
-      {node.labels.map((label) => (
-        <Badge style={{ backgroundColor: labelManager.getColor(label) }}>
-          {label}
-        </Badge>
-      ))}
+      {node &&
+        node.labels.map((label) => (
+          <Badge
+            style={{
+              backgroundColor: labelManager.getColor(label),
+              outline: `1px solid ${
+                node.settings.labelToDisplay === label
+                  ? labelManager.getColor(label)
+                  : ''
+              }`,
+              border: '2px solid',
+            }}
+            key={label}
+          >
+            {label}
+          </Badge>
+        ))}
     </DetailsDrawer>
   )
 }

@@ -1,3 +1,4 @@
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Container } from '@/features/graph/classes/Container'
 import { Group } from '@/features/graph/classes/Group'
 import { Node } from '@/features/graph/classes/Node'
@@ -9,7 +10,6 @@ import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import { useSessionContext } from '@/features/session/context'
 import { Connection } from '@/features/session/static/const'
 import * as d3 from 'd3'
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const {
@@ -35,7 +35,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    console.log('')
     // if (!nodes || !relationships || !nodes.length || !relationships.length) {
     //   return
     // }
@@ -73,10 +72,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       onNodeDeleteButtonClick(node)
       onNodeRelationshipButtonClick(node, container, zoomHandler)
       onNodeEditButtonClick(node)
-  
+
       onRelationshipEditButtonClick(relationship)
       onRelationshipDeleteButtonClick(relationship)
-    
+
       onContainerClick(container, node, zoomHandler)
     }
 

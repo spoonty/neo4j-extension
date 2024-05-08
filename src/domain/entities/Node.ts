@@ -22,7 +22,14 @@ export class NodeUpdateDTO {
   ) {}
 }
 
+type NodeSettings = {
+  labelToDisplay: string
+  propertyToDisplay: string | null
+}
+
 export class NodeD3 extends Node {
+  public settings: NodeSettings
+
   constructor(
     node: Node,
     public x: number = 0,
@@ -35,6 +42,11 @@ export class NodeD3 extends Node {
     })
 
     super(node.elementId, node.identity, node.labels, node.properties)
+
+    this.settings = {
+      labelToDisplay: this.labels[0],
+      propertyToDisplay: null,
+    }
   }
 
   setPosition = (x: number, y: number) => {

@@ -1,5 +1,6 @@
 import { createElement, FC, useRef, useState } from 'react'
 import Filter from '@/assets/icons/FilterIcon'
+import Off from '@/assets/icons/OffIcon'
 import Settings from '@/assets/icons/SettingsIcon'
 import ConfigurationDrawer from '@/features/configuration-drawer/View'
 import { useGraphContext } from '@/features/graph/context'
@@ -23,6 +24,10 @@ const View: FC = () => {
     {
       icon: Settings,
       action: () => setSettingsOpened(true),
+    },
+    {
+      icon: Off,
+      action: () => {},
     },
   ]
 

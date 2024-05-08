@@ -3,16 +3,24 @@ import Close from '@/assets/icons/CloseIcon'
 import { cn } from '@/utils/dom'
 
 interface Props extends PropsWithChildren, React.HTMLProps<HTMLDivElement> {
+  onClick?: () => void
   onRemove?: () => void
   className?: string
 }
 
-const Badge: FC<Props> = ({ children, onRemove, className, ...props }) => (
+const Badge: FC<Props> = ({
+  children,
+  onClick,
+  onRemove,
+  className,
+  ...props
+}) => (
   <span
     className={cn(
-      'flex cursor-default items-center justify-between gap-2 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium leading-3 text-main-dark dark:bg-blue-900',
+      'flex cursor-default cursor-pointer items-center justify-between gap-2 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium leading-3 text-main-dark dark:bg-blue-900',
       className,
     )}
+    onClick={onClick}
     {...props}
   >
     <span className="overflow-hidden text-ellipsis whitespace-nowrap">

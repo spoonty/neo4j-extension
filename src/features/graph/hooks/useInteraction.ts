@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import {
   Node,
   NodeCreateDTO,
@@ -10,13 +11,12 @@ import {
   RelationshipD3,
   RelationshipUpdateDTO,
 } from '@/domain/entities/Relationship'
-import { ViewModel } from '@/features/graph/ViewModel'
 import { InteractionState } from '@/features/graph/constants'
 import { IGraphContext } from '@/features/graph/context'
 import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
+import { ViewModel } from '@/features/graph/ViewModel'
 import { labelManager } from '@/features/labels/LabelManager'
 import { useToast } from '@/ui/Toast/hooks/useToast'
-import { useEffect, useRef, useState } from 'react'
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
 
@@ -52,7 +52,11 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
-  const createNode = async (labels: string[], properties: KeyValue) => {
+  const createNode = async (
+    labels: string[],
+    activeLabel: number,
+    properties: KeyValue,
+  ) => {
     try {
       const node = new NodeCreateDTO(labels, properties)
 
@@ -66,6 +70,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
           labelManager.addLabel(label)
         }
       })
+      nodeD3.settings.labelToDisplay = labels[activeLabel]
 
       setNodes(() => [...getNodesWithoutTemplate(), nodeD3])
       setLabels(() => [...labels, ...nodeLabels])
@@ -82,6 +87,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
   const updateNode = async (
     nodeId: string,
     updatedLabels: string[],
+    activeLabel: number,
     properties: KeyValue,
   ) => {
     try {
@@ -105,6 +111,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
           labelManager.addLabel(label)
         }
       })
+      nodeD3.settings.labelToDisplay = updatedLabels[activeLabel]
 
       setNodes(() => [
         ...getNodesWithoutTemplate().filter(
@@ -264,6 +271,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const updateNodeTemplate = (
     labels: string[],
+    activeLabelIdx: number,
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => {
@@ -272,6 +280,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
       initialNode?.x || addNodePosition.x,
       initialNode?.y || addNodePosition.y,
     )
+
+    node.settings.labelToDisplay = labels[activeLabelIdx]
 
     setNodes(() => [...getNodesWithoutTemplate(), node])
   }
@@ -402,6 +412,18 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
       }
     }
   }, [dialogType])
+
+  const changeLabel = (nodeId: string, label: string) => {
+    const nodeToChange = nodes.find((node) => node.elementId === nodeId)
+
+    if (nodeToChange) {
+      nodeToChange.settings.labelToDisplay = label
+
+      const otherNodes = nodes.filter((node) => node.elementId !== nodeId)
+
+      setNodes([...otherNodes, nodeToChange])
+    }
+  }
 
   const getNodesWithoutTemplate = () =>
     nodes.filter((node) => node.elementId !== '-1')

@@ -1,5 +1,6 @@
 import { Storage } from '@/data/interfaces/services/Storage.interface'
 import { storageImpl } from '@/data/services/Storage.impl'
+import { NodeD3 } from '@/domain/entities/Node'
 
 class LabelManager {
   private STORAGE_KEY = 'labels'
@@ -65,7 +66,11 @@ class LabelManager {
     }
   }
 
-  getPropertyToDisplay = (node: any) => {
+  getPropertyToDisplay = (node: NodeD3) => {
+    if (node.settings.propertyToDisplay) {
+      return node.settings.propertyToDisplay
+    }
+
     const keys = Object.keys(node.properties).map((keys) => keys.toLowerCase())
 
     switch (true) {

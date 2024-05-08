@@ -11,10 +11,15 @@ export interface IGraphContext {
   relationships: RelationshipD3[]
   labels: string[]
   types: string[]
-  createNode: (labels: string[], properties: KeyValue) => Promise<void>
+  createNode: (
+    labels: string[],
+    activeLabel: number,
+    properties: KeyValue,
+  ) => Promise<void>
   updateNode: (
     nodeId: string,
     labels: string[],
+    activeLabel: number,
     properties: KeyValue,
   ) => Promise<void>
   deleteNode: (nodeId: string) => Promise<void>
@@ -29,6 +34,7 @@ export interface IGraphContext {
   setTarget: (targetId: string) => void | string
   updateNodeTemplate: (
     labels: string[],
+    activeLabelIdx: number,
     properties: KeyValue,
     initialNode?: NodeD3,
   ) => void
