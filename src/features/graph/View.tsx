@@ -6,6 +6,7 @@ import ConfigurationDrawer from '@/features/configuration-drawer/View'
 import { useGraphContext } from '@/features/graph/context'
 import { useRender } from '@/features/graph/hooks/useRender'
 import SvgMemorized from '@/features/graph/ui/SvgMemorized'
+import { useSessionContext } from '@/features/session/context'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
 
 const View: FC = () => {
@@ -14,6 +15,7 @@ const View: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   useRender(svgRef)
 
+  const { disconnect } = useSessionContext()
   const { dialog } = useGraphContext()
 
   const options = [
@@ -27,7 +29,9 @@ const View: FC = () => {
     },
     {
       icon: Off,
-      action: () => {},
+      action: () => {
+        disconnect()
+      },
     },
   ]
 

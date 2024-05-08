@@ -1,11 +1,13 @@
+import { useLayoutEffect, useState } from 'react'
 import { DriverImpl } from '@/data/services/Driver.impl'
 import { storageImpl } from '@/data/services/Storage.impl'
 import { SessionRepositoryImpl } from '@/domain/repositories/SessionRepository.impl'
 import { ConnectCaseImpl } from '@/domain/usecases/session/ConnectCase'
+import { DisconnectCaseImpl } from '@/domain/usecases/session/DisconnectCase'
 import { ISessionContext } from '@/features/session/context'
+import { Connection } from '@/features/session/static/const'
 import { localStorageKeys } from '@/features/session/static/keys'
 import { useToast } from '@/ui/Toast/hooks/useToast'
-import { useLayoutEffect, useState } from 'react'
 
 export const useSession = (): ISessionContext => {
   const { add } = useToast()
@@ -38,17 +40,31 @@ export const useSession = (): ISessionContext => {
     }
   }
 
+  const disconnect = async () => {
+    try {
+      const disconnectCase = new DisconnectCaseImpl(
+        sessionRepository.disconnect,
+        storageImpl,
+      )
+
+      await disconnectCase.execute()
+      setConnection(Connection.NONE)
+    } catch (e: any) {
+      add('error', 'Impossible to disconnect connection')
+    }
+  }
+
   const init = async () => {
     setLoading(true)
-  
+
     const { url, username, password } = storageImpl.get(
       localStorageKeys.connection,
     )
-  
+
     if (url && username && password) {
       await connect(url, username, password, false)
     }
-  
+
     setLoading(false)
   }
 
@@ -61,5 +77,6 @@ export const useSession = (): ISessionContext => {
     connection,
     loading,
     connect,
+    disconnect,
   }
 }

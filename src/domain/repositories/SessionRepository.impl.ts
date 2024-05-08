@@ -7,4 +7,8 @@ export class SessionRepositoryImpl implements SessionRepository {
   connect = async (url: string, username: string, password: string) => {
     await this.driver.connect(url, username, password)
   }
+
+  disconnect = async () => {
+    await this.driver.disconnect()
+  }
 }
