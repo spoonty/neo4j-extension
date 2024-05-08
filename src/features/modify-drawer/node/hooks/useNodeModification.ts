@@ -17,10 +17,19 @@ export const useNodeModification = (initialNode?: NodeD3) => {
   } = useGraphContext()
 
   const [labels, setLabels] = useState<string[]>(initialNode?.labels || [])
-  const [activeLabel, setActiveLabel] = useState(0)
+  const [activeLabel, setActiveLabel] = useState(
+    initialNode ? labels.indexOf(initialNode.settings.labelToDisplay) : 0,
+  )
 
   const [properties, setProperties] = useState<KeyValue<'key' | 'value', any>>(
     initialNode ? parseInitialProperties(initialNode) : DEFAULT_PROPERTIES,
+  )
+  const [activeProperty, setActiveProperty] = useState(
+    initialNode
+      ? properties['key'].indexOf(initialNode.settings.propertyToDisplay) > -1
+        ? properties['key'].indexOf(initialNode.settings.propertyToDisplay)
+        : 1
+      : 0,
   )
 
   const modifyHandler = async () => {
@@ -30,8 +39,14 @@ export const useNodeModification = (initialNode?: NodeD3) => {
           labels,
           activeLabel,
           convertProperties(properties),
+          activeProperty - 1,
         )
-      : await createNode(labels, activeLabel, convertProperties(properties))
+      : await createNode(
+          labels,
+          activeLabel,
+          convertProperties(properties),
+          activeProperty,
+        )
   }
 
   const addLabel = (label: string) => {
@@ -88,15 +103,18 @@ export const useNodeModification = (initialNode?: NodeD3) => {
       labels,
       activeLabel,
       convertProperties(properties),
+      initialNode ? activeProperty - 1 : activeProperty,
       initialNode,
     )
-  }, [labels.length, activeLabel, properties])
+  }, [labels.length, activeLabel, activeProperty, properties])
 
   return {
     labels,
     activeLabel,
     setActiveLabel,
     properties,
+    activeProperty,
+    setActiveProperty,
     modifyHandler,
     addLabel,
     removeLabel,

@@ -56,6 +56,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     labels: string[],
     activeLabel: number,
     properties: KeyValue,
+    activeProperty: number,
   ) => {
     try {
       const node = new NodeCreateDTO(labels, properties)
@@ -71,6 +72,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         }
       })
       nodeD3.settings.labelToDisplay = labels[activeLabel]
+      nodeD3.settings.propertyToDisplay =
+        properties[Object.keys(properties)[activeProperty]]
 
       setNodes(() => [...getNodesWithoutTemplate(), nodeD3])
       setLabels(() => [...labels, ...nodeLabels])
@@ -89,6 +92,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     updatedLabels: string[],
     activeLabel: number,
     properties: KeyValue,
+    activeProperty: number,
   ) => {
     try {
       const node = nodes.find((node) => node.elementId === nodeId)!
@@ -112,6 +116,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         }
       })
       nodeD3.settings.labelToDisplay = updatedLabels[activeLabel]
+      nodeD3.settings.propertyToDisplay =
+        properties[Object.keys(properties)[activeProperty]]
 
       setNodes(() => [
         ...getNodesWithoutTemplate().filter(
@@ -273,6 +279,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     labels: string[],
     activeLabelIdx: number,
     properties: KeyValue,
+    activeProperty: number,
     initialNode?: NodeD3,
   ) => {
     const node = new NodeD3(
@@ -282,6 +289,11 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     )
 
     node.settings.labelToDisplay = labels[activeLabelIdx]
+
+    if (activeProperty > -1) {
+      node.settings.propertyToDisplay =
+        properties[Object.keys(properties)[activeProperty]]
+    }
 
     setNodes(() => [...getNodesWithoutTemplate(), node])
   }

@@ -9,11 +9,19 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   properties: KeyValue
+  activeProperty?: number
+  setActiveProperty?: (idx: number) => void
   add: (value: KeyValue) => void
   remove: (i: number) => void
 }
 
-const SecondStep: FC<Props> = ({ properties, add, remove }) => {
+const SecondStep: FC<Props> = ({
+  properties,
+  activeProperty,
+  setActiveProperty,
+  add,
+  remove,
+}) => {
   const [key, setKey] = useState('')
   const [value, setValue] = useState('')
 
@@ -48,7 +56,12 @@ const SecondStep: FC<Props> = ({ properties, add, remove }) => {
           )}
         >
           <ScrollArea.Viewport className="h-full w-full">
-            <Table data={properties} deleteAction={remove} />
+            <Table
+              data={properties}
+              activeProperty={activeProperty}
+              setActiveProperty={setActiveProperty}
+              deleteAction={remove}
+            />
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar
             orientation="vertical"

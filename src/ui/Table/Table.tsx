@@ -7,9 +7,17 @@ interface Props {
   data: KeyValue<string, string | number[]>
   className?: string
   deleteAction?: (i: number) => void
+  activeProperty?: number
+  setActiveProperty?: (idx: number) => void
 }
 
-const Table: FC<Props> = ({ data, deleteAction, className }) => {
+const Table: FC<Props> = ({
+  data,
+  activeProperty,
+  setActiveProperty,
+  deleteAction,
+  className,
+}) => {
   const header = (() => {
     const header = Object.keys(data)
 
@@ -27,6 +35,8 @@ const Table: FC<Props> = ({ data, deleteAction, className }) => {
         <Body
           data={Object.keys(data).map((key) => data[key])}
           deleteAction={deleteAction}
+          activeProperty={activeProperty}
+          setActiveProperty={setActiveProperty}
         />
       </table>
     </div>

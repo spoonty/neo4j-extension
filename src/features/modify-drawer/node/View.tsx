@@ -18,6 +18,8 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
     activeLabel,
     setActiveLabel,
     properties,
+    activeProperty,
+    setActiveProperty,
     addLabel,
     removeLabel,
     addProperty,
@@ -48,6 +50,8 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
             properties={properties}
             add={addProperty}
             remove={deleteProperty}
+            activeProperty={activeProperty}
+            setActiveProperty={setActiveProperty}
           />
         )
     }
