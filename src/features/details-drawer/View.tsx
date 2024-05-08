@@ -23,7 +23,7 @@ const View: FC<DetailsDrawerProps> = ({
   const convertedProperties = {
     key: ['ID', ...Object.keys(properties)],
     value: [
-      elementId,
+      elementId.split(':').at(-1),
       ...Object.keys(properties).map((key) => properties[key]),
     ],
   }

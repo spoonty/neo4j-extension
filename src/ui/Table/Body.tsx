@@ -21,10 +21,12 @@ const Body: FC<Props> = ({ data, deleteAction }) => {
             i < rows.length - 1 && 'border-b border-border-dark',
           )}
         >
-          {row.map((value) => (
-            <td className="px-6 py-1.5">{value}</td>
+          {row.map((value, i) => (
+            <td className="px-6 py-1.5">
+              {row[0] === 'ID' && i !== 0 ? value.split(':').at(-1) : value}
+            </td>
           ))}
-          {!!deleteAction && (
+          {!!deleteAction && row[0] !== 'ID' && (
             <td
               className="cursor-pointer px-6 py-1.5 text-red-500"
               onClick={() => deleteAction(i)}
