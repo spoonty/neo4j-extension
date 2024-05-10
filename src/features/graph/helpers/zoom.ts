@@ -8,7 +8,7 @@ export const zoom = (group: Group) => {
     group.get.attr('transform', event.transform)
   }
 
-  return d3.zoom().scaleExtent([0.3, 5]).on('zoom', zoomed)
+  return d3.zoom().scaleExtent([0.1, 5]).on('zoom', zoomed)
 }
 
 export const clickZoom = (

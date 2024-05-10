@@ -7,7 +7,7 @@ type Func = GraphRepository['getByRange']
 export class GetByRangeCaseImpl implements GetByRangeCase {
   constructor(private getByRangeFunc: Func) {}
 
-  async execute(rangeNumber: number): Promise<Graph> {
-    return await this.getByRangeFunc(rangeNumber)
+  async execute(page: number, pageSize: number): Promise<Graph> {
+    return await this.getByRangeFunc(page, pageSize)
   }
 }

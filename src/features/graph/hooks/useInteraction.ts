@@ -52,6 +52,25 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const getNodesByRange = async () => {
+    try {
+      const { nodes, labels, relationships, types } =
+        await viewModel.getByRange(2, 50)
+
+      labels.forEach((label) => {
+        labelManager.addLabel(label)
+      })
+
+      setNodes(() => nodes)
+      setLabels(() => labels)
+
+      setRelationships(() => relationships)
+      setTypes(() => types)
+    } catch (error: any) {
+      add('error', error.message)
+    }
+  }
+
   const createNode = async (
     labels: string[],
     activeLabel: number,
@@ -443,8 +462,18 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
   const getRelationshipsWithoutTemplate = () =>
     relationships.filter((relationship) => relationship.elementId !== '-1')
 
+  const init = async () => {
+    const size = await viewModel.getGraphSize()
+
+    if (size < 150) {
+      await getNodes()
+    } else {
+      await getNodesByRange()
+    }
+  }
+
   useEffect(() => {
-    getNodes()
+    init()
   }, [])
 
   return {

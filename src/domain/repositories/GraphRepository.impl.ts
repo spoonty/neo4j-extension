@@ -1,4 +1,5 @@
 import { Neo4jCRUDDatasource } from '@/data/interfaces/datasources/Neo4jCRUDDatasource.interface'
+import { Neo4jFiltersDatasource } from '@/data/interfaces/datasources/Neo4jFiltersDatasource.interface'
 import { Node, NodeCreateDTO, NodeUpdateDTO } from '@/domain/entities/Node'
 import {
   RelationshipCreateDTO,
@@ -8,7 +9,17 @@ import { GraphRepository } from '@/domain/interfaces/repositories/GraphRepositor
 import { Graph } from '../entities/Graph'
 
 export class GraphRepositoryImpl implements GraphRepository {
-  constructor(private crudService: Neo4jCRUDDatasource) {}
+  constructor(
+    private crudService: Neo4jCRUDDatasource,
+    private filtersService: Neo4jFiltersDatasource,
+  ) {}
+
+  getGraphSize = async () => {
+    return await this.filtersService.getGraphSize()
+  }
+  getByRange = async (page: number, pageSize: number) => {
+    return await this.filtersService.getByRange(page, pageSize)
+  }
 
   getGraph = async () => {
     return await this.crudService.getGraph()
@@ -42,10 +53,6 @@ export class GraphRepositoryImpl implements GraphRepository {
 
   deleteRelationship = async (relationshipId: string) => {
     return await this.crudService.deleteRelationship(relationshipId)
-  }
-
-  getByRange(rangeNumber: number): Promise<Graph> {
-    throw new Error('Method not implemented.')
   }
 
   getByLabels(labels: string[]): Promise<Node> {

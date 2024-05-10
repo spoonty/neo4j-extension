@@ -49,7 +49,7 @@ export class DriverImpl implements Driver {
   }
 
   private checkAccess = async () => {
-    const currentUser = await this.execute('CALL dbms.showCurrentUser()');
+    const currentUser = await this.execute('CALL dbms.showCurrentUser()')
 
     if (currentUser) {
       this.canEdit = currentUser[0].roles.includes('admin')

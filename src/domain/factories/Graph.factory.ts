@@ -1,4 +1,5 @@
 import { Neo4jCRUDDatasourceImpl } from '@/data/datasources/neo4j/Neo4jCRUDDatasource'
+import { Neo4jFiltersDatasourceImpl } from '@/data/datasources/neo4j/Neo4jFiltersDatasource'
 import { Driver } from '@/data/interfaces/services/Driver.interface'
 import { GraphRepository } from '@/domain/interfaces/repositories/GraphRepository.interface'
 import { CreateNodeCase } from '@/domain/interfaces/usecases/CreateNodeCase.interface'
@@ -7,6 +8,7 @@ import { DeleteNodeCase } from '@/domain/interfaces/usecases/DeleteNodeCase.inte
 import { DeleteRelationshipCase } from '@/domain/interfaces/usecases/DeleteRelationshipCase.interface'
 import { GetByRangeCase } from '@/domain/interfaces/usecases/GetByRangeCase.interface'
 import { GetGraphCase } from '@/domain/interfaces/usecases/GetGraphCase.interface'
+import { GetGraphSizeCase } from '@/domain/interfaces/usecases/GetGraphSizeCase.interface'
 import { UpdateNodeCase } from '@/domain/interfaces/usecases/UpdateNodeCase.interface'
 import { UpdateRelationshipCase } from '@/domain/interfaces/usecases/UpdateRelationshipCase.interface'
 import { GraphRepositoryImpl } from '@/domain/repositories/GraphRepository.impl'
@@ -15,6 +17,7 @@ import { CreateRelationshipCaseImpl } from '@/domain/usecases/graph/CreateRelati
 import { DeleteRelationshipCaseImpl } from '@/domain/usecases/graph/DeleteRelationshipCase'
 import { GetByRangeCaseImpl } from '@/domain/usecases/graph/GetByRangeCase'
 import { GetGraphCaseImpl } from '@/domain/usecases/graph/GetGraphCase'
+import { GetGraphSizeCaseImpl } from '@/domain/usecases/graph/GetGraphSizeCase'
 import { UpdateNodeCaseImpl } from '@/domain/usecases/graph/UpdateNodeCase'
 import { UpdateRelationshipCaseImpl } from '@/domain/usecases/graph/UpdateRelationshipCase'
 
@@ -23,8 +26,16 @@ export class GraphFactory {
 
   constructor(driver: Driver) {
     const crudDatasource = new Neo4jCRUDDatasourceImpl(driver)
+    const filtersDatasource = new Neo4jFiltersDatasourceImpl(driver)
 
-    this.graphRepository = new GraphRepositoryImpl(crudDatasource)
+    this.graphRepository = new GraphRepositoryImpl(
+      crudDatasource,
+      filtersDatasource,
+    )
+  }
+
+  getGraphSizeCase(): GetGraphSizeCase {
+    return new GetGraphSizeCaseImpl(this.graphRepository.getGraphSize)
   }
 
   getGraphCase(): GetGraphCase {
