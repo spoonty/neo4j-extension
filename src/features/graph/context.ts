@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import { NodeD3 } from '@/domain/entities/Node'
 import { RelationshipD3 } from '@/domain/entities/Relationship'
-import { InteractionState } from '@/features/graph/constants'
+import { InteractionState, Mode } from '@/features/graph/constants'
 import { DialogData } from '@/features/graph/hooks/useDialog'
 
 export interface IGraphContext {
@@ -11,6 +11,10 @@ export interface IGraphContext {
   relationships: RelationshipD3[]
   labels: string[]
   types: string[]
+  graphSize: number
+  mode: Mode | null
+  page: number
+  getGraphByRange: (page: number, pageSize: number) => Promise<void>
   createNode: (
     labels: string[],
     activeLabel: number,
@@ -47,6 +51,7 @@ export interface IGraphContext {
     initialRelationship?: RelationshipD3,
   ) => void
   clickHandler: (payload: any) => void
+  setMode: (mode: Mode) => void
 }
 
 export const GraphContext = createContext<IGraphContext>({
@@ -56,6 +61,10 @@ export const GraphContext = createContext<IGraphContext>({
   relationships: [],
   labels: [],
   types: [],
+  graphSize: 0,
+  page: 1,
+  mode: null,
+  getGraphByRange: async () => {},
   createNode: async () => {},
   updateNode: async () => {},
   deleteNode: async () => {},
@@ -67,6 +76,7 @@ export const GraphContext = createContext<IGraphContext>({
   updateNodeTemplate: () => {},
   updateRelationshipTemplate: () => {},
   clickHandler: () => {},
+  setMode: () => {},
 })
 
 export const useGraphContext = () => useContext(GraphContext)

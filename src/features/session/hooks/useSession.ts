@@ -4,6 +4,7 @@ import { storageImpl } from '@/data/services/Storage.impl'
 import { SessionRepositoryImpl } from '@/domain/repositories/SessionRepository.impl'
 import { ConnectCaseImpl } from '@/domain/usecases/session/ConnectCase'
 import { DisconnectCaseImpl } from '@/domain/usecases/session/DisconnectCase'
+import { DEFAULT_CONFIGURATION } from '@/features/configuration/static/static'
 import { ISessionContext } from '@/features/session/context'
 import { Connection } from '@/features/session/static/const'
 import { localStorageKeys } from '@/features/session/static/keys'
@@ -56,6 +57,10 @@ export const useSession = (): ISessionContext => {
 
   const init = async () => {
     setLoading(true)
+
+    if (!storageImpl.get(localStorageKeys.configuration)) {
+      storageImpl.set(localStorageKeys.configuration, DEFAULT_CONFIGURATION)
+    }
 
     const { url, username, password } = storageImpl.get(
       localStorageKeys.connection,

@@ -8,3 +8,8 @@ export enum InteractionState {
   READ_RELATIONSHIP = 'read relationship',
   UPDATE_RELATIONSHIP = 'update relationship',
 }
+
+export enum Mode {
+  FULL_GRAPH,
+  FILTERED_GRAPH,
+}

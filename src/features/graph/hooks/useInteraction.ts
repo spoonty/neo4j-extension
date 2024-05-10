@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { storageImpl } from '@/data/services/Storage.impl'
 import {
   Node,
   NodeCreateDTO,
@@ -11,11 +12,12 @@ import {
   RelationshipD3,
   RelationshipUpdateDTO,
 } from '@/domain/entities/Relationship'
-import { InteractionState } from '@/features/graph/constants'
+import { InteractionState, Mode } from '@/features/graph/constants'
 import { IGraphContext } from '@/features/graph/context'
 import { DialogType, useDialog } from '@/features/graph/hooks/useDialog'
 import { ViewModel } from '@/features/graph/ViewModel'
 import { labelManager } from '@/features/labels/LabelManager'
+import { localStorageKeys } from '@/features/session/static/keys'
 import { useToast } from '@/ui/Toast/hooks/useToast'
 
 const DEFAULT_RELATIONSHIP_TARGETS = { source: '-1', target: '-1' }
@@ -33,6 +35,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const state = useRef<InteractionState>(InteractionState.DEFAULT)
   const createRelationshipTargets = useRef(DEFAULT_RELATIONSHIP_TARGETS)
+
+  const [graphSize, setGraphSize] = useState(0)
+  const [mode, setMode] = useState<Mode | null>(null)
+  const [page, setPage] = useState(1)
 
   const getNodes = async () => {
     try {
@@ -52,10 +58,12 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
-  const getNodesByRange = async () => {
+  const getGraphByRange = async (page: number, pageSize: number) => {
     try {
       const { nodes, labels, relationships, types } =
-        await viewModel.getByRange(2, 50)
+        await viewModel.getByRange(page, pageSize)
+
+      setPage(() => page)
 
       labels.forEach((label) => {
         labelManager.addLabel(label)
@@ -444,18 +452,6 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }, [dialogType])
 
-  const changeLabel = (nodeId: string, label: string) => {
-    const nodeToChange = nodes.find((node) => node.elementId === nodeId)
-
-    if (nodeToChange) {
-      nodeToChange.settings.labelToDisplay = label
-
-      const otherNodes = nodes.filter((node) => node.elementId !== nodeId)
-
-      setNodes([...otherNodes, nodeToChange])
-    }
-  }
-
   const getNodesWithoutTemplate = () =>
     nodes.filter((node) => node.elementId !== '-1')
 
@@ -464,17 +460,31 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const init = async () => {
     const size = await viewModel.getGraphSize()
+    setGraphSize(() => size)
 
-    if (size < 150) {
-      await getNodes()
+    if (size < storageImpl.get(localStorageKeys.configuration).maxSize) {
+      setMode(() => Mode.FULL_GRAPH)
     } else {
-      await getNodesByRange()
+      setMode(() => Mode.FILTERED_GRAPH)
     }
   }
 
   useEffect(() => {
     init()
   }, [])
+
+  useEffect(() => {
+    switch (mode) {
+      case Mode.FILTERED_GRAPH:
+        getGraphByRange(
+          1,
+          storageImpl.get(localStorageKeys.configuration).maxSize,
+        )
+        break
+      case Mode.FULL_GRAPH:
+        getNodes()
+    }
+  }, [mode])
 
   return {
     dialog,
@@ -483,6 +493,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     relationships,
     labels,
     types,
+    graphSize,
+    mode,
+    page,
+    getGraphByRange,
     createNode,
     updateNode,
     deleteNode,
@@ -494,5 +508,6 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     updateNodeTemplate,
     updateRelationshipTemplate,
     clickHandler,
+    setMode,
   }
 }

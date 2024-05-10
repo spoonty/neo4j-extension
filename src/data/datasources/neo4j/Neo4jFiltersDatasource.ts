@@ -21,10 +21,14 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
     const limit = pageSize
 
     const query = `
-      MATCH (n)-[r]->(m)
-      RETURN n, r, m
+      MATCH (n)
+      WITH DISTINCT n
+      OPTIONAL MATCH (n)-[r]->(m)
+      WITH n, r, m
+      ORDER BY ID(n)
       SKIP ${skip}
       LIMIT ${limit}
+      RETURN n, r, m
     `
 
     const result =
@@ -36,6 +40,7 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
 
     const nodesN = result
       .map((record) => record.n)
+      .filter((record) => !!record)
       .filter((record) => {
         if (!uniqueNodes.has(record?.elementId)) {
           uniqueNodes.add(record?.elementId)
@@ -46,6 +51,7 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
 
     const nodesM = result
       .map((record) => record.m)
+      .filter((record) => !!record)
       .filter((record) => {
         if (!uniqueNodes.has(record?.elementId)) {
           uniqueNodes.add(record?.elementId)

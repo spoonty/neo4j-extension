@@ -1,4 +1,12 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import { storageImpl } from '@/data/services/Storage.impl'
 import { Container } from '@/features/graph/classes/Container'
 import { Group } from '@/features/graph/classes/Group'
 import { Node } from '@/features/graph/classes/Node'
@@ -9,6 +17,7 @@ import { useGraphContext } from '@/features/graph/context'
 import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import { useSessionContext } from '@/features/session/context'
 import { Connection } from '@/features/session/static/const'
+import { localStorageKeys } from '@/features/session/static/keys'
 import * as d3 from 'd3'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
@@ -20,6 +29,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     setTarget,
     state,
     deleteRelationship,
+    page,
+    mode,
+    graphSize,
   } = useGraphContext()
 
   const { connection } = useSessionContext()
@@ -35,10 +47,6 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    // if (!nodes || !relationships || !nodes.length || !relationships.length) {
-    //   return
-    // }
-
     const fullConnection = connection === Connection.FULL
 
     const container = new Container(svg)
@@ -439,4 +447,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   useEffect(() => {
     render()
   }, [nodes, relationships])
+
+  useLayoutEffect(() => {
+    rendered.current = false
+  }, [page, mode])
 }
