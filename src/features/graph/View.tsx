@@ -40,6 +40,7 @@ const View: FC = () => {
       action: () => {
         disconnect()
       },
+      className: 'border-red-alert',
     },
   ]
 

@@ -6,6 +6,7 @@ import { cn } from '@/utils/dom'
 type Option = {
   icon: FunctionComponent<React.SVGProps<SVGSVGElement>>
   action: () => void
+  className?: string
 }
 
 interface Props {
@@ -18,10 +19,7 @@ const SpeedDial: FC<Props> = ({ options, className }) => {
 
   return (
     <div
-      className={cn(
-        'background-red-950 group fixed bottom-6 start-6',
-        className,
-      )}
+      className={cn('group fixed bottom-6 start-6', className)}
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -30,7 +28,7 @@ const SpeedDial: FC<Props> = ({ options, className }) => {
           options.map((option) => {
             return (
               <IconButton
-                className="mt-2 h-[56px] w-[56px]"
+                className={cn('mt-2 h-[56px] w-[56px]', option.className)}
                 key={option.icon.name}
                 onClick={option.action}
               >

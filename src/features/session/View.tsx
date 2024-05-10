@@ -59,7 +59,7 @@ const View: FC = () => {
             />
           </div>
           <div className="flex flex-col gap-2.5">
-            <div className="grid grid-cols-[15%_85%] items-center">
+            <div className="grid grid-cols-[20%_80%] items-center">
               <PopoverInput
                 value={scheme}
                 popoverItems={schemes}
