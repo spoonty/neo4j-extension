@@ -1,5 +1,7 @@
+import { storageImpl } from '@/data/services/Storage.impl'
 import { Container } from '@/features/graph/classes/Container'
 import { Group } from '@/features/graph/classes/Group'
+import { localStorageKeys } from '@/features/session/static/keys'
 import * as d3 from 'd3'
 
 export const zoom = (group: Group) => {
@@ -25,6 +27,9 @@ export const clickZoom = (
 
   if (!!handler && animation && !animation?.animation) {
     handler?.(distanceX, distanceY)
+    return
+  }
+  if (!storageImpl.get(localStorageKeys.configuration).animations) {
     return
   }
 

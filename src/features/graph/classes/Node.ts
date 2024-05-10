@@ -1,3 +1,4 @@
+import { storageImpl } from '@/data/services/Storage.impl'
 import { NodeD3 } from '@/domain/entities/Node'
 import { ControlElement } from '@/features/graph/classes/ControlElement'
 import { Group } from '@/features/graph/classes/Group'
@@ -5,6 +6,7 @@ import { Selection } from '@/features/graph/classes/Selection'
 import { Simulation } from '@/features/graph/classes/Simulation'
 import { drag } from '@/features/graph/helpers/drag'
 import { labelManager } from '@/features/labels/LabelManager'
+import { localStorageKeys } from '@/features/session/static/keys'
 import * as d3 from 'd3'
 import { BaseType } from 'd3'
 
@@ -77,35 +79,38 @@ export class Node extends Selection<
         .attr('stroke-width', 5)
         .style('stroke-opacity', 0.8)
 
-      d3.selectAll('.relationship')
-        .filter((d: any) => d.source.elementId !== elementId)
-        .attr('opacity', 0.3)
+      if (storageImpl.get(localStorageKeys.configuration).nodeFocus) {
+        d3.selectAll('.relationship')
+          .filter((d: any) => d.source.elementId !== elementId)
+          .attr('opacity', 0.3)
 
-      const connectedNodes = d3
-        .selectAll('.relationship')
-        .filter((d: any) => d.source.elementId === elementId)
-        .data()
-        .map((d: any) => d.target.elementId)
+        const connectedNodes = d3
+          .selectAll('.relationship')
+          .filter((d: any) => d.source.elementId === elementId)
+          .data()
+          .map((d: any) => d.target.elementId)
 
-      const anotherNodes = d3
-        .selectAll('.node')
-        .filter(
-          (d: any) =>
-            !connectedNodes.includes(d.elementId) && d.elementId !== elementId,
-        )
+        const anotherNodes = d3
+          .selectAll('.node')
+          .filter(
+            (d: any) =>
+              !connectedNodes.includes(d.elementId) &&
+              d.elementId !== elementId,
+          )
 
-      if (
-        d3.selectAll('.hover-circle').nodes().length ===
-        anotherNodes.nodes().length
-      ) {
-        return
+        if (
+          d3.selectAll('.hover-circle').nodes().length ===
+          anotherNodes.nodes().length
+        ) {
+          return
+        }
+
+        anotherNodes
+          .append('circle')
+          .attr('r', 40)
+          .attr('fill', () => 'rgba(0, 0, 0, .5)')
+          .attr('class', 'hover-circle')
       }
-
-      anotherNodes
-        .append('circle')
-        .attr('r', 40)
-        .attr('fill', () => 'rgba(0, 0, 0, .5)')
-        .attr('class', 'hover-circle')
     })
 
     this.selection.on('mouseleave', function (event: any) {
@@ -117,10 +122,12 @@ export class Node extends Selection<
         .attr('stroke-width', 1.5)
         .style('stroke-opacity', 1)
 
-      d3.selectAll('.relationship')
-        .filter((d: any) => d.source.elementId !== elementId)
-        .attr('opacity', 1)
-      d3.selectAll('.hover-circle').remove()
+      if (storageImpl.get(localStorageKeys.configuration).nodeFocus) {
+        d3.selectAll('.relationship')
+          .filter((d: any) => d.source.elementId !== elementId)
+          .attr('opacity', 1)
+        d3.selectAll('.hover-circle').remove()
+      }
     })
 
     this.selection.each(function (d: any) {

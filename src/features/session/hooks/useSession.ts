@@ -33,7 +33,12 @@ export const useSession = (): ISessionContext => {
       )
 
       await connectCase.execute(url, username, password)
-      setConnection(driver.getConnection())
+
+      if (storageImpl.get(localStorageKeys.configuration).checkAccessRights) {
+        setConnection(driver.getConnection())
+      } else {
+        setConnection(Connection.UNCOTROLLABLE)
+      }
     } catch (e: any) {
       if (displayError) {
         add('error', e.message)
@@ -83,5 +88,6 @@ export const useSession = (): ISessionContext => {
     loading,
     connect,
     disconnect,
+    refresh: init,
   }
 }

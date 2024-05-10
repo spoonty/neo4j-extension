@@ -8,7 +8,7 @@ export default function Pagination() {
   const { graphSize, getGraphByRange } = useGraphContext()
 
   const [page, setPage] = useState(1)
-  const size = storageImpl.get(localStorageKeys.configuration).maxSize
+  const size = Number(storageImpl.get(localStorageKeys.configuration).maxSize)
 
   const handler = (updatedPage: number) => {
     setPage(updatedPage)

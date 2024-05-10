@@ -47,13 +47,14 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
   const optionsOpened = useRef(false)
 
   const render = useCallback(() => {
-    const fullConnection = connection === Connection.FULL
+    const editable =
+      connection === Connection.FULL || connection === Connection.UNCOTROLLABLE
 
     const container = new Container(svg)
     const simulation = new Simulation(nodes, relationships, rendered.current)
     const group = new Group(container)
-    const relationship = new Relationship(relationships, group, fullConnection)
-    const node = new Node(nodes, group, simulation, fullConnection)
+    const relationship = new Relationship(relationships, group, editable)
+    const node = new Node(nodes, group, simulation, editable)
 
     // @ts-ignore
     const zoomHandler = zoom(group).on('zoom', (event) => {
@@ -76,7 +77,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     onNodeClick(node, container, zoomHandler)
     onRelationshipClick(relationship, container, zoomHandler)
 
-    if (fullConnection) {
+    if (editable) {
       onNodeDeleteButtonClick(node)
       onNodeRelationshipButtonClick(node, container, zoomHandler)
       onNodeEditButtonClick(node)
@@ -363,6 +364,10 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
       node.closeButtons()
 
       optionsOpened.current = false
+
+      if (!storageImpl.get(localStorageKeys.configuration).animations) {
+        return
+      }
 
       clickZoom(
         container,

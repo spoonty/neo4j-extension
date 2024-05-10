@@ -9,6 +9,7 @@ export interface ISessionContext {
   loading: boolean
   connect: (url: string, username: string, password: string) => void
   disconnect: () => void
+  refresh: () => void
 }
 
 export const SessionContext = createContext<ISessionContext>({
@@ -17,6 +18,7 @@ export const SessionContext = createContext<ISessionContext>({
   loading: false,
   connect: () => {},
   disconnect: () => {},
+  refresh: () => {},
 })
 
 export const useSessionContext = () => useContext(SessionContext)
