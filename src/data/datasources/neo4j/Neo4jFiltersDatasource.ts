@@ -7,6 +7,17 @@ import { Relationship } from '@/domain/entities/Relationship'
 export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
   constructor(private driver: Driver) {}
 
+  getLabels = async () => {
+    const query = 'CALL db.labels()'
+
+    const result = await this.driver.execute<Array<{ label: string }>>(query)
+
+    return result.map((record) => record.label)
+  }
+  getTypes(): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
   getGraphSize = async () => {
     const query = 'MATCH (n) RETURN count(n) as nodeCount'
 
@@ -75,8 +86,20 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
     return new Graph(nodes, relationships)
   }
 
-  getByLabels(labels: string[]): Promise<Node> {
-    throw new Error('Method not implemented.')
+  getByLabels = async (labels: string[]) => {
+    const query = `
+    MATCH (n)
+    WHERE ${labels
+      .map((label) => `any(label IN labels(n) WHERE label IN $labels)`)
+      .join(' OR ')}
+    RETURN n
+    `
+
+    const result = await this.driver.execute<{ n: Node }[]>(query, { labels })
+
+    const nodes = result.map((record) => record.n)
+
+    return nodes
   }
 
   getByTypes(types: string[]): Promise<Graph> {

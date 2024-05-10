@@ -29,9 +29,9 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     setTarget,
     state,
     deleteRelationship,
-    page,
+    filtersApplied,
     mode,
-    graphSize,
+    setFiltersApplied,
   } = useGraphContext()
 
   const { connection } = useSessionContext()
@@ -450,5 +450,12 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   useLayoutEffect(() => {
     rendered.current = false
-  }, [page, mode])
+  }, [mode])
+
+  useLayoutEffect(() => {
+    if (!filtersApplied) {
+      rendered.current = false
+      setFiltersApplied(true)
+    }
+  }, [filtersApplied])
 }

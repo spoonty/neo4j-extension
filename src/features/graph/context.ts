@@ -13,7 +13,8 @@ export interface IGraphContext {
   types: string[]
   graphSize: number
   mode: Mode | null
-  page: number
+  filtersApplied: boolean
+  setFiltersApplied: (val: boolean) => void
   getGraphByRange: (page: number, pageSize: number) => Promise<void>
   createNode: (
     labels: string[],
@@ -28,6 +29,7 @@ export interface IGraphContext {
     properties: KeyValue,
     activeProperty: number,
   ) => Promise<void>
+  getByLabels: (labels: string[]) => Promise<void>
   deleteNode: (nodeId: string) => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
   updateRelationship: (
@@ -62,9 +64,11 @@ export const GraphContext = createContext<IGraphContext>({
   labels: [],
   types: [],
   graphSize: 0,
-  page: 1,
+  filtersApplied: true,
+  setFiltersApplied: () => {},
   mode: null,
   getGraphByRange: async () => {},
+  getByLabels: async () => {},
   createNode: async () => {},
   updateNode: async () => {},
   deleteNode: async () => {},

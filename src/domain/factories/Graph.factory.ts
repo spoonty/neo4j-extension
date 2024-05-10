@@ -6,18 +6,20 @@ import { CreateNodeCase } from '@/domain/interfaces/usecases/CreateNodeCase.inte
 import { CreateRelationshipCase } from '@/domain/interfaces/usecases/CreateRelationshipCase.itnerface'
 import { DeleteNodeCase } from '@/domain/interfaces/usecases/DeleteNodeCase.interface'
 import { DeleteRelationshipCase } from '@/domain/interfaces/usecases/DeleteRelationshipCase.interface'
+import { GetByLabelsCase } from '@/domain/interfaces/usecases/GetByLabelsCase.interface'
 import { GetByRangeCase } from '@/domain/interfaces/usecases/GetByRangeCase.interface'
 import { GetGraphCase } from '@/domain/interfaces/usecases/GetGraphCase.interface'
-import { GetGraphSizeCase } from '@/domain/interfaces/usecases/GetGraphSizeCase.interface'
+import { GetGraphInfoCase } from '@/domain/interfaces/usecases/GetGraphInfoCase.interface'
 import { UpdateNodeCase } from '@/domain/interfaces/usecases/UpdateNodeCase.interface'
 import { UpdateRelationshipCase } from '@/domain/interfaces/usecases/UpdateRelationshipCase.interface'
 import { GraphRepositoryImpl } from '@/domain/repositories/GraphRepository.impl'
 import { CreateNodeCaseImpl } from '@/domain/usecases/graph/CreateNodeCase'
 import { CreateRelationshipCaseImpl } from '@/domain/usecases/graph/CreateRelationshipCase'
 import { DeleteRelationshipCaseImpl } from '@/domain/usecases/graph/DeleteRelationshipCase'
+import { GetByLabelsCaseImpl } from '@/domain/usecases/graph/GetByLabelsCase'
 import { GetByRangeCaseImpl } from '@/domain/usecases/graph/GetByRangeCase'
 import { GetGraphCaseImpl } from '@/domain/usecases/graph/GetGraphCase'
-import { GetGraphSizeCaseImpl } from '@/domain/usecases/graph/GetGraphSizeCase'
+import { GetGraphSizeCaseImpl } from '@/domain/usecases/graph/GetGraphInfoCase'
 import { UpdateNodeCaseImpl } from '@/domain/usecases/graph/UpdateNodeCase'
 import { UpdateRelationshipCaseImpl } from '@/domain/usecases/graph/UpdateRelationshipCase'
 
@@ -34,8 +36,8 @@ export class GraphFactory {
     )
   }
 
-  getGraphSizeCase(): GetGraphSizeCase {
-    return new GetGraphSizeCaseImpl(this.graphRepository.getGraphSize)
+  getGraphInfoCase(): GetGraphInfoCase {
+    return new GetGraphSizeCaseImpl(this.graphRepository)
   }
 
   getGraphCase(): GetGraphCase {
@@ -74,5 +76,9 @@ export class GraphFactory {
 
   getByRangeCase(): GetByRangeCase {
     return new GetByRangeCaseImpl(this.graphRepository.getByRange)
+  }
+
+  getByLabelsCase(): GetByLabelsCase {
+    return new GetByLabelsCaseImpl(this.graphRepository.getByLabels)
   }
 }

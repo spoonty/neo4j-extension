@@ -16,8 +16,8 @@ import { GraphFactory } from '@/domain/factories/Graph.factory'
 export class ViewModel {
   constructor(private graphFactory: GraphFactory) {}
 
-  async getGraphSize() {
-    const usecase = this.graphFactory.getGraphSizeCase()
+  async getGraphInfo() {
+    const usecase = this.graphFactory.getGraphInfoCase()
     return await usecase.execute()
   }
 
@@ -39,6 +39,15 @@ export class ViewModel {
     const { relationshipsD3, types } = this.parseRelationships(relationships)
 
     return new GraphD3(nodesD3, relationshipsD3, labels, types)
+  }
+
+  async getByLabels(labels: string[]) {
+    const usecase = this.graphFactory.getByLabelsCase()
+    const nodes = await usecase.execute(labels)
+
+    const { nodesD3 } = this.parseNodes(nodes)
+
+    return nodesD3
   }
 
   async createNode(node: NodeCreateDTO) {

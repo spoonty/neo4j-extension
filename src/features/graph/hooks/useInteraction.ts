@@ -38,7 +38,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const [graphSize, setGraphSize] = useState(0)
   const [mode, setMode] = useState<Mode | null>(null)
-  const [page, setPage] = useState(1)
+  const [filtersApplied, setFiltersApplied] = useState(true)
 
   const getNodes = async () => {
     try {
@@ -60,15 +60,12 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const getGraphByRange = async (page: number, pageSize: number) => {
     try {
-      const { nodes, labels, relationships, types } =
-        await viewModel.getByRange(page, pageSize)
+      const { nodes, relationships, types } = await viewModel.getByRange(
+        page,
+        pageSize,
+      )
 
-      setPage(() => page)
-
-      labels.forEach((label) => {
-        labelManager.addLabel(label)
-      })
-
+      setFiltersApplied(() => false)
       setNodes(() => nodes)
       setLabels(() => labels)
 
@@ -80,25 +77,25 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
   }
 
   const createNode = async (
-    labels: string[],
+    labelsForNode: string[],
     activeLabel: number,
     properties: KeyValue,
     activeProperty: number,
   ) => {
     try {
-      const node = new NodeCreateDTO(labels, properties)
+      const node = new NodeCreateDTO(labelsForNode, properties)
 
       const nodeD3 = await viewModel.createNode(node)
       nodeD3.setPosition(addNodePosition.x, addNodePosition.y)
 
       const nodeLabels: string[] = []
       nodeD3.labels.forEach((label) => {
-        if (!labels.includes(label)) {
+        if (!nodeLabels.includes(label)) {
           nodeLabels.push(label)
           labelManager.addLabel(label)
         }
       })
-      nodeD3.settings.labelToDisplay = labels[activeLabel]
+      nodeD3.settings.labelToDisplay = labelsForNode[activeLabel]
       nodeD3.settings.propertyToDisplay =
         properties[Object.keys(properties)[activeProperty]]
 
@@ -281,6 +278,26 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const getByLabels = async (labels: string[]) => {
+    if (labels.length === 0) {
+      await getGraphByRange(
+        1,
+        storageImpl.get(localStorageKeys.configuration).maxSize,
+      )
+      return
+    }
+
+    try {
+      const nodes = await viewModel.getByLabels(labels)
+      setFiltersApplied(() => false)
+
+      setNodes(() => nodes)
+      setRelationships([])
+    } catch (error: any) {
+      add('error', error.message)
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -459,13 +476,14 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     relationships.filter((relationship) => relationship.elementId !== '-1')
 
   const init = async () => {
-    const size = await viewModel.getGraphSize()
-    setGraphSize(() => size)
+    const info = await viewModel.getGraphInfo()
+    setGraphSize(() => info.size)
 
-    if (size < storageImpl.get(localStorageKeys.configuration).maxSize) {
+    if (info.size < storageImpl.get(localStorageKeys.configuration).maxSize) {
       setMode(() => Mode.FULL_GRAPH)
     } else {
       setMode(() => Mode.FILTERED_GRAPH)
+      setLabels(() => info.labels)
     }
   }
 
@@ -495,8 +513,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     types,
     graphSize,
     mode,
-    page,
+    filtersApplied,
+    setFiltersApplied,
     getGraphByRange,
+    getByLabels,
     createNode,
     updateNode,
     deleteNode,

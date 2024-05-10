@@ -14,6 +14,13 @@ export class GraphRepositoryImpl implements GraphRepository {
     private filtersService: Neo4jFiltersDatasource,
   ) {}
 
+  getLabels = async () => {
+    return await this.filtersService.getLabels()
+  }
+  getTypes(): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
   getGraphSize = async () => {
     return await this.filtersService.getGraphSize()
   }
@@ -55,8 +62,8 @@ export class GraphRepositoryImpl implements GraphRepository {
     return await this.crudService.deleteRelationship(relationshipId)
   }
 
-  getByLabels(labels: string[]): Promise<Node> {
-    throw new Error('Method not implemented.')
+  getByLabels = async (labels: string[]) => {
+    return await this.filtersService.getByLabels(labels)
   }
 
   getByTypes(types: string[]): Promise<Graph> {
