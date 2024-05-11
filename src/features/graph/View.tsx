@@ -1,5 +1,6 @@
 import { createElement, FC, useRef, useState } from 'react'
 import Filter from '@/assets/icons/FilterIcon'
+import Image from '@/assets/icons/ImageIcon'
 import Nodes from '@/assets/icons/NodesIcon'
 import Off from '@/assets/icons/OffIcon'
 import Settings from '@/assets/icons/SettingsIcon'
@@ -32,6 +33,10 @@ const View: FC = () => {
           action: () => setMode(Mode.FULL_GRAPH),
         },
     {
+      icon: Image,
+      action: () => {},
+    },
+    {
       icon: Settings,
       action: () => setSettingsOpened(true),
     },
@@ -50,10 +55,11 @@ const View: FC = () => {
 
       {dialog?.component && createElement(dialog.component, dialog.props)}
 
-      {state.current === InteractionState.DEFAULT && (
+      {!settingsOpened && state.current === InteractionState.DEFAULT && (
         <SpeedDial options={options} />
       )}
-      {mode === Mode.FILTERED_GRAPH &&
+      {!settingsOpened &&
+        mode === Mode.FILTERED_GRAPH &&
         state.current === InteractionState.DEFAULT && <Filtration />}
 
       {settingsOpened && (

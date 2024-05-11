@@ -6,7 +6,7 @@ export type Configuration = {
 }
 
 export const DEFAULT_CONFIGURATION: Configuration = {
-  maxSize: 50,
+  maxSize: 300,
   checkAccessRights: true,
   nodeFocus: true,
   animations: true,
