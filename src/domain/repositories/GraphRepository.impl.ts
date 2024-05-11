@@ -74,15 +74,7 @@ export class GraphRepositoryImpl implements GraphRepository {
     return await this.filtersService.searchNodes(key, value)
   }
 
-  getByDegree(degree: number): Promise<Graph> {
-    throw new Error('Method not implemented.')
-  }
-
-  getByDistance(distance: number): Promise<Graph> {
-    throw new Error('Method not implemented.')
-  }
-
-  getByPatters(labelsTypeSequence: string[]): Promise<Graph> {
-    throw new Error('Method not implemented.')
+  getByDegree = async (degree: number) => {
+    return await this.filtersService.getByDegree(degree)
   }
 }

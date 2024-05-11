@@ -338,6 +338,27 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const getByDegree = async (degree: number | null) => {
+    if (degree === null) {
+      await getGraphByRange(
+        1,
+        storageImpl.get(localStorageKeys.configuration).maxSize,
+      )
+      return
+    }
+
+    try {
+      const { nodes, relationships } = await viewModel.getByDegree(degree)
+
+      setFiltersApplied(() => false)
+
+      setNodes(() => nodes)
+      setRelationships(() => relationships)
+    } catch (error: any) {
+      add('error', error.message)
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -559,6 +580,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     getGraphByRange,
     getByLabels,
     getByTypes,
+    getByDegree,
     searchNodes,
     createNode,
     updateNode,

@@ -31,6 +31,7 @@ export interface IGraphContext {
   ) => Promise<void>
   getByLabels: (labels: string[]) => Promise<void>
   getByTypes: (types: string[]) => Promise<void>
+  getByDegree: (degree: number | null) => Promise<void>
   searchNodes: (key: string, value: string) => Promise<void>
   deleteNode: (nodeId: string) => Promise<void>
   createRelationship: (type: string, properties: KeyValue) => Promise<void>
@@ -72,6 +73,7 @@ export const GraphContext = createContext<IGraphContext>({
   getGraphByRange: async () => {},
   getByLabels: async () => {},
   getByTypes: async () => {},
+  getByDegree: async () => {},
   searchNodes: async () => {},
   createNode: async () => {},
   updateNode: async () => {},

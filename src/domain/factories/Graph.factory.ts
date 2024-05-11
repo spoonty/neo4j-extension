@@ -6,6 +6,7 @@ import { CreateNodeCase } from '@/domain/interfaces/usecases/CreateNodeCase.inte
 import { CreateRelationshipCase } from '@/domain/interfaces/usecases/CreateRelationshipCase.itnerface'
 import { DeleteNodeCase } from '@/domain/interfaces/usecases/DeleteNodeCase.interface'
 import { DeleteRelationshipCase } from '@/domain/interfaces/usecases/DeleteRelationshipCase.interface'
+import { GetByDegreeCase } from '@/domain/interfaces/usecases/GetByDegreeCase'
 import { GetByLabelsCase } from '@/domain/interfaces/usecases/GetByLabelsCase.interface'
 import { GetByRangeCase } from '@/domain/interfaces/usecases/GetByRangeCase.interface'
 import { GetByTypesCase } from '@/domain/interfaces/usecases/GetByTypesCase'
@@ -18,6 +19,7 @@ import { GraphRepositoryImpl } from '@/domain/repositories/GraphRepository.impl'
 import { CreateNodeCaseImpl } from '@/domain/usecases/graph/CreateNodeCase'
 import { CreateRelationshipCaseImpl } from '@/domain/usecases/graph/CreateRelationshipCase'
 import { DeleteRelationshipCaseImpl } from '@/domain/usecases/graph/DeleteRelationshipCase'
+import { GetByDegreeCaseImpl } from '@/domain/usecases/graph/GetByDegreeCase'
 import { GetByLabelsCaseImpl } from '@/domain/usecases/graph/GetByLabelsCase'
 import { GetByRangeCaseImpl } from '@/domain/usecases/graph/GetByRangeCase'
 import { GetByTypesCaseImpl } from '@/domain/usecases/graph/GetByTypesCase'
@@ -92,5 +94,9 @@ export class GraphFactory {
 
   searchNodesCase(): SearchNodesCase {
     return new SearchNodesCaseImpl(this.graphRepository.searchNodes)
+  }
+
+  getByDegreeCase(): GetByDegreeCase {
+    return new GetByDegreeCaseImpl(this.graphRepository.getByDegree)
   }
 }

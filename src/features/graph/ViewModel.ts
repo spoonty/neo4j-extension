@@ -71,6 +71,18 @@ export class ViewModel {
     return nodesD3
   }
 
+  async getByDegree(degree: number) {
+    const usecase = this.graphFactory.getByDegreeCase()
+    const graph = await usecase.execute(degree)
+
+    const { nodesD3, labels } = this.parseNodes(graph.nodes)
+    const { relationshipsD3, types: typesList } = this.parseRelationships(
+      graph.relationships,
+    )
+
+    return new GraphD3(nodesD3, relationshipsD3, labels, typesList)
+  }
+
   async createNode(node: NodeCreateDTO) {
     const usecase = this.graphFactory.createNodeCase()
     return new NodeD3(await usecase.execute(node))

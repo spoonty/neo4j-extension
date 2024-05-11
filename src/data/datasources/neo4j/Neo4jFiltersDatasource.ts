@@ -174,11 +174,55 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
     return nodes
   }
 
-  getByDegree(degree: number): Promise<Graph> {
-    throw new Error('Method not implemented.')
-  }
+  getByDegree = async (degree: number) => {
+    const query = `
+      MATCH (n)-[r]->(m)
+      WITH n, COUNT(r) AS relCount
+      WHERE relCount = $degree
+      OPTIONAL MATCH (n)-[r]->(m)
+      RETURN n, r, m
+    `
 
-  getByDistance(distance: number): Promise<Graph> {
-    throw new Error('Method not implemented.')
+    const result = await this.driver.execute<
+      Array<{ n: Node; r: Relationship; m: Node }>
+    >(query, { degree })
+
+    const uniqueNodes = new Set()
+
+    const nodesN = result
+      .map((record) => record.n)
+      .filter((record) => !!record)
+      .filter((record) => {
+        if (!uniqueNodes.has(record?.elementId)) {
+          uniqueNodes.add(record?.elementId)
+          return true
+        }
+        return false
+      })
+
+    const nodesM = result
+      .map((record) => record.m)
+      .filter((record) => !!record)
+      .filter((record) => {
+        if (!uniqueNodes.has(record?.elementId)) {
+          uniqueNodes.add(record?.elementId)
+          return true
+        }
+        return false
+      })
+
+    const nodes = [...nodesN, ...nodesM]
+    const nodesIds = nodes.map((record) => record.elementId)
+
+    const relationships = result
+      .map((record) => record.r)
+      .filter((record) => !!record)
+      .filter(
+        (record) =>
+          nodesIds.includes(record.startNodeElementId) &&
+          nodesIds.includes(record.endNodeElementId),
+      )
+
+    return new Graph(nodes, relationships)
   }
 }

@@ -17,6 +17,4 @@ export interface Neo4jFiltersDatasource {
   searchNodes(key: string, value: string): Promise<Array<Node>>
 
   getByDegree(degree: number): Promise<Graph>
-
-  getByDistance(distance: number): Promise<Graph>
 }
