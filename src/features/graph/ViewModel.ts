@@ -62,6 +62,15 @@ export class ViewModel {
     return new GraphD3(nodesD3, relationshipsD3, labels, typesList)
   }
 
+  async searchNodes(key: string, value: string) {
+    const usecase = this.graphFactory.searchNodesCase()
+    const nodes = await usecase.execute(key, value)
+
+    const { nodesD3 } = this.parseNodes(nodes)
+
+    return nodesD3
+  }
+
   async createNode(node: NodeCreateDTO) {
     const usecase = this.graphFactory.createNodeCase()
     return new NodeD3(await usecase.execute(node))

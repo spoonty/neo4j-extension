@@ -317,6 +317,27 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const searchNodes = async (key: string, value: string) => {
+    if (!key.length || !value.length) {
+      await getGraphByRange(
+        1,
+        storageImpl.get(localStorageKeys.configuration).maxSize,
+      )
+      return
+    }
+
+    try {
+      const nodes = await viewModel.searchNodes(key, value)
+
+      setFiltersApplied(() => false)
+
+      setNodes(() => nodes)
+      setRelationships(() => [])
+    } catch (error: any) {
+      add('error', error.message)
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -538,6 +559,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     getGraphByRange,
     getByLabels,
     getByTypes,
+    searchNodes,
     createNode,
     updateNode,
     deleteNode,

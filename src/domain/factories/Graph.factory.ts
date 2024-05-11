@@ -11,6 +11,7 @@ import { GetByRangeCase } from '@/domain/interfaces/usecases/GetByRangeCase.inte
 import { GetByTypesCase } from '@/domain/interfaces/usecases/GetByTypesCase'
 import { GetGraphCase } from '@/domain/interfaces/usecases/GetGraphCase.interface'
 import { GetGraphInfoCase } from '@/domain/interfaces/usecases/GetGraphInfoCase.interface'
+import { SearchNodesCase } from '@/domain/interfaces/usecases/SearchNodesCase'
 import { UpdateNodeCase } from '@/domain/interfaces/usecases/UpdateNodeCase.interface'
 import { UpdateRelationshipCase } from '@/domain/interfaces/usecases/UpdateRelationshipCase.interface'
 import { GraphRepositoryImpl } from '@/domain/repositories/GraphRepository.impl'
@@ -22,6 +23,7 @@ import { GetByRangeCaseImpl } from '@/domain/usecases/graph/GetByRangeCase'
 import { GetByTypesCaseImpl } from '@/domain/usecases/graph/GetByTypesCase'
 import { GetGraphCaseImpl } from '@/domain/usecases/graph/GetGraphCase'
 import { GetGraphSizeCaseImpl } from '@/domain/usecases/graph/GetGraphInfoCase'
+import { SearchNodesCaseImpl } from '@/domain/usecases/graph/SearchNodesCase'
 import { UpdateNodeCaseImpl } from '@/domain/usecases/graph/UpdateNodeCase'
 import { UpdateRelationshipCaseImpl } from '@/domain/usecases/graph/UpdateRelationshipCase'
 
@@ -86,5 +88,9 @@ export class GraphFactory {
 
   getByTypesCase(): GetByTypesCase {
     return new GetByTypesCaseImpl(this.graphRepository.getByTypes)
+  }
+
+  searchNodesCase(): SearchNodesCase {
+    return new SearchNodesCaseImpl(this.graphRepository.searchNodes)
   }
 }

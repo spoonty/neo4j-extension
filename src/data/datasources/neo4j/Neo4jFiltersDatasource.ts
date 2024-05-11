@@ -158,8 +158,20 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
     return new Graph(nodes, relationships)
   }
 
-  searchNodes(properties: KeyValue<string, string>): Promise<Node> {
-    throw new Error('Method not implemented.')
+  searchNodes = async (key: string, value: string) => {
+    const query = `
+      MATCH (n)
+      WHERE n.${key} IS NOT NULL AND n.${key} =~ ('^' + $value + '.*')
+      RETURN n
+    `
+
+    const result = await this.driver.execute<Array<{ n: Node }>>(query, {
+      value: value,
+    })
+
+    const nodes = result.map((record) => record.n)
+
+    return nodes
   }
 
   getByDegree(degree: number): Promise<Graph> {

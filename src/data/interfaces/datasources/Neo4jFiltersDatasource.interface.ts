@@ -14,7 +14,7 @@ export interface Neo4jFiltersDatasource {
 
   getByTypes(types: string[]): Promise<Graph>
 
-  searchNodes(properties: KeyValue<string, string>): Promise<Node>
+  searchNodes(key: string, value: string): Promise<Array<Node>>
 
   getByDegree(degree: number): Promise<Graph>
 
