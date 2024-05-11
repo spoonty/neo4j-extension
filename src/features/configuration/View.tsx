@@ -5,11 +5,10 @@ import {
   DEFAULT_CONFIGURATION,
 } from '@/features/configuration/static/static'
 import { useSessionContext } from '@/features/session/context'
-import { Connection } from '@/features/session/static/const'
 import { localStorageKeys } from '@/features/session/static/keys'
+import { Alert, Content, Footer } from '@/ui/Alert'
 import Button from '@/ui/Button/Button'
 import Clue from '@/ui/Clue'
-import { Content, Drawer, Footer, Header } from '@/ui/Drawer'
 import Input from '@/ui/Input/Input'
 import Toggle from '@/ui/Toggle'
 
@@ -52,9 +51,11 @@ const View: FC<Props> = ({ onClose }) => {
   }
 
   return (
-    <Drawer open modal>
-      <Content className="left-[20%] translate-x-[-20%]">
-        <Header onClose={onClose}>SETTINGS</Header>
+    <Alert open>
+      <Content>
+        <h2 className="px-2 text-2xl font-bold leading-6 text-main-gray">
+          SETTINGS
+        </h2>
         <div className="flex h-[calc(100%-72px)] w-full flex-col gap-4 p-2">
           <div className="flex w-full flex-col gap-2">
             <Input
@@ -94,7 +95,7 @@ const View: FC<Props> = ({ onClose }) => {
           </Button>
         </Footer>
       </Content>
-    </Drawer>
+    </Alert>
   )
 }
 
