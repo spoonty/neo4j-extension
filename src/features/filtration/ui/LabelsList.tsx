@@ -1,28 +1,18 @@
-import { useState } from 'react'
-import { useGraphContext } from '@/features/graph/context'
 import { labelManager } from '@/features/labels/LabelManager'
 import Badge from '@/ui/Badge'
 import ScrollArea from '@/ui/ScrollArea'
 
-export default function LabelsList() {
-  const { labels, getByLabels } = useGraphContext()
+type TProps = {
+  labels: string[]
+  selectedLabels: string[]
+  handler: (label: string) => Promise<void>
+}
 
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([])
-
-  const handler = async (label: string) => {
-    let labels: string[] = []
-
-    if (selectedLabels.includes(label)) {
-      labels = selectedLabels.filter((l) => l !== label)
-    } else {
-      labels = [...selectedLabels, label]
-    }
-
-    setSelectedLabels(labels)
-
-    await getByLabels(labels)
-  }
-
+export default function LabelsList({
+  labels,
+  selectedLabels,
+  handler,
+}: TProps) {
   return (
     <div>
       <h3 className="px-2 text-2xl font-bold leading-6 text-main-gray">

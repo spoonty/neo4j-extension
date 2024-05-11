@@ -1,26 +1,13 @@
-import { useState } from 'react'
-import { useGraphContext } from '@/features/graph/context'
 import Badge from '@/ui/Badge'
 import ScrollArea from '@/ui/ScrollArea'
 
-export default function TypesList() {
-  const { types, getByTypes } = useGraphContext()
+type TProps = {
+  types: string[]
+  selectedTypes: string[]
+  handler: (type: string) => Promise<void>
+}
 
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([])
-
-  const handler = async (type: string) => {
-    let types: string[] = []
-
-    if (selectedTypes.includes(type)) {
-      types = selectedTypes.filter((t) => t !== type)
-    } else {
-      types = [...selectedTypes, type]
-    }
-
-    setSelectedTypes(types)
-    await getByTypes(types)
-  }
-
+export default function TypesList({ types, selectedTypes, handler }: TProps) {
   return (
     <div>
       <h3 className="px-2 text-2xl font-bold leading-6 text-main-gray">
