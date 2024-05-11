@@ -12,6 +12,8 @@ import { useRender } from '@/features/graph/hooks/useRender'
 import SvgMemorized from '@/features/graph/ui/SvgMemorized'
 import { useSessionContext } from '@/features/session/context'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
+import { getCurrentDateTime } from '@/utils/date'
+import d3ToPng from 'd3-svg-to-png'
 
 const View: FC = () => {
   const [settingsOpened, setSettingsOpened] = useState(false)
@@ -34,7 +36,12 @@ const View: FC = () => {
         },
     {
       icon: Image,
-      action: () => {},
+      action: async () => {
+        await d3ToPng('svg', `image_${getCurrentDateTime()}`, {
+          quality: 0.01,
+          background: '#111113',
+        })
+      },
     },
     {
       icon: Settings,
