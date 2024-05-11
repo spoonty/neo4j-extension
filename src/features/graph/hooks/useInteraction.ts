@@ -60,17 +60,15 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
   const getGraphByRange = async (page: number, pageSize: number) => {
     try {
-      const { nodes, relationships, types } = await viewModel.getByRange(
+      const { nodes, relationships } = await viewModel.getByRange(
         page,
         pageSize,
       )
 
       setFiltersApplied(() => false)
       setNodes(() => nodes)
-      setLabels(() => labels)
 
       setRelationships(() => relationships)
-      setTypes(() => types)
     } catch (error: any) {
       add('error', error.message)
     }
@@ -298,6 +296,27 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const getByTypes = async (types: string[]) => {
+    if (types.length === 0) {
+      await getGraphByRange(
+        1,
+        storageImpl.get(localStorageKeys.configuration).maxSize,
+      )
+      return
+    }
+
+    try {
+      const { nodes, relationships } = await viewModel.getByTypes(types)
+
+      setFiltersApplied(() => false)
+
+      setNodes(() => nodes)
+      setRelationships(() => relationships)
+    } catch (error: any) {
+      add('error', error.message)
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -484,6 +503,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     } else {
       setMode(() => Mode.FILTERED_GRAPH)
       setLabels(() => info.labels)
+      setTypes(() => info.types)
     }
   }
 
@@ -517,6 +537,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     setFiltersApplied,
     getGraphByRange,
     getByLabels,
+    getByTypes,
     createNode,
     updateNode,
     deleteNode,

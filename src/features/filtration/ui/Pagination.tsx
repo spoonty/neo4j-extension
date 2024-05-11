@@ -16,7 +16,7 @@ export default function Pagination() {
   }
 
   return (
-    <div className="fixed bottom-6 end-6 flex flex-col items-center">
+    <div className="absolute bottom-4 flex w-full -translate-x-4 flex-col items-center">
       <span className="text-sm text-gray-700 dark:text-gray-400">
         Showing{' '}
         <span className="font-semibold text-white">

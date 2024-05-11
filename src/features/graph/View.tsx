@@ -4,11 +4,10 @@ import Nodes from '@/assets/icons/NodesIcon'
 import Off from '@/assets/icons/OffIcon'
 import Settings from '@/assets/icons/SettingsIcon'
 import ConfigurationDrawer from '@/features/configuration/View'
+import Filtration from '@/features/filtration/View'
 import { InteractionState, Mode } from '@/features/graph/constants'
 import { useGraphContext } from '@/features/graph/context'
 import { useRender } from '@/features/graph/hooks/useRender'
-import LabelsList from '@/features/graph/ui/LabelsList'
-import Pagination from '@/features/graph/ui/Pagination'
 import SvgMemorized from '@/features/graph/ui/SvgMemorized'
 import { useSessionContext } from '@/features/session/context'
 import SpeedDial from '@/ui/SpeedDial/SpeedDial'
@@ -55,9 +54,7 @@ const View: FC = () => {
         <SpeedDial options={options} />
       )}
       {mode === Mode.FILTERED_GRAPH &&
-        state.current === InteractionState.DEFAULT && <LabelsList />}
-      {mode === Mode.FILTERED_GRAPH &&
-        state.current === InteractionState.DEFAULT && <Pagination />}
+        state.current === InteractionState.DEFAULT && <Filtration />}
 
       {settingsOpened && (
         <ConfigurationDrawer onClose={() => setSettingsOpened(false)} />

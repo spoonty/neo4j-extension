@@ -17,8 +17,8 @@ export class GraphRepositoryImpl implements GraphRepository {
   getLabels = async () => {
     return await this.filtersService.getLabels()
   }
-  getTypes(): Promise<string> {
-    throw new Error('Method not implemented.')
+  getTypes = async () => {
+    return await this.filtersService.getTypes()
   }
 
   getGraphSize = async () => {
@@ -66,8 +66,8 @@ export class GraphRepositoryImpl implements GraphRepository {
     return await this.filtersService.getByLabels(labels)
   }
 
-  getByTypes(types: string[]): Promise<Graph> {
-    throw new Error('Method not implemented.')
+  getByTypes = async (types: string[]) => {
+    return await this.filtersService.getByTypes(types)
   }
 
   searchNodes(properties: KeyValue<string, string>): Promise<Node> {

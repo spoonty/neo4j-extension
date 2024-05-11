@@ -14,8 +14,15 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
 
     return result.map((record) => record.label)
   }
-  getTypes(): Promise<string> {
-    throw new Error('Method not implemented.')
+  getTypes = async () => {
+    const query = `
+      MATCH ()-[r]->()
+      RETURN DISTINCT type(r) AS relationshipType
+    `
+    const result =
+      await this.driver.execute<Array<{ relationshipType: string }>>(query)
+
+    return result.map((record) => record.relationshipType)
   }
 
   getGraphSize = async () => {
@@ -102,8 +109,53 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
     return nodes
   }
 
-  getByTypes(types: string[]): Promise<Graph> {
-    throw new Error('Method not implemented.')
+  getByTypes = async (types: string[]) => {
+    const query = `
+      MATCH (n)-[r]->(m)
+      WHERE type(r) IN $types
+      RETURN DISTINCT n, r, m
+    `
+    const result = await this.driver.execute<
+      Array<{ n: Node; r: Relationship; m: Node }>
+    >(query, { types })
+
+    const uniqueNodes = new Set()
+
+    const nodesN = result
+      .map((record) => record.n)
+      .filter((record) => !!record)
+      .filter((record) => {
+        if (!uniqueNodes.has(record?.elementId)) {
+          uniqueNodes.add(record?.elementId)
+          return true
+        }
+        return false
+      })
+
+    const nodesM = result
+      .map((record) => record.m)
+      .filter((record) => !!record)
+      .filter((record) => {
+        if (!uniqueNodes.has(record?.elementId)) {
+          uniqueNodes.add(record?.elementId)
+          return true
+        }
+        return false
+      })
+
+    const nodes = [...nodesN, ...nodesM]
+    const nodesIds = nodes.map((record) => record.elementId)
+
+    const relationships = result
+      .map((record) => record.r)
+      .filter((record) => !!record)
+      .filter(
+        (record) =>
+          nodesIds.includes(record.startNodeElementId) &&
+          nodesIds.includes(record.endNodeElementId),
+      )
+
+    return new Graph(nodes, relationships)
   }
 
   searchNodes(properties: KeyValue<string, string>): Promise<Node> {

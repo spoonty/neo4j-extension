@@ -6,7 +6,7 @@ export interface Neo4jFiltersDatasource {
 
   getLabels(): Promise<string[]>
 
-  getTypes(): Promise<string>
+  getTypes(): Promise<string[]>
 
   getByRange(page: number, pageSize: number): Promise<Graph>
 

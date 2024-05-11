@@ -8,6 +8,7 @@ import { DeleteNodeCase } from '@/domain/interfaces/usecases/DeleteNodeCase.inte
 import { DeleteRelationshipCase } from '@/domain/interfaces/usecases/DeleteRelationshipCase.interface'
 import { GetByLabelsCase } from '@/domain/interfaces/usecases/GetByLabelsCase.interface'
 import { GetByRangeCase } from '@/domain/interfaces/usecases/GetByRangeCase.interface'
+import { GetByTypesCase } from '@/domain/interfaces/usecases/GetByTypesCase'
 import { GetGraphCase } from '@/domain/interfaces/usecases/GetGraphCase.interface'
 import { GetGraphInfoCase } from '@/domain/interfaces/usecases/GetGraphInfoCase.interface'
 import { UpdateNodeCase } from '@/domain/interfaces/usecases/UpdateNodeCase.interface'
@@ -18,6 +19,7 @@ import { CreateRelationshipCaseImpl } from '@/domain/usecases/graph/CreateRelati
 import { DeleteRelationshipCaseImpl } from '@/domain/usecases/graph/DeleteRelationshipCase'
 import { GetByLabelsCaseImpl } from '@/domain/usecases/graph/GetByLabelsCase'
 import { GetByRangeCaseImpl } from '@/domain/usecases/graph/GetByRangeCase'
+import { GetByTypesCaseImpl } from '@/domain/usecases/graph/GetByTypesCase'
 import { GetGraphCaseImpl } from '@/domain/usecases/graph/GetGraphCase'
 import { GetGraphSizeCaseImpl } from '@/domain/usecases/graph/GetGraphInfoCase'
 import { UpdateNodeCaseImpl } from '@/domain/usecases/graph/UpdateNodeCase'
@@ -80,5 +82,9 @@ export class GraphFactory {
 
   getByLabelsCase(): GetByLabelsCase {
     return new GetByLabelsCaseImpl(this.graphRepository.getByLabels)
+  }
+
+  getByTypesCase(): GetByTypesCase {
+    return new GetByTypesCaseImpl(this.graphRepository.getByTypes)
   }
 }

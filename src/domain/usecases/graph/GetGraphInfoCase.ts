@@ -10,7 +10,8 @@ export class GetGraphSizeCaseImpl implements GetGraphInfoCase {
   async execute(): Promise<Info> {
     const size = await this.repo.getGraphSize()
     const labels = await this.repo.getLabels()
+    const types = await this.repo.getTypes()
 
-    return { size, labels }
+    return { size, labels, types }
   }
 }
