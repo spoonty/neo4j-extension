@@ -335,6 +335,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   const onNodeDeleteButtonClick = (node: Node) => {
     node.deleteButton?.get.on('click', function (event) {
+      if (!optionsOpened.current) return
+
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -354,6 +356,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
     zoomHandler: d3.ZoomBehavior<Element, unknown>,
   ) => {
     node.relationshipButton?.get.on('click', function (event) {
+      if (!optionsOpened.current) return
+
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
@@ -386,6 +390,8 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   const onNodeEditButtonClick = (node: Node) => {
     node.editButton?.get.on('click', function (event) {
+      if (!optionsOpened.current) return
+
       event.stopPropagation()
 
       d3.selectAll('g').attr('pointer-events', 'all')
