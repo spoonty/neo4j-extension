@@ -17,6 +17,7 @@ export class DisconnectCaseImpl implements DisconnectCase {
       await this.disconnect()
 
       this.storage.delete(localStorageKeys.connection)
+      this.storage.delete(localStorageKeys.labels)
     } catch {
       throw new DisconnectionError()
     }

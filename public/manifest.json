@@ -1,12 +1,12 @@
 {
-  "short_name": "Neo4Ease",
-  "name": "Neo4Ease",
-  "version": "0.0.1",
   "manifest_version": 3,
+  "name": "Neo4Ease IDE",
+  "short_name": "Neo4Ease",
+  "version": "0.0.1",
   "icons": {
-    "16": "favicon.ico",
-    "48": "favicon.ico",
-    "128": "favicon.ico"
+    "16": "logo.ico",
+    "48": "logo.ico",
+    "128": "logo.ico"
   },
   "permissions": [
     "activeTab"

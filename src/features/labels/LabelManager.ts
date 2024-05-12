@@ -1,9 +1,9 @@
 import { Storage } from '@/data/interfaces/services/Storage.interface'
 import { storageImpl } from '@/data/services/Storage.impl'
 import { NodeD3 } from '@/domain/entities/Node'
+import { localStorageKeys } from '@/features/session/static/keys'
 
 class LabelManager {
-  private STORAGE_KEY = 'labels'
   private DEFAULT_COLOR = '#bdbdbd'
   private COLORS = [
     '#29b6f6',
@@ -30,16 +30,16 @@ class LabelManager {
   getColor = (label?: string) => {
     return !label
       ? this.DEFAULT_COLOR
-      : this.storage.get(this.STORAGE_KEY)?.[label] || this.DEFAULT_COLOR
+      : this.storage.get(localStorageKeys.labels)?.[label] || this.DEFAULT_COLOR
   }
 
   getLabels = () => {
-    return this.storage.get(this.STORAGE_KEY) as KeyValue<string, string>
+    return this.storage.get(localStorageKeys.labels) as KeyValue<string, string>
   }
 
   addLabel = (label: string) => {
     const labelsColor: KeyValue<string, string> =
-      storageImpl.get(this.STORAGE_KEY) || {}
+      storageImpl.get(localStorageKeys.labels) || {}
 
     if (labelsColor) {
       const labels = Object.keys(labelsColor)
@@ -49,20 +49,20 @@ class LabelManager {
           this.COLORS.find(
             (color) => !Object.values(labelsColor).includes(color),
           ) || this.COLORS[labels.length % this.COLORS.length]
-        this.storage.set(this.STORAGE_KEY, labelsColor)
+        this.storage.set(localStorageKeys.labels, labelsColor)
       }
     } else {
       labelsColor[label] = this.COLORS[0]
-      this.storage.set(this.STORAGE_KEY, labelsColor)
+      this.storage.set(localStorageKeys.labels, labelsColor)
     }
   }
 
   removeLabel = (label: string) => {
-    const labelsColor = this.storage.get(this.STORAGE_KEY)
+    const labelsColor = this.storage.get(localStorageKeys.labels)
 
     if (labelsColor) {
       delete labelsColor[label]
-      this.storage.set(this.STORAGE_KEY, labelsColor)
+      this.storage.set(localStorageKeys.labels, labelsColor)
     }
   }
 

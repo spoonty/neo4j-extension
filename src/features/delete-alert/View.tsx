@@ -29,10 +29,10 @@ const View: FC<Props> = ({ nodeId, relationshipsAmount, onClose }) => {
             Are you sure you want to delete this node?`}
         </div>
         <Footer className="flex justify-between">
+          <Button onClick={onClose}>Cancel</Button>
           <Button variant={'cancel'} onClick={() => deleteNode(nodeId!)}>
             Delete
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
         </Footer>
       </Content>
     </Alert>
