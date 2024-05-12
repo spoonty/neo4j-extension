@@ -9,6 +9,7 @@ import { cn } from '@/utils/dom'
 
 interface Props {
   properties: KeyValue
+  description?: string
   activeProperty?: number
   setActiveProperty?: (idx: number) => void
   add: (value: KeyValue) => void
@@ -17,6 +18,7 @@ interface Props {
 
 const SecondStep: FC<Props> = ({
   properties,
+  description,
   activeProperty,
   setActiveProperty,
   add,
@@ -43,10 +45,7 @@ const SecondStep: FC<Props> = ({
           <PlusIcon />
         </IconButton>
       </div>
-      <Clue>
-        Properties of vertices are key-value pairs that contain additional
-        information about the nodes in a graph.
-      </Clue>
+      <Clue>{description}</Clue>
 
       {!!properties['key'].length && (
         <ScrollArea.Root

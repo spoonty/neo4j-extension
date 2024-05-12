@@ -32,6 +32,7 @@ const View: FC<Props> = ({ initialRelationship, onClose }) => {
           <FirstStep
             currentValues={type.length ? [type] : []}
             values={globalTypes}
+            description="Types are labels that define relationships between nodes in the graph, allowing for classification and organization of data based on their semantics or purpose"
             add={(value) => setType(value)}
             remove={() => setType('')}
           />
@@ -40,6 +41,7 @@ const View: FC<Props> = ({ initialRelationship, onClose }) => {
         return (
           <SecondStep
             properties={properties}
+            description="Properties of relationships are key-value pairs that contain additional information about the relationships in a graph."
             add={addProperty}
             remove={deleteProperty}
           />

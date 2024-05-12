@@ -59,7 +59,7 @@ export default function View() {
   return (
     <div className="fixed end-6 top-6 flex h-[calc(100%-48px)] w-[300px] flex-col gap-6 rounded-xl border border-border-dark bg-main-dark-opacity p-4 shadow-md backdrop-blur-md">
       <h2 className="px-2 text-2xl font-bold leading-6 text-main-gray">
-        Filtration
+        FILTRATION
       </h2>
       <Search onSearch={searchByProperty} />
       <LabelsList

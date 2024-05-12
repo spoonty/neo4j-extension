@@ -169,9 +169,7 @@ export class Neo4jFiltersDatasourceImpl implements Neo4jFiltersDatasource {
       value: value,
     })
 
-    const nodes = result.map((record) => record.n)
-
-    return nodes
+    return result.map((record) => record.n)
   }
 
   getByDegree = async (degree: number) => {

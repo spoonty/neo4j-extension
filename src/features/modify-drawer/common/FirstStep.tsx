@@ -10,6 +10,7 @@ import ScrollArea from '@/ui/ScrollArea'
 interface Props {
   currentValues: string[]
   activeLabel?: number
+  description?: string
   setActiveLabel?: (idx: number) => void
   values: string[]
   add: (value: string) => void
@@ -21,6 +22,7 @@ const FirstStep: FC<Props> = ({
   values,
   activeLabel,
   setActiveLabel,
+  description,
   add,
   remove,
 }) => {
@@ -57,10 +59,7 @@ const FirstStep: FC<Props> = ({
           <PlusIcon />
         </IconButton>
       </div>
-      <Clue>
-        Node labels represent tags assigned to graph nodes for categorizing them
-        by meaning or functionality.
-      </Clue>
+      <Clue>{description}</Clue>
 
       <ScrollArea.Root className="mt-3 h-[90px]">
         <ScrollArea.Viewport className="h-full w-full">

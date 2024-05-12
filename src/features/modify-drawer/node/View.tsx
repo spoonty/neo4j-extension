@@ -39,6 +39,7 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
             currentValues={labels}
             values={globalLabels}
             activeLabel={activeLabel}
+            description="Node labels represent tags assigned to graph nodes for categorizing them by meaning or functionality."
             setActiveLabel={setActiveLabel}
             add={addLabel}
             remove={removeLabel}
@@ -48,6 +49,7 @@ const View: FC<Props> = ({ initialNode, onClose }) => {
         return (
           <SecondStep
             properties={properties}
+            description="Properties of nodes are key-value pairs that contain additional information about the nodes in a graph."
             add={addProperty}
             remove={deleteProperty}
             activeProperty={activeProperty}
