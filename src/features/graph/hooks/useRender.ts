@@ -18,9 +18,12 @@ import { clickZoom, zoom } from '@/features/graph/helpers/zoom'
 import { useSessionContext } from '@/features/session/context'
 import { Connection } from '@/features/session/static/const'
 import { localStorageKeys } from '@/features/session/static/keys'
+import { useWindowSize } from '@reactuses/core'
 import * as d3 from 'd3'
 
 export const useRender = (svg: RefObject<SVGSVGElement>) => {
+  const { width, height } = useWindowSize()
+
   const {
     nodes,
     relationships,
@@ -457,7 +460,7 @@ export const useRender = (svg: RefObject<SVGSVGElement>) => {
 
   useEffect(() => {
     render()
-  }, [nodes, relationships])
+  }, [nodes, relationships, width, height])
 
   useLayoutEffect(() => {
     rendered.current = false

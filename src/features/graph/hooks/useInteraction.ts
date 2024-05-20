@@ -88,7 +88,7 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
       const nodeLabels: string[] = []
       nodeD3.labels.forEach((label) => {
-        if (!nodeLabels.includes(label)) {
+        if (!labels.includes(label)) {
           nodeLabels.push(label)
           labelManager.addLabel(label)
         }
@@ -98,7 +98,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         properties[Object.keys(properties)[activeProperty]]
 
       setNodes(() => [...getNodesWithoutTemplate(), nodeD3])
-      setLabels(() => [...labels, ...nodeLabels])
+
+      const info = await viewModel.getGraphInfo()
+      setLabels(() => info.labels)
+      setGraphSize(() => info.size)
 
       state.current = InteractionState.DEFAULT
       add('success', 'Node successfully created.')
@@ -148,7 +151,9 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         nodeD3,
       ])
       setRelationships(() => updatedRelationships)
-      setLabels(() => [...labels, ...nodeLabels])
+
+      const info = await viewModel.getGraphInfo()
+      setLabels(() => info.labels)
 
       add('success', 'Node successfully updated.')
     } catch (error: any) {
@@ -181,7 +186,6 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         labelManager.removeLabel(label)
       })
 
-      setLabels(() => labelsToStay)
       setNodes(() => newNodesList)
       setRelationships(() =>
         relationships.filter(
@@ -190,6 +194,10 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
             relationship.startNodeElementId !== nodeId,
         ),
       )
+
+      const info = await viewModel.getGraphInfo()
+      setLabels(() => info.labels)
+      setGraphSize(() => info.size)
 
       add('success', 'Node successfully deleted.')
     } catch (error: any) {
@@ -210,9 +218,9 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
 
       const relationshipD3 = await viewModel.createRelationship(relationship)
 
-      if (relationshipD3.type && !types.includes(relationshipD3.type)) {
-        setTypes([...types, relationshipD3.type])
-      }
+      const info = await viewModel.getGraphInfo()
+      setTypes(() => info.types)
+      setGraphSize(() => info.size)
 
       setRelationships(() => [
         ...getRelationshipsWithoutTemplate(),
@@ -239,9 +247,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
         new RelationshipUpdateDTO(type, properties),
       )
 
-      if (relationship.type && !types.includes(relationship.type)) {
-        setTypes([...types, relationship.type])
-      }
+      const info = await viewModel.getGraphInfo()
+      setTypes(() => info.types)
 
       setRelationships(() => [
         ...relationships.filter(
@@ -267,6 +274,9 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
           (relationship) => relationship.elementId !== relationshipId,
         ),
       )
+
+      const info = await viewModel.getGraphInfo()
+      setTypes(() => info.types)
 
       add('success', 'Relationship successfully deleted.')
     } catch (error: any) {

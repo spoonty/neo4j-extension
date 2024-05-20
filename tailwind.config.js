@@ -41,14 +41,14 @@ module.exports = {
         },
         'toast-in': {
           from: {
-            transform: 'translateX(calc(100% + 10px))',
+            transform: 'translateY(calc(100% + 10px))',
           },
-          to: { transform: 'translateX(0)' },
+          to: { transform: 'translateY(0)' },
         },
         'toast-out': {
-          from: { transform: 'translateX(0)' },
+          from: { transform: 'translateY(0)' },
           to: {
-            transform: 'translateX(calc(100% + 10px))',
+            transform: 'translateY(calc(100% + 10px))',
           },
         },
       },

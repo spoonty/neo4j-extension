@@ -12,7 +12,7 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
       <ToastContextProvider.Provider value={{ add }}>
         {children}
         <Toast open={open} onOpenChange={setOpen} toast={toast} />
-        <ToastPrimitive.Viewport className="fixed bottom-[26px] right-[26px] z-50 flex w-[320px] flex-col-reverse items-end gap-y-4 outline-none" />
+        <ToastPrimitive.Viewport className="fixed bottom-[26px] end-[50%] z-50 flex w-[320px] translate-x-[160px] flex-col-reverse items-end gap-y-4 outline-none" />
       </ToastContextProvider.Provider>
     </ToastPrimitive.Provider>
   )
