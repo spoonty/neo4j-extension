@@ -21,10 +21,14 @@ const View: FC<DetailsDrawerProps> = ({
   onClose,
 }) => {
   const convertedProperties = {
-    key: ['ID', ...Object.keys(properties)],
+    key: ['ID', ...Object.keys(properties)].filter(
+      (p) => typeof properties[p] != 'object',
+    ),
     value: [
       elementId.split(':').at(-1),
-      ...Object.keys(properties).map((key) => properties[key]),
+      ...Object.keys(properties)
+        .map((key) => properties[key])
+        .filter((p) => typeof p != 'object'),
     ],
   }
 

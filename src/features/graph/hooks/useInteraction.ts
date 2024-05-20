@@ -555,6 +555,11 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     } else {
       setMode(() => Mode.FILTERED_GRAPH)
       setLabels(() => info.labels)
+
+      info.labels.forEach((label) => {
+        labelManager.addLabel(label)
+      })
+
       setTypes(() => info.types)
     }
   }
