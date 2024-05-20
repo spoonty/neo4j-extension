@@ -54,19 +54,36 @@ export class Neo4jCRUDDatasourceImpl implements Neo4jCRUDDatasource {
   }
 
   updateNode = async (nodeId: string, node: NodeUpdateDTO) => {
-    const query = `
-      MATCH (n) WHERE ID(n)=${nodeId.split(':').reverse()[0]}
-      REMOVE n:${node.labels.join(':')}
-      SET n:${node.newLabels.join(':')}
-      SET n += $properties
+    const nodeIdValue = nodeId.split(':').reverse()[0]
+
+    const getNodeQuery = `
+      MATCH (n) WHERE ID(n) = ${nodeIdValue}
       RETURN n
     `
 
-    const result = await this.driver.execute<Array<{ n: Node }>>(query, {
-      properties: node.properties,
-    })
+    const result = await this.driver.execute<Array<{ n: Node }>>(getNodeQuery)
+    const currentNode = result[0].n
+    const currentProperties = currentNode.properties
 
-    return result[0].n
+    const removePropertiesString = Object.keys(currentProperties)
+      .map((key) => `REMOVE n.${key}`)
+      .join(' ')
+
+    const updateNodeQuery = `
+      MATCH (n) WHERE ID(n)=${nodeIdValue}
+      REMOVE n:${node.labels.join(':')}
+      ${removePropertiesString}
+      SET n:${node.newLabels.join(':')}
+      SET n = $properties
+      RETURN n
+    `
+
+    const updateResult = await this.driver.execute<Array<{ n: Node }>>(
+      updateNodeQuery,
+      { properties: node.properties },
+    )
+
+    return updateResult[0].n
   }
 
   deleteNode = async (nodeId: string): Promise<void> => {
