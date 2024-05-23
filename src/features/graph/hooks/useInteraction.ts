@@ -369,6 +369,30 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     }
   }
 
+  const changeLabel = (nodeId: string, label: string) => {
+    const nodeToChange = nodes.find((node) => node.elementId === nodeId)
+
+    if (nodeToChange) {
+      nodeToChange.settings.labelToDisplay = label
+
+      const otherNodes = nodes.filter((node) => node.elementId !== nodeId)
+
+      setNodes([...otherNodes, nodeToChange])
+    }
+  }
+
+  const changeActiveProperty = (nodeId: string, property: string) => {
+    const nodeToChange = nodes.find((node) => node.elementId === nodeId)
+
+    if (nodeToChange) {
+      nodeToChange.settings.propertyToDisplay = property
+
+      const otherNodes = nodes.filter((node) => node.elementId !== nodeId)
+
+      setNodes([...otherNodes, nodeToChange])
+    }
+  }
+
   const setSource = (sourceId: string) => {
     createRelationshipTargets.current = {
       ...createRelationshipTargets.current,
@@ -603,6 +627,8 @@ export const useInteraction = (viewModel: ViewModel): IGraphContext => {
     createRelationship,
     updateRelationship,
     deleteRelationship,
+    changeLabel,
+    changeActiveProperty,
     setSource,
     setTarget,
     updateNodeTemplate,

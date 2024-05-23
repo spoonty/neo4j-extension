@@ -9,6 +9,8 @@ export interface DetailsDrawerProps extends PropsWithChildren {
   elementId: string
   properties: KeyValue
   className?: string
+  activeProperty?: number
+  setActiveProperty?: (idx: number) => void
   onClose: () => void
 }
 
@@ -18,6 +20,8 @@ const View: FC<DetailsDrawerProps> = ({
   elementId,
   properties,
   className,
+  activeProperty,
+  setActiveProperty,
   onClose,
 }) => {
   const convertedProperties = {
@@ -51,7 +55,11 @@ const View: FC<DetailsDrawerProps> = ({
 
           <ScrollArea.Root className={cn('pe-3', className)}>
             <ScrollArea.Viewport className="h-full w-full">
-              <Table data={convertedProperties} />
+              <Table
+                data={convertedProperties}
+                activeProperty={activeProperty}
+                setActiveProperty={setActiveProperty}
+              />
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar
               orientation="vertical"

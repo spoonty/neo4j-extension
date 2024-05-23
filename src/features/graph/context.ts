@@ -41,6 +41,8 @@ export interface IGraphContext {
     properties: KeyValue,
   ) => Promise<void>
   deleteRelationship: (relationshipId: string) => Promise<void>
+  changeLabel: (nodeId: string, label: string) => void
+  changeActiveProperty: (nodeId: string, property: string) => void
   setSource: (sourceId: string) => void
   setTarget: (targetId: string) => void | string
   updateNodeTemplate: (
@@ -81,6 +83,8 @@ export const GraphContext = createContext<IGraphContext>({
   createRelationship: async () => {},
   updateRelationship: async () => {},
   deleteRelationship: async () => {},
+  changeLabel: () => {},
+  changeActiveProperty: () => {},
   setSource: () => {},
   setTarget: () => {},
   updateNodeTemplate: () => {},

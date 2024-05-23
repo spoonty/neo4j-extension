@@ -43,9 +43,15 @@ export class NodeD3 extends Node {
 
     super(node.elementId, node.identity, node.labels, node.properties)
 
+    const propertyToDisplayKey = Object.keys(node.properties).find(
+      (p) => p.toLowerCase() === 'name' || p.toLowerCase() === 'title',
+    )
+
     this.settings = {
       labelToDisplay: this.labels[0],
-      propertyToDisplay: null,
+      propertyToDisplay: propertyToDisplayKey
+        ? node.properties[propertyToDisplayKey]
+        : null,
     }
   }
 
